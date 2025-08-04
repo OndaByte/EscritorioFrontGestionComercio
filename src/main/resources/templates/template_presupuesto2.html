@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cotización por mantenimiento</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      font-size: 0.95em;
+      line-height: 1.5;
+    }
+    .logo {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .logo img {
+      max-height: 100px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    h3, h4 {
+      margin-bottom: 10px;
+    }
+    p {
+      margin-top: 0;
+      margin-bottom: 10px;
+      text-align: justify;
+    }
+    .firma {
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sección 1: Encabezado -->
+  <div class="logo">
+    <img src="{{logo_url}}" alt="Logo Empresa">
+  </div>
+  <div class="header">
+    <div><strong>{{cliente_nombre}}</strong></div>
+    <div>{{fecha}} {{ubicacion}}</div>
+  </div>
+
+  <!-- Sección 2: Título y Descripción -->
+  <h3>Cotización por mantenimiento.</h3>
+  <p>{{descripcion_1}}</p>
+  <p>{{descripcion_2}}</p>
+  <p>{{descripcion_3}}</p>
+  <p>{{descripcion_4}}</p>
+  <p>{{descripcion_5}}</p>
+  <p>{{descripcion_6}}</p>
+
+  <!-- Sección 3: Observaciones -->
+  <h4>Observaciones:</h4>
+  <p>{{observacion_1}}</p>
+  <p>{{observacion_2}}</p>
+
+  <!-- Sección 4: Monto -->
+  <p>
+    <strong><u>Presupuesto total:</u></strong>
+    <strong>{{presupuesto_total}}</strong> ({{presupuesto_texto}}) por visita cada {{frecuencia}}, con un ajuste del {{ajuste_porcentaje}} en el 2do semestre.
+  </p>
+
+  <!-- Sección 5: Firma -->
+  <div class="firma">
+    <p>Atte.-</p>
+    <p>
+      <strong>{{tecnico_nombre}}</strong><br>
+      CUIT {{tecnico_cuit}}<br>
+      {{tecnico_telefono}}<br>
+      {{tecnico_email}}
+    </p>
+  </div>
+
+</body>
+</html>

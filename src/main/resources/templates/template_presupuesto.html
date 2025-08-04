@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Presupuesto</title>
+        <style>
+         body {
+             font-family: Arial, sans-serif;
+             margin: 20px;
+             font-size: 0.9em;
+         }
+         table {
+             width: 100%;
+             border-collapse: collapse;
+         }
+         th, td {
+             vertical-align: top;
+             padding: 4px;
+         }
+         .bordered {
+             border: 1px solid #000;
+             border-radius: 10px;
+             padding: 10px;
+             margin-bottom: 10px;
+         }
+         .firma {
+             position: relative;
+             height: 100px;
+         }
+         .firma-linea {
+             position: absolute;
+             bottom: 10px;
+             right: 20px;
+             text-align: center;
+         }
+         .firma-linea div {
+             border-top: 1px solid #000;
+             width: 200px;
+             margin-bottom: 2px;
+         }
+        </style>
+    </head>
+    <body>
+        <!-- 1. Encabezado -->
+        <h1>Presupuesto</h1>
+        <div class="bordered">
+        <table style="width: 100%;">
+            <tr>
+                <td style="width: 50%; text-align: left; vertical-align: top;">
+                    <table style="border: none;">
+                        <tr>
+                            <td style="padding-right: 10px;">
+                                <img src="../image/logo_chico.png" alt="Logo Empresa" style="max-height: 80px;"></img>
+                            </td>
+                            <td>
+                                <h2 style="margin: 0;">Mantenimientos Antartida</h2>
+                                <p style="margin: 0;">Codigo Postal: 5730</p>
+                                <p style="margin: 0;">Direccion: Maipu 620</p>
+                                <p style="margin: 0;">Tel.: 02657-15617313</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                
+                <!-- Columna derecha -->
+                <td style="width: 50%; text-align: right; vertical-align: top;">
+                    <p style="margin: 0; font-size: 0.8em;">DOCUMENTO NO VÁLIDO COMO FACTURA</p>
+                    <table style="border: none; float: right;">
+                        <tr>
+                            <td><strong>Nro.:</strong></td>
+                            <td>{{numero}}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fecha:</strong></td>
+                            <td><strong>{{fecha}}</strong></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        </div>
+
+        <!-- 2. Datos del Cliente -->
+        <div class="bordered">
+            <table>
+                <tr>
+                    <td colspan="4" style="font-style:italic;"><strong>Señor/es</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Nombre</strong></td>
+                    <td>{{cliente_nombre}}</td>
+                    <td><strong>Teléfono</strong></td>
+                    <td>{{cliente_telefono}}</td>
+                </tr>
+                <tr>
+                    <td><strong>Domicilio</strong></td>
+                    <td>{{cliente_domicilio}}</td>
+                    <td><strong>C.P.</strong></td>
+                    <td>{{cliente_cp}}</td>
+                </tr>
+                <tr>
+                    <td><strong>Localidad</strong></td>
+                    <td>{{cliente_localidad}}</td>
+                    <td><strong>Provincia</strong></td>
+                    <td>{{cliente_provincia}}</td>
+                </tr>
+                <!--
+                     <tr>
+                     <td><strong>Otros datos:</strong></td>
+                     <td colspan="3" style="border:1px solid #000;">{{otros_datos}}</td>
+                     </tr>
+                -->
+            </table>
+        </div>
+
+        <!-- 2.5. Descripcion -->
+        <div class="bordered">
+            <div><strong>DESCRIPCION:</strong></div>
+            {{descripcion}}
+        </div>
+
+        <!-- 3. Detalle de Artículos -->
+        <div class="bordered">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="border:1px solid #000;">ARTÍCULO</th>
+                        <th style="border:1px solid #000;">CANTIDAD</th>
+                        <th style="border:1px solid #000; text-align:right;">PRECIO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{tabla_items}}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td style="border-top:1px solid #000; text-align:right;"><strong>{{total}}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </body>
+</html>
