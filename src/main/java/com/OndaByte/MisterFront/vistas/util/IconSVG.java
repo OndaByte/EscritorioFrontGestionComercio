@@ -28,7 +28,7 @@ public class IconSVG extends FlatSVGIcon{
         //super(getClass().getClassLoader().getResource(rutaSVG));
         Color lightColor = null;
         Color darkColor = null;
-        lightColor = FlatUIUtils.getUIColor("$Menu.icon.lightColor", Color.white);
+        lightColor = FlatUIUtils.getUIColor("$Menu.icon.lightColor", Color.gray);
         darkColor = FlatUIUtils.getUIColor("$Menu.icon.darkColor", Color.lightGray);
         FlatSVGIcon.ColorFilter filter = new FlatSVGIcon.ColorFilter();
         filter.add(Color.decode("#969696"), lightColor, darkColor);
@@ -50,7 +50,7 @@ public class IconSVG extends FlatSVGIcon{
         Color darkColor = null;
         switch (filtro){
             case 1:
-                lightColor = FlatUIUtils.getUIColor("$Menu.icon.lightColor", Color.white);
+                lightColor = FlatUIUtils.getUIColor("$Menu.icon.lightColor", Color.gray);
                 darkColor = FlatUIUtils.getUIColor("$Menu.icon.darkColor", Color.lightGray);
                 break;
             case 2:
@@ -63,7 +63,7 @@ public class IconSVG extends FlatSVGIcon{
                 break;
             default:
                 lightColor = FlatUIUtils.getUIColor("$Menu.icon.lightColor", Color.GRAY);
-                darkColor = FlatUIUtils.getUIColor("$Menu.icon.darkColor", Color.white);
+                darkColor = FlatUIUtils.getUIColor("$Menu.icon.darkColor", Color.lightGray);
                 break;
         }
         FlatSVGIcon.ColorFilter filter = new FlatSVGIcon.ColorFilter();
