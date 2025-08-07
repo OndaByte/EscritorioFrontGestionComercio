@@ -139,7 +139,7 @@ public class MenuItem extends JPanel implements EventosInterface{
             menuItem.setIcon(new IconSVG(getNumeroIcon(menuActual)));
             menuItem.addActionListener((ActionEvent e) -> {
                 PanelLateral.colorNull();
-                menuItem.setBackground(new Color(173, 216, 230));
+                menuItem.setBackground(new Color(220, 220, 180));
                 menuItem.setForeground(Color.BLACK);
                 ((IconSVG)menuItem.getIcon()).setFiltro(3);
                 runEvento(menuActual);
