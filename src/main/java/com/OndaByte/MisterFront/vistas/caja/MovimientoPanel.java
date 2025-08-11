@@ -1,6 +1,5 @@
 package com.OndaByte.MisterFront.vistas.caja;
 
-
 import com.OndaByte.MisterFront.controladores.MovimientoController;
 import com.OndaByte.MisterFront.estilos.MisEstilos;
 import com.OndaByte.MisterFront.modelos.Movimiento;
@@ -43,10 +42,6 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author luciano
- */
 public class MovimientoPanel extends JPanel { 
 
    

@@ -20,10 +20,6 @@ import javax.swing.JTextArea;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author luciano
- */
 public class MovimientoModal extends JDialog {
 
     //Modelo

@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.OndaByte.MisterFront.vistas.caja;
 
 import com.OndaByte.MisterFront.controladores.MovimientoController;
@@ -22,10 +19,6 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import net.miginfocom.swing.MigLayout;
 
-/**
- *
- * @author luciano
- */
 public class MostradorCajaPanel extends JPanel {
 
     private JPanel topPanel, centerPanel, bottomPanel;
