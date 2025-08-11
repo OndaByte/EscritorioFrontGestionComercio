@@ -92,7 +92,6 @@ public class ProductoModal extends JDialog {
                 nuevo.setId(this.producto.getId());
                 if(productoController.editarProducto(nuevo, listener)){this.dispose();}
             }
-
         }else{
             Dialogos.mostrarError(errores);
         }
@@ -110,7 +109,7 @@ public class ProductoModal extends JDialog {
         p.setNombre(nombre);
         p.setPrecio(Float.valueOf(precio));
         p.setCodigo_barra(codBarra);
-        p.setDescripcion(codBarra);
+//        p.setDescripcion(descripcion);
         p.setCategoria_id(0);      
         p.setStock(Integer.valueOf(stock)); 
         
