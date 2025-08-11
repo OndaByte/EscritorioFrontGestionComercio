@@ -1,7 +1,13 @@
 
 package com.OndaByte.MisterFront.vistas.caja;
 
+import com.OndaByte.MisterFront.controladores.MovimientoController;
+import com.OndaByte.MisterFront.controladores.ProductoController;
 import com.OndaByte.MisterFront.modelos.ItemVenta;
+import com.OndaByte.MisterFront.modelos.Producto;
+import com.OndaByte.MisterFront.vistas.DatosListener;
+import com.OndaByte.MisterFront.vistas.util.Dialogos;
+import com.OndaByte.MisterFront.vistas.util.Paginado;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -28,6 +34,9 @@ public class VentaCajaPanel extends JPanel {
     private List<ItemVenta> carrito = new ArrayList<>();
     //private Map<String, JSpinner> mapaCarrito = new HashMap<>();
     private Map<String, FilaCarrito> mapaCarrito = new HashMap<>();
+
+    private MovimientoController cajaController;
+    private ProductoController productoController;
 
 //                    dar de alta el movimiento daleee
 //                            daleeeee
@@ -92,14 +101,33 @@ public class VentaCajaPanel extends JPanel {
         // Agregamos ambos lados al panel principal
         this.add(izquierda);
         this.add(derecha);
-        cargarProductosSimulados();
+        // c                                supongo que es suficiente margen
+        productoController.filtrar("","" + 1, "" + 1000, new DatosListener<List<Producto>>(){
+            @Override
+            public void onSuccess(List<Producto> datos) {
+            }
 
+            @Override
+            public void onError(String mensajeError) {
+                Dialogos.mostrarError(mensajeError);
+                revalidate();
+                repaint();
+            }
+
+            @Override
+            public void onSuccess(List<Producto> datos, Paginado p) {
+                cargarProductosSimulados();
+//                turnos = new ArrayList<>(datos);
+//                renderEventos();
+//                renderEventos();
+            }
+        });
     }
 
     public String getNombre() {
         return nombre;
     }
-//        private void cargarProductosDummy() {
+//    private void cargarProductosDummy() {
 //    productosPanel.removeAll();
 //
 //    agregarProducto("Coca-Cola 500ml", 500f);
