@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 public class PanelLateral extends JPanel {
     private boolean menuFull = true;
-    private final String headerName = "<HTML>Mister Kiosco</HTML>";
+    private final String headerName = "<HTML>Box Padel</HTML>";
 
     protected final boolean hideMenuTitleOnMinimum = true;
     protected final int menuTitleLeftInset = 5;

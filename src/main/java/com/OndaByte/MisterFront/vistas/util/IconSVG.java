@@ -17,7 +17,8 @@ public class IconSVG extends FlatSVGIcon{
     public static final String RECHAZAR = "icon/rechazar.svg";
     public static final String GUARDAR = "icon/floppy-disk.svg";
     public static final String LUPA = "icon/loop.svg";
-    public static final String LOGO = "icon/marketplace.svg";
+    //public static final String LOGO = "icon/padel1.svg";
+    public static final String LOGO = "icon/padel2.svg";
     public static final String CLARO = "icon/light.svg";
     public static final String OSCURO = "icon/dark.svg";
     /*
@@ -25,14 +26,7 @@ public class IconSVG extends FlatSVGIcon{
 
     public IconSVG(){
         super(DEAFAULT);
-        //super(getClass().getClassLoader().getResource(rutaSVG));
-        Color lightColor = null;
-        Color darkColor = null;
-        lightColor = FlatUIUtils.getUIColor("$Menu.icon.lightColor", Color.gray);
-        darkColor = FlatUIUtils.getUIColor("$Menu.icon.darkColor", Color.lightGray);
-        FlatSVGIcon.ColorFilter filter = new FlatSVGIcon.ColorFilter();
-        filter.add(Color.decode("#969696"), lightColor, darkColor);
-        setColorFilter(filter);
+        setFiltro(1);
     }
 
     public IconSVG(String rutaSVG){
@@ -50,7 +44,7 @@ public class IconSVG extends FlatSVGIcon{
         Color darkColor = null;
         switch (filtro){
             case 1:
-                lightColor = FlatUIUtils.getUIColor("$Menu.icon.lightColor", Color.gray);
+                lightColor = FlatUIUtils.getUIColor("$Menu.icon.lightColor", Color.darkGray);
                 darkColor = FlatUIUtils.getUIColor("$Menu.icon.darkColor", Color.lightGray);
                 break;
             case 2:
