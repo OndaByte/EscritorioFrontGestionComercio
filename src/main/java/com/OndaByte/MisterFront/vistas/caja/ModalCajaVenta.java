@@ -14,10 +14,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-/**
- *
- * @author luciano
- */
 public class ModalCajaVenta extends JDialog {
     private JComboBox<String> formaPagoCombo;
     private JComboBox<Cliente> clienteCombo;

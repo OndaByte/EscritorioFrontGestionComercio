@@ -1,28 +1,18 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.OndaByte.MisterFront.vistas.caja;
 
 import com.OndaByte.MisterFront.modelos.ItemVenta;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
+
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
+import java.util.Map;
+import javax.swing.*;
+import javax.swing.event.ChangeListener;
+
 import net.miginfocom.swing.MigLayout;
 
-/**
- *
- * @author luciano
- */
 public class VentaCajaPanel extends JPanel {
 
     private String nombre;
@@ -34,9 +24,11 @@ public class VentaCajaPanel extends JPanel {
     private JLabel lblEstadoOperacion, lblSubtotal, lblTotal, lblHora;
     private JButton btnCobrar, btnNuevaVenta;
     private JScrollPane scrollProductos, scrollCarrito;
-    
+
     private List<ItemVenta> carrito = new ArrayList<>();
-    
+    //private Map<String, JSpinner> mapaCarrito = new HashMap<>();
+    private Map<String, FilaCarrito> mapaCarrito = new HashMap<>();
+
 //                    dar de alta el movimiento daleee
 //                            daleeeee
 //                            asdsajjskadjdasjsajlasdl
@@ -44,7 +36,7 @@ public class VentaCajaPanel extends JPanel {
 //                                    nankanlnlnlsdandsannals
 //                                    falta crear el proyecto nuevop ... y esto no hace falta para el Mister ...
 //                                    da de alta un movimiento y listo y hace la relacion con el remito y chau . 
-                                    
+
 
     public VentaCajaPanel(String nombre) {
         this.nombre = nombre;
@@ -52,9 +44,11 @@ public class VentaCajaPanel extends JPanel {
 
         // IZQUIERDA: productos
         JPanel izquierda = new JPanel(new BorderLayout());
-        txtBuscarProducto = new JTextField("Buscar producto...");
+        txtBuscarProducto = new JTextField();
         productosPanel = new JPanel(new MigLayout("insets 10, fillx", "[grow][right]"));
         scrollProductos = new JScrollPane(productosPanel);
+        scrollProductos.setBorder(BorderFactory.createTitledBorder("Productos"));
+
 
         izquierda.add(txtBuscarProducto, BorderLayout.NORTH);
         izquierda.add(scrollProductos, BorderLayout.CENTER);
@@ -63,6 +57,8 @@ public class VentaCajaPanel extends JPanel {
         JPanel derecha = new JPanel(new BorderLayout());
         carritoPanel = new JPanel(new MigLayout("insets 10, fillx", "[grow][right]"));
         scrollCarrito = new JScrollPane(carritoPanel);
+        scrollCarrito.setBorder(BorderFactory.createTitledBorder("Carrito"));
+
 
         JPanel resumenPanel = new JPanel(new MigLayout("insets 10", "[grow][right]"));
         lblSubtotal = new JLabel("Subtotal: $0.00");
@@ -82,14 +78,14 @@ public class VentaCajaPanel extends JPanel {
         resumenPanel.add(lblTotal, "span, wrap");
         resumenPanel.add(btnCobrar, "span, growx");
         resumenPanel.add(btnCancelar, "growx");
-        
-        JPanel carritoLabelPanel = new JPanel();
-        carritoLabelPanel.setLayout(new MigLayout());
-        
-        carritoLabelPanel.add(new JLabel(""), "span, wrap");
-        carritoLabelPanel.add(new JLabel("CARRITO: "), "span, wrap");
-       
-        derecha.add(carritoLabelPanel, BorderLayout.NORTH);
+
+        //JPanel carritoLabelPanel = new JPanel();
+        //carritoLabelPanel.setLayout(new MigLayout());
+
+        //carritoLabelPanel.add(new JLabel(""), "span, wrap");1
+        //carritoLabelPanel.add(new JLabel("CARRITO: "), "span, wrap");
+
+        //derecha.add(carritoLabelPanel, BorderLayout.NORTH);
         derecha.add(scrollCarrito, BorderLayout.CENTER);
         derecha.add(resumenPanel, BorderLayout.SOUTH);
 
@@ -126,48 +122,121 @@ public class VentaCajaPanel extends JPanel {
 //    productosPanel.add(lbl);
 //    productosPanel.add(btnAgregar, "wrap");
 //}
-    
-// Método para agregar ítems al carrito
-private void agregarAlCarrito(String producto, int cantidad) {
-    JPanel fila = new JPanel(new MigLayout("fillx", "[grow][right]"));
-    JLabel lbl = new JLabel(producto + " x" + cantidad);
-    JButton btnEliminar = new JButton("x");
 
-    btnEliminar.addActionListener(e -> {
-        carritoPanel.remove(fila);
-        carritoPanel.revalidate();
-        carritoPanel.repaint();
-    });
+    // Clase interna para guardar referencias a los componentes de una fila
+    private class FilaCarrito {
+        JSpinner spinnerCantidad;
+        JSpinner spinnerDescuento;
+        JLabel lblSubtotal;
+        float precioUnitario;
+    }
 
-    fila.add(lbl, "growx");
-    fila.add(btnEliminar);
+    private void agregarAlCarrito(String producto) {
+        float precioUnitario = 100f; // fijo por ahora
 
-    carritoPanel.add(fila, "wrap, growx");
-    carritoPanel.revalidate();
-    carritoPanel.repaint();
-}
-private void cargarProductosSimulados() {
-    String[] productos = {"Gaseosa", "Alfajor", "Pan", "Café"};
-    
-    for (String nombre : productos) {
-        JPanel fila = new JPanel(new MigLayout("fillx", "[grow][60!][60!]"));
-        JLabel lblNombre = new JLabel(nombre);
+        // Si ya existe → actualizamos cantidad
+        if (mapaCarrito.containsKey(producto)) {
+            FilaCarrito filaExistente = mapaCarrito.get(producto);
+            int cantidadActual = (int) filaExistente.spinnerCantidad.getValue();
+            filaExistente.spinnerCantidad.setValue(cantidadActual + 1);
+            return;
+        }
+
+        // Panel contenedor de la fila (para todo el bloque de info)
+        JPanel contenedorFila = new JPanel(new MigLayout("fillx, insets 5", "[grow][100!]10[60!]10[40!]"));
+        contenedorFila.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
+
+        // Label principal con nombre del producto
+        JLabel lblNombre = new JLabel(producto);
+        JLabel lblCant = new JLabel("Unidades:");
+        JLabel lblDesc = new JLabel("Descuento (%):");
+
+        // Spinner cantidad
         JSpinner spinnerCantidad = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
-        JButton btnAgregar = new JButton("Agregar");
 
-        btnAgregar.addActionListener(e -> {
-            int cantidad = (int) spinnerCantidad.getValue();
-            agregarAlCarrito(nombre, cantidad);
+        // Spinner descuento (%)
+        JSpinner spinnerDescuento = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+
+        // Botón eliminar
+        JButton btnEliminar = new JButton("x");
+
+        // Labels de precio y subtotal
+        JLabel lblPrecioUnitario = new JLabel("Precio unitario: $" + precioUnitario);
+        JLabel lblSubtotal = new JLabel("Subtotal: $" + precioUnitario);
+
+        // Guardar referencias en mapa
+        FilaCarrito filaCarrito = new FilaCarrito();
+        filaCarrito.spinnerCantidad = spinnerCantidad;
+        filaCarrito.spinnerDescuento = spinnerDescuento;
+        filaCarrito.lblSubtotal = lblSubtotal;
+        filaCarrito.precioUnitario = precioUnitario;
+        mapaCarrito.put(producto, filaCarrito);
+
+        // Listeners para recalcular subtotal
+        ChangeListener recalcular = e -> {
+            int cant = (int) spinnerCantidad.getValue();
+            int desc = (int) spinnerDescuento.getValue();
+            float subtotal = precioUnitario * cant * (1 - desc / 100f);
+            lblSubtotal.setText("Subtotal: $" + String.format("%.2f", subtotal));
+        };
+        spinnerCantidad.addChangeListener(recalcular);
+        spinnerDescuento.addChangeListener(recalcular);
+
+        // Acción eliminar
+        btnEliminar.addActionListener(e -> {
+            carritoPanel.remove(contenedorFila);
+            carritoPanel.revalidate();
+            carritoPanel.repaint();
+            mapaCarrito.remove(producto);
         });
 
-        fila.add(lblNombre, "growx");
-        fila.add(spinnerCantidad);
-        fila.add(btnAgregar);
+        // Agregar fila principal (nombre, cantidad, descuento, eliminar)
+        contenedorFila.add(lblNombre, "growx");
+        contenedorFila.add(lblCant);
+        contenedorFila.add(spinnerCantidad);
+        contenedorFila.add(btnEliminar, "wrap");
 
-        productosPanel.add(fila, "wrap, growx");
+        // Agregar precio unitario debajo
+        contenedorFila.add(lblPrecioUnitario);
+        contenedorFila.add(lblDesc);
+        contenedorFila.add(spinnerDescuento, "span, wrap");
+
+        // Agregar subtotal debajo
+        contenedorFila.add(lblSubtotal, "span");
+
+        // Añadir al panel del carrito
+        carritoPanel.add(contenedorFila, "wrap, growx");
+        carritoPanel.revalidate();
+        carritoPanel.repaint();
     }
-}
-    
+
+
+    private void cargarProductosSimulados() {
+        String[] productos = {"Gaseosa", "Alfajor", "Pan", "Café"};
+
+        for (String nombre : productos) {
+            JPanel fila = new JPanel(new MigLayout("fillx, insets 10", "[grow]10[60!]10"));
+            JLabel lblNombre = new JLabel(nombre);
+            lblNombre.setFont(new Font("Courier New", Font.BOLD, 16));
+            JButton btnAgregar = new JButton("Agregar");
+            btnAgregar.setPreferredSize(new Dimension(80, 30));
+            btnAgregar.setBackground(new Color(0x4CAF50)); // verde material
+            btnAgregar.setForeground(Color.WHITE);
+            btnAgregar.setFocusPainted(false);
+            btnAgregar.setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
+
+
+            btnAgregar.addActionListener(e -> {
+                agregarAlCarrito(nombre);
+            });
+
+            fila.add(lblNombre, "growx");
+            fila.add(btnAgregar);
+
+            productosPanel.add(fila, "wrap, growx");
+        }
+    }
+
 //    
 //private void agregarAlCarrito(String nombre, float precio) {
 //    // ¿Ya está en el carrito?
@@ -184,25 +253,25 @@ private void cargarProductosSimulados() {
 //    renderCarrito();
 //}
 
-private void renderCarrito() {
-    carritoPanel.removeAll();
-    float subtotal = 0f;
+    private void renderCarrito() {
+        carritoPanel.removeAll();
+        float subtotal = 0f;
 
-    for (ItemVenta item : carrito) {
-        JLabel lbl = new JLabel(item.getCantidad() + "x " + item.getDescripcion());
-        JLabel lblTotal = new JLabel("$" + item.getPrecio());
+        for (ItemVenta item : carrito) {
+            JLabel lbl = new JLabel(item.getCantidad() + "x " + item.getDescripcion());
+            JLabel lblTotal = new JLabel("$" + item.getPrecio());
 
-        carritoPanel.add(lbl);
-        carritoPanel.add(lblTotal, "wrap");
+            carritoPanel.add(lbl);
+            carritoPanel.add(lblTotal, "wrap");
 
-        subtotal += item.getPrecio();
+            subtotal += item.getPrecio();
+        }
+
+        lblSubtotal.setText("Subtotal: $" + subtotal);
+        lblTotal.setText("Total: $" + subtotal); // podrías aplicar descuentos, etc.
+
+        carritoPanel.revalidate();
+        carritoPanel.repaint();
     }
-
-    lblSubtotal.setText("Subtotal: $" + subtotal);
-    lblTotal.setText("Total: $" + subtotal); // podrías aplicar descuentos, etc.
-
-    carritoPanel.revalidate();
-    carritoPanel.repaint();
-}
 
 }

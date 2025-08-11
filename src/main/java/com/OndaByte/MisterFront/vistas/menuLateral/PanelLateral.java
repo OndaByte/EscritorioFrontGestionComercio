@@ -99,7 +99,8 @@ public class PanelLateral extends JPanel {
     public static void colorNull(){
         for (JButton com : botones) {
             com.setBackground(null);
-            com.setForeground(null);
+            com.setForeground(new Color(64,64,64));
+
             ((IconSVG)com.getIcon()).setFiltro(1);
         }
     }
