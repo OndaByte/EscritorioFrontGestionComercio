@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
 
+import com.OndaByte.MisterFront.vistas.util.IconSVG;
 import net.miginfocom.swing.MigLayout;
 
 public class VentaCajaPanel extends JPanel {
@@ -28,6 +29,7 @@ public class VentaCajaPanel extends JPanel {
     private List<ItemVenta> carrito = new ArrayList<>();
     //private Map<String, JSpinner> mapaCarrito = new HashMap<>();
     private Map<String, FilaCarrito> mapaCarrito = new HashMap<>();
+    private JSpinner spinnerDescuentoExtra;
 
 //                    dar de alta el movimiento daleee
 //                            daleeeee
@@ -62,7 +64,16 @@ public class VentaCajaPanel extends JPanel {
 
         JPanel resumenPanel = new JPanel(new MigLayout("insets 10", "[grow][right]"));
         lblSubtotal = new JLabel("Subtotal: $0.00");
+        lblSubtotal.setFont(new Font("Courier New", Font.BOLD, 16));
+
+        JLabel lblDescuentoExtra = new JLabel("Descuento (%):");
+        lblDescuentoExtra.setFont(new Font("Courier New", Font.PLAIN, 14));
+        spinnerDescuentoExtra = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        spinnerDescuentoExtra.addChangeListener(e -> actualizarTotales());
+
+
         lblTotal = new JLabel("Total: $0.00");
+        lblTotal.setFont(new Font("Courier New", Font.BOLD, 16));
         btnCobrar = new JButton("COBRAR");
         JButton btnCancelar = new JButton("CANCELAR VENTA");
 
@@ -74,10 +85,12 @@ public class VentaCajaPanel extends JPanel {
             }
         });
 
-        resumenPanel.add(lblSubtotal, "span, wrap");
+        resumenPanel.add(lblSubtotal);
+        resumenPanel.add(lblDescuentoExtra);
+        resumenPanel.add(spinnerDescuentoExtra, "wrap");
         resumenPanel.add(lblTotal, "span, wrap");
         resumenPanel.add(btnCobrar, "span, growx");
-        resumenPanel.add(btnCancelar, "growx");
+        resumenPanel.add(btnCancelar, "span, growx");
 
         //JPanel carritoLabelPanel = new JPanel();
         //carritoLabelPanel.setLayout(new MigLayout());
@@ -95,6 +108,57 @@ public class VentaCajaPanel extends JPanel {
         cargarProductosSimulados();
 
     }
+
+
+    /*
+    private void actualizarTotales() {
+        float subtotalSinDesc = 0f;
+        float subtotalConDesc = 0f;
+
+        for (Map.Entry<String, FilaCarrito> entry : mapaCarrito.entrySet()) {
+            FilaCarrito fila = entry.getValue();
+
+            int cantidad = (int) fila.spinnerCantidad.getValue();
+            int descuento = (int) fila.spinnerDescuento.getValue();
+            float precioUnitario = fila.precioUnitario;
+
+            float subtotalItem = precioUnitario * cantidad;
+            float subtotalDescItem = subtotalItem * (1 - descuento / 100f);
+
+            subtotalSinDesc += subtotalItem;
+            subtotalConDesc += subtotalDescItem;
+        }
+
+        lblSubtotal.setText("Subtotal: $" + String.format("%.2f", subtotalSinDesc));
+        lblTotal.setText("Total: $" + String.format("%.2f", subtotalConDesc));
+    }
+     */
+
+    private void actualizarTotales() {
+        float subtotal = 0f;
+
+        // Sumar subtotales de cada fila (precioUnitario × cantidad × (1 - descuento))
+        for (Map.Entry<String, FilaCarrito> entry : mapaCarrito.entrySet()) {
+            FilaCarrito fila = entry.getValue();
+            int cantidad = (int) fila.spinnerCantidad.getValue();
+            int descuento = (int) fila.spinnerDescuento.getValue();
+            float precioUnitario = fila.precioUnitario;
+
+            float subtotalItem = precioUnitario * cantidad * (1 - descuento / 100f);
+            subtotal += subtotalItem;
+        }
+
+        // Mostrar subtotal
+        lblSubtotal.setText("Subtotal: $" + String.format("%.2f", subtotal));
+
+        // Aplicar descuento extra
+        int descuentoExtra = (int) spinnerDescuentoExtra.getValue();
+        float totalConExtra = subtotal * (1 - descuentoExtra / 100f);
+
+        lblTotal.setText("Total: $" + String.format("%.2f", totalConExtra));
+    }
+
+
 
     public String getNombre() {
         return nombre;
@@ -158,11 +222,12 @@ public class VentaCajaPanel extends JPanel {
         JSpinner spinnerDescuento = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
 
         // Botón eliminar
-        JButton btnEliminar = new JButton("x");
+        JButton btnEliminar = new JButton(new IconSVG(IconSVG.ELIMINAR));
 
         // Labels de precio y subtotal
         JLabel lblPrecioUnitario = new JLabel("Precio unitario: $" + precioUnitario);
-        JLabel lblSubtotal = new JLabel("Subtotal: $" + precioUnitario);
+        JLabel lblSubtotal = new JLabel("" + precioUnitario);
+        lblSubtotal.setHorizontalAlignment(SwingConstants.CENTER);
 
         // Guardar referencias en mapa
         FilaCarrito filaCarrito = new FilaCarrito();
@@ -177,7 +242,8 @@ public class VentaCajaPanel extends JPanel {
             int cant = (int) spinnerCantidad.getValue();
             int desc = (int) spinnerDescuento.getValue();
             float subtotal = precioUnitario * cant * (1 - desc / 100f);
-            lblSubtotal.setText("Subtotal: $" + String.format("%.2f", subtotal));
+            lblSubtotal.setText(String.format("%.2f", subtotal));
+            actualizarTotales();
         };
         spinnerCantidad.addChangeListener(recalcular);
         spinnerDescuento.addChangeListener(recalcular);
@@ -188,13 +254,15 @@ public class VentaCajaPanel extends JPanel {
             carritoPanel.revalidate();
             carritoPanel.repaint();
             mapaCarrito.remove(producto);
+            actualizarTotales();
+
         });
 
         // Agregar fila principal (nombre, cantidad, descuento, eliminar)
         contenedorFila.add(lblNombre, "growx");
         contenedorFila.add(lblCant);
         contenedorFila.add(spinnerCantidad);
-        contenedorFila.add(btnEliminar, "wrap");
+        contenedorFila.add(btnEliminar, "spany 3, growy, wrap");
 
         // Agregar precio unitario debajo
         contenedorFila.add(lblPrecioUnitario);
@@ -202,12 +270,16 @@ public class VentaCajaPanel extends JPanel {
         contenedorFila.add(spinnerDescuento, "span, wrap");
 
         // Agregar subtotal debajo
-        contenedorFila.add(lblSubtotal, "span");
+        contenedorFila.add(new Label());
+        contenedorFila.add(new Label("Subtotal: $"));
+        contenedorFila.add(lblSubtotal, "span, wrap");
 
         // Añadir al panel del carrito
         carritoPanel.add(contenedorFila, "wrap, growx");
         carritoPanel.revalidate();
         carritoPanel.repaint();
+        actualizarTotales();
+
     }
 
 
