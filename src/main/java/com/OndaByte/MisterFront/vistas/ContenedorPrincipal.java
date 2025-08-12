@@ -6,7 +6,7 @@ import com.OndaByte.MisterFront.estilos.MisEstilos;
 import com.OndaByte.MisterFront.vistas.caja.MovimientoPanel;
 import com.OndaByte.MisterFront.vistas.caja.MostradorCajaPanel;
 import com.OndaByte.MisterFront.vistas.clientes.ClientePanel;
-import com.OndaByte.MisterFront.vistas.empleados.EmpleadoPanel;
+import com.OndaByte.MisterFront.vistas.categorias.CategoriaPanel;
 import com.OndaByte.MisterFront.vistas.gastosFijos.GastoFijoPanel;
 import com.OndaByte.MisterFront.vistas.menuLateral.PanelLateral;
 import com.OndaByte.MisterFront.vistas.ordenes.OrdenPanel;
@@ -159,7 +159,7 @@ public class ContenedorPrincipal extends JLayeredPane implements ContenedorPrinc
                 this.renderCentral(evento,new ProductoPanel());
                 break;
             case "Empleados":
-                this.renderCentral(evento,new EmpleadoPanel());
+                this.renderCentral(evento,new CategoriaPanel());
                 break;
             case "Clientes":
                 this.renderCentral(evento,new ClientePanel());

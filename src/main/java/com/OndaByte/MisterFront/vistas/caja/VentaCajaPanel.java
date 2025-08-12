@@ -116,7 +116,7 @@ public class VentaCajaPanel extends JPanel {
 
             @Override
             public void onSuccess(List<Producto> datos, Paginado p) {
-                cargarProductosSimulados();
+                cargarProductosSimulados(datos);
 //                turnos = new ArrayList<>(datos);
 //                renderEventos();
 //                renderEventos();
@@ -239,12 +239,10 @@ public class VentaCajaPanel extends JPanel {
     }
 
 
-    private void cargarProductosSimulados() {
-        String[] productos = {"Gaseosa", "Alfajor", "Pan", "Café"};
-
-        for (String nombre : productos) {
+    private void cargarProductosSimulados(List<Producto> productos) {
+        for (Producto p : productos) {
             JPanel fila = new JPanel(new MigLayout("fillx, insets 10", "[grow]10[60!]10"));
-            JLabel lblNombre = new JLabel(nombre);
+            JLabel lblNombre = new JLabel(p.getNombre());
             lblNombre.setFont(new Font("Courier New", Font.BOLD, 16));
             JButton btnAgregar = new JButton("Agregar");
             btnAgregar.setPreferredSize(new Dimension(80, 30));
