@@ -7,7 +7,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Constantes {
-    
+
+    //Datos de la empresa
+    public static final String TITULO_PRINCIPAL = "<HTML>Mister Queso</HTML>";
+    public static final String LOGO = "icon/marketplace.svg";
+
     //constantes del mad viejo
     //public static final String VERSION = "ver 77.9.13.13";//{web}.{firm}.{bd}.{propio}{rc*}INCREMENTE TODOS LOS INDICES y RESET de rc
     //public static final String RELEASE_DATE = "29/11/2023 07:30";

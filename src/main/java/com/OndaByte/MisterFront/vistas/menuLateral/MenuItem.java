@@ -135,6 +135,7 @@ public class MenuItem extends JPanel implements EventosInterface{
         for (int i = 0; i < menus.length; i++) {
             String menuActual = menus[i];
             JButton menuItem = createButtonItem(menuActual);
+            MisEstilos.aplicarEstilo(menuItem, MisEstilos.BOTON_MENU_ITEM_POPUP);
             menuItem.setHorizontalAlignment(menuItem.getComponentOrientation().isLeftToRight() ? JButton.LEADING : JButton.TRAILING);
             menuItem.setIcon(new IconSVG(getNumeroIcon(menuActual)));
             menuItem.addActionListener((ActionEvent e) -> {

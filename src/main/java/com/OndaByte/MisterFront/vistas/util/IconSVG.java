@@ -17,8 +17,6 @@ public class IconSVG extends FlatSVGIcon{
     public static final String RECHAZAR = "icon/rechazar.svg";
     public static final String GUARDAR = "icon/floppy-disk.svg";
     public static final String LUPA = "icon/loop.svg";
-    //public static final String LOGO = "icon/padel1.svg";
-    public static final String LOGO = "icon/padel2.svg";
     public static final String CLARO = "icon/light.svg";
     public static final String OSCURO = "icon/dark.svg";
     /*
