@@ -9,17 +9,31 @@ import com.OndaByte.MisterFront.modelos.Producto;
 import com.OndaByte.MisterFront.vistas.DatosListener;
 import com.OndaByte.MisterFront.vistas.util.Dialogos;
 import com.OndaByte.MisterFront.vistas.util.Paginado;
-
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.*;
 import javax.swing.event.ChangeListener;
-
 import com.OndaByte.MisterFront.vistas.util.IconSVG;
 import com.formdev.flatlaf.FlatClientProperties;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
+import java.util.Timer;
+import java.util.TimerTask;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import net.miginfocom.swing.MigLayout;
 
 public class VentaCajaPanel extends JPanel {
@@ -41,16 +55,74 @@ public class VentaCajaPanel extends JPanel {
     private MovimientoController cajaController;
     private ProductoController productoController;
 
+    private JPanel izquierda, derecha;
+    
+    private String filtro;
+    private java.util.Timer timer;
+
     public VentaCajaPanel(String nombre) {
         this.nombre = nombre;
         this.total = 0f;
         this.subtotal = 0f;
+        
+        this.setLayout(new MigLayout("insets 5, gap 10", "[grow 50]10[grow 50]", "[grow]"));
+        this.initPanelIzquierda();
+        this.initPanelDerecha();
+        this.add(izquierda, "grow");
+        this.add(derecha, "grow");
+        this.productoController = ProductoController.getInstance();
+        this.cajaController = MovimientoController.getInstance();
+        this.filtro="";
 
-        // MigLayout: 2 columnas, ambas crecen, espacio entre columnas
-        this.setLayout(new MigLayout("insets 5, gap 10", "[grow]10[grow]", "[grow]"));
+        productoController.filtrar(filtro,"" + 1, "" + 1000, new DatosListener<List<Producto>>(){
+            @Override
+            public void onSuccess(List<Producto> datos) {
+            }
 
-        // ======== IZQUIERDA: productos ========
-        JPanel izquierda = new JPanel(new MigLayout("insets 5, fill", "[grow]", "[]10[grow]"));
+            @Override
+            public void onError(String mensajeError) {
+                Dialogos.mostrarError(mensajeError);
+                revalidate();
+                repaint();
+            }
+
+            @Override
+            public void onSuccess(List<Producto> datos, Paginado p) {
+                addAcciones();
+                cargarProductos(datos);
+                revalidate();
+                repaint();
+            }
+        });
+    }
+    /**
+     * Renderiza de nuevo los elementos de la tabla y paginado con el filtro actual. 
+     */
+    private void reload(){
+
+        productoController.filtrar(filtro,"" + 1, "" + 1000, new DatosListener<List<Producto>>(){
+            @Override
+            public void onSuccess(List<Producto> datos) {
+            }
+
+            @Override
+            public void onError(String mensajeError) {
+                Dialogos.mostrarError(mensajeError);
+                revalidate();
+                repaint();
+            }
+
+            @Override
+            public void onSuccess(List<Producto> datos, Paginado p) {
+                cargarProductos(datos);
+                revalidate();
+                repaint();
+            }
+        });
+    };
+    
+    private void initPanelIzquierda(){
+        izquierda = new JPanel(new MigLayout("insets 5, fill", "[grow]", "[]10[grow]"));
 
         txtBuscarProducto = new JTextField();
         txtBuscarProducto.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, MisEstilos.PLACEHOLDER_BUSQUEDA);
@@ -63,16 +135,19 @@ public class VentaCajaPanel extends JPanel {
         productosPanel = new JPanel(new MigLayout("insets 5, fillx", "[grow][right]"));
         scrollProductos = new JScrollPane(productosPanel);
         scrollProductos.setBorder(BorderFactory.createTitledBorder("PRODUCTOS"));
-
+        scrollProductos.getVerticalScrollBar().setUnitIncrement(30);
+        
         izquierda.add(txtBuscarProducto, "growx, wrap");
         izquierda.add(scrollProductos, "grow");
+    }
 
-        // ======== DERECHA: carrito y resumen ========
-        JPanel derecha = new JPanel(new MigLayout("insets 5, fill", "[grow]", "[grow][]"));
+    private void initPanelDerecha(){
+        derecha = new JPanel(new MigLayout("insets 5, fill", "[grow]", "[grow][]"));
 
         carritoPanel = new JPanel(new MigLayout("insets 10, fillx", "[grow][right]"));
         scrollCarrito = new JScrollPane(carritoPanel);
         scrollCarrito.setBorder(BorderFactory.createTitledBorder("CARRITO"));
+        scrollCarrito.getVerticalScrollBar().setUnitIncrement(30);
 
         JPanel resumenPanel = new JPanel(new MigLayout("insets 10", "[grow][right]"));
         lblSubtotal = new JLabel("Subtotal: $0.00");
@@ -105,35 +180,7 @@ public class VentaCajaPanel extends JPanel {
 
         derecha.add(scrollCarrito, "grow, wrap");
         derecha.add(resumenPanel, "growx");
-
-        // ======== Agregar ambos lados al panel principal ========
-        this.add(izquierda, "grow");
-        this.add(derecha, "grow");
-        productoController.filtrar("","" + 1, "" + 1000, new DatosListener<List<Producto>>(){
-            @Override
-            public void onSuccess(List<Producto> datos) {
-            }
-
-            @Override
-            public void onError(String mensajeError) {
-                Dialogos.mostrarError(mensajeError);
-                revalidate();
-                repaint();
-            }
-
-            @Override
-            public void onSuccess(List<Producto> datos, Paginado p) {
-                //cargarProductosSimulados(datos);
-//                turnos = new ArrayList<>(datos);
-//                renderEventos();
-//                renderEventos();
-            }
-        });
-//        cargarProductosSimulados();
     }
-
-
-
     private void actualizarTotales(){
         // Aplicar descuento extra
         int descuentoExtra = (int) spinnerDescuentoExtra.getValue();
@@ -253,8 +300,8 @@ public class VentaCajaPanel extends JPanel {
         contenedorFila.add(spinnerDescuento, "span, wrap");
 
         // Agregar subtotal debajo
-        contenedorFila.add(new Label());
-        contenedorFila.add(new Label("Subtotal: $"));
+        contenedorFila.add(new JLabel());
+        contenedorFila.add(new JLabel("Subtotal: $"));
         contenedorFila.add(lblSubtotal, "span, wrap");
 
         // Añadir al panel del carrito
@@ -265,52 +312,66 @@ public class VentaCajaPanel extends JPanel {
     }
 
  
-    private void cargarProductosSimulados(List<Producto> productos) {
+    private void cargarProductos(List<Producto> productos) {
+        productosPanel.removeAll();
         for (Producto p : productos) {
-            JPanel fila = new JPanel(new MigLayout("fillx, insets 10", "[grow]10[60!]10"));
-            JLabel lblNombre = new JLabel(p.getNombre());
-//    private void cargarProductosSimulados() {
-//        String[] productos = {"Gaseosa", "Alfajor", "Pan", "Café","Gaseosa2", "Alfajor2", "Pan2", "Café2", "Gaseosa3", "Alfajor3", "Pan3", "Café3"};
-//
-//        for (String nombre : productos) {
-//            JPanel fila = new JPanel(new MigLayout("fillx, insets 5", "[grow]10[60!]10"));
-//            JLabel lblNombre = new JLabel(nombre);
 
+            JPanel fila = new JPanel(new MigLayout("fillx, insets 10", "[grow]10[80!]10[80!]"));
+    
+            // Nombre
+            JLabel lblNombre = new JLabel(p.getNombre());
             lblNombre.setFont(new Font("Courier New", Font.BOLD, 16));
+
+            // Stock
+            JLabel lblStock = new JLabel("Stock: " + p.getStock());
+            lblStock.setFont(new Font("Courier New", Font.PLAIN, 14));
+
+            // Botón Agregar
             JButton btnAgregar = new JButton("Agregar");
             btnAgregar.setPreferredSize(new Dimension(80, 30));
             btnAgregar.setBackground(new Color(0x4CAF50)); // verde material
             btnAgregar.setForeground(Color.WHITE);
             btnAgregar.setFocusPainted(false);
-            btnAgregar.setBorder(BorderFactory.createEmptyBorder(5,10,5,10));
-
+            btnAgregar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
             btnAgregar.addActionListener(e -> {
-                agregarAlCarrito(nombre);
+                agregarAlCarrito(p.getNombre());
             });
 
-            fila.add(lblNombre, "growx");
-            fila.add(btnAgregar);
+            // Agregar componentes a la fila
+            fila.add(lblNombre, "growx");   // columna 1: nombre
+            fila.add(lblStock, "center");   // columna 2: stock
+            fila.add(btnAgregar, "center"); // columna 3: botón
 
             productosPanel.add(fila, "wrap, growx");
         }
     }
 
-//    
-//private void agregarAlCarrito(String nombre, float precio) {
-//    // ¿Ya está en el carrito?
-//    for (ItemVenta item : carrito) {
-//        if (item.getNombreProducto().equals(nombre)) {
-//            item.setCantidad(item.getCantidad() + 1);
-//            renderCarrito();
-//            return;
-//        }
-//    }
-//
-//    // Si no está, lo agregamos nuevo
-//    carrito.add(new ItemVenta(nombre, 1, precio));
-//    renderCarrito();
-//}
+    private void addAcciones(){
+        txtBuscarProducto.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { filtrarProducto();}
+
+            public void removeUpdate(DocumentEvent e) { filtrarProducto();}
+
+            public void changedUpdate(DocumentEvent e) { filtrarProducto(); }
+
+            private void filtrarProducto() {
+                filtro = txtBuscarProducto.getText(); 
+                if (timer != null) {
+                    timer.cancel(); // Cancela el intento anterior
+                }
+                timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        reload();
+                    }
+                }, 300); 
+            }
+
+        });
+    }
+    
 
     private void renderCarrito() {
         carritoPanel.removeAll();
