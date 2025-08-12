@@ -6,8 +6,6 @@ import javax.swing.JComponent;
 
 /**
  *
- * @author luciano 
- * 
 $Component.accentColor → Color principal del tema.
 $Component.focusColor → Color de enfoque.
 $Table.selectionBackground → Color de selección en tablas.
@@ -24,7 +22,7 @@ public class MisEstilos {
     public static final String TEXT_FIELD = "borderWidth:0; arc:10;";
 
     //Menú_Lateral
-    public static String MENU_LATERAL = "border:20,2,2,2;"
+    public static String MENU_LATERAL = "border:40,4,4,4;"
                 + "background:$Menu.lateral.background;"
                 + "arc:10";
     public static String MENU_LATERAL_HEADER = "font:$Menu.header.font;"

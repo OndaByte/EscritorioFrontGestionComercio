@@ -135,11 +135,12 @@ public class MenuItem extends JPanel implements EventosInterface{
         for (int i = 0; i < menus.length; i++) {
             String menuActual = menus[i];
             JButton menuItem = createButtonItem(menuActual);
+            MisEstilos.aplicarEstilo(menuItem, MisEstilos.BOTON_MENU_ITEM_POPUP);
             menuItem.setHorizontalAlignment(menuItem.getComponentOrientation().isLeftToRight() ? JButton.LEADING : JButton.TRAILING);
             menuItem.setIcon(new IconSVG(getNumeroIcon(menuActual)));
             menuItem.addActionListener((ActionEvent e) -> {
                 PanelLateral.colorNull();
-                menuItem.setBackground(new Color(220, 220, 180));
+                menuItem.setBackground(new Color(251, 183, 132, 255));
                 menuItem.setForeground(Color.BLACK);
                 ((IconSVG)menuItem.getIcon()).setFiltro(3);
                 runEvento(menuActual);

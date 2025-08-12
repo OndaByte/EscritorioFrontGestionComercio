@@ -3,6 +3,7 @@ package com.OndaByte.MisterFront.vistas.login;
 
 import com.OndaByte.MisterFront.controladores.LoginController;
 import com.OndaByte.MisterFront.vistas.util.IconSVG;
+import com.OndaByte.config.Constantes;
 import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
 import com.OndaByte.MisterFront.vistas.MiFrame;
@@ -72,8 +73,8 @@ public class Login extends JPanel implements LoginView {
         chkRecordarme = new JCheckBox("Recordarme");
 
         lbTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbTitle.setText("INCIAR SESION");
-        IconSVG icon = new IconSVG(IconSVG.LOGO);
+        lbTitle.setText(" INCIAR SESION");
+        IconSVG icon = new IconSVG(Constantes.LOGO);
         icon.setFiltro(2);
         lbTitle.setIcon(icon);
         panelLogin1.add(lbTitle);

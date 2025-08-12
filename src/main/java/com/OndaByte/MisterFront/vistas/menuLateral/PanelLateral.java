@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 public class PanelLateral extends JPanel {
     private boolean menuFull = true;
-    private final String headerName = "<HTML>Mister Kiosco</HTML>";
+    private final String headerName = Constantes.TITULO_PRINCIPAL;
 
     protected final boolean hideMenuTitleOnMinimum = true;
     protected final int menuTitleLeftInset = 5;
@@ -54,7 +54,7 @@ public class PanelLateral extends JPanel {
     private void init(String rol) {
         putClientProperty(FlatClientProperties.STYLE, MisEstilos.MENU_LATERAL);
         header = new JLabel(headerName);
-        header.setIcon(new IconSVG(IconSVG.LOGO));
+        header.setIcon(new IconSVG(Constantes.LOGO));
         header.putClientProperty(FlatClientProperties.STYLE, MisEstilos.MENU_LATERAL_HEADER);
 
         //  Menu
