@@ -246,10 +246,10 @@ public class VentaCajaPanel extends JPanel {
 
 
     private void cargarProductosSimulados() {
-        String[] productos = {"Gaseosa", "Alfajor", "Pan", "Café"};
+        String[] productos = {"Gaseosa", "Alfajor", "Pan", "Café","Gaseosa2", "Alfajor2", "Pan2", "Café2", "Gaseosa3", "Alfajor3", "Pan3", "Café3"};
 
         for (String nombre : productos) {
-            JPanel fila = new JPanel(new MigLayout("fillx, insets 10", "[grow]10[60!]10"));
+            JPanel fila = new JPanel(new MigLayout("fillx, insets 5", "[grow]10[60!]10"));
             JLabel lblNombre = new JLabel(nombre);
             lblNombre.setFont(new Font("Courier New", Font.BOLD, 16));
             JButton btnAgregar = new JButton("Agregar");
