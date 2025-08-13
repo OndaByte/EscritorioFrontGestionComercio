@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.event.ChangeListener;
 import com.OndaByte.MisterFront.vistas.util.IconSVG;
+import static com.OndaByte.MisterFront.vistas.util.ProductoUtils.getProductoPrecioUnitario;
 import com.formdev.flatlaf.FlatClientProperties;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -229,7 +230,7 @@ public class VentaCajaPanel extends JPanel {
     }
     
     private void agregarAlCarrito(Producto p) {
-        float precioUnitario = getProductoPrecioUnitario(p);
+        float precioUnitario = p.getProductoPrecioUnitario();
         String producto = p.getNombre();
         int unidades;
         int stock;

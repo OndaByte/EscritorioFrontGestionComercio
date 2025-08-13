@@ -132,6 +132,27 @@ public class Producto {
     public void setEstado(String estado) {
         this.estado = estado;
     }
+    /**
+     * Precio con descuento
+     * @return 
+     */
+    public Float getProductoPrecioUnitario(){
+        Float costo = this.getPrecio_costo();
+        Float ganancia = costo * (this.getPorcentaje_ganancia() / 100f);
+        Float descuento = costo * (this.getPorcentaje_descuento() / 100f);
+        Float result =  costo + ganancia - descuento ;
+        return result;
+    }
+
+    /**
+     * Precio sin descuento
+     * @return 
+     */
+    public Float getProductoPrecioSinDesc(){
+        Float costo = this.getPrecio_costo();
+        Float ganancia = costo * (this.getPorcentaje_ganancia() / 100f);
+        Float result =  costo + ganancia  ;
+        return result;
+    }
     
-        
 }
