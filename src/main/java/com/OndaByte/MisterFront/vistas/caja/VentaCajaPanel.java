@@ -6,34 +6,23 @@ import com.OndaByte.MisterFront.controladores.ProductoController;
 import com.OndaByte.MisterFront.estilos.MisEstilos;
 import com.OndaByte.MisterFront.modelos.ItemVenta;
 import com.OndaByte.MisterFront.modelos.Producto;
+import com.OndaByte.MisterFront.sesion.SesionController;
 import com.OndaByte.MisterFront.vistas.DatosListener;
 import com.OndaByte.MisterFront.vistas.util.Dialogos;
 import com.OndaByte.MisterFront.vistas.util.Paginado;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
+import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import com.OndaByte.MisterFront.vistas.util.IconSVG;
 import com.formdev.flatlaf.FlatClientProperties;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.util.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
 import net.miginfocom.swing.MigLayout;
 
 public class VentaCajaPanel extends JPanel {
@@ -54,6 +43,7 @@ public class VentaCajaPanel extends JPanel {
 
     private MovimientoController cajaController;
     private ProductoController productoController;
+    HashSet<String> permisos = null;
 
     private JPanel izquierda, derecha;
     
@@ -61,6 +51,7 @@ public class VentaCajaPanel extends JPanel {
     private java.util.Timer timer;
 
     public VentaCajaPanel(String nombre) {
+        this.permisos = (HashSet<String>) SesionController.getInstance().getSesionPermisos();
         this.nombre = nombre;
         this.total = 0f;
         this.subtotal = 0f;
@@ -156,7 +147,10 @@ public class VentaCajaPanel extends JPanel {
 
         JLabel lblDescuentoExtra = new JLabel("Descuento (%):");
         lblDescuentoExtra.setFont(new Font("Courier New", Font.PLAIN, 14));
-        spinnerDescuentoExtra = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        if(spinnerDescuentoExtra == null){
+            spinnerDescuentoExtra = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        }
+        setVisibleByPermisos(spinnerDescuentoExtra, "DESC_EXTRA");
         spinnerDescuentoExtra.addChangeListener(e -> actualizarTotales());
 
         lblTotal = new JLabel("Total: $0.00");
@@ -181,6 +175,11 @@ public class VentaCajaPanel extends JPanel {
 
         derecha.add(scrollCarrito, "grow, wrap");
         derecha.add(resumenPanel, "growx");
+    }
+
+    private void setVisibleByPermisos(JComponent c, String permiso){
+        c.setVisible(permisos.contains(permiso));
+        c.setVisible(true);
     }
 
     private void actualizarTotales(){
@@ -259,6 +258,7 @@ public class VentaCajaPanel extends JPanel {
 
         // Spinner cantidad
         JSpinner spinnerCantidad = new JSpinner(new SpinnerNumberModel(1, 1, stock, 1));
+        setVisibleByPermisos(spinnerCantidad, "DESCUENTO_UNITARIO");
 
         // Spinner descuento (%)
         JSpinner spinnerDescuento = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
