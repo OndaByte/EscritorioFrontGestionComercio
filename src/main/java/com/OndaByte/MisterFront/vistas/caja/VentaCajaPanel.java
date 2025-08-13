@@ -227,14 +227,6 @@ public class VentaCajaPanel extends JPanel {
         JLabel lblSubtotal;
         float precioUnitario;
     }
-
-    private Float getProductoPrecioUnitario(Producto p){
-        Float costo = p.getPrecio_costo();
-        Float ganancia = costo * (p.getPorcentaje_ganancia() / 100f);
-        Float descuento = costo * (p.getPorcentaje_descuento() / 100f);
-        Float result =  costo + ganancia - descuento ;
-        return result;
-    }
     
     private void agregarAlCarrito(Producto p) {
         float precioUnitario = getProductoPrecioUnitario(p);
