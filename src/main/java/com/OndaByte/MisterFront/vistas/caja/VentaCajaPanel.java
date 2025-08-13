@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.event.ChangeListener;
 import com.OndaByte.MisterFront.vistas.util.IconSVG;
-import static com.OndaByte.MisterFront.vistas.util.ProductoUtils.getProductoPrecioUnitario;
 import com.formdev.flatlaf.FlatClientProperties;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -353,7 +352,7 @@ public class VentaCajaPanel extends JPanel {
             btnAgregar.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
             btnAgregar.addActionListener(e -> {
-                agregarAlCarrito(productos);
+                agregarAlCarrito(p);
             });
 
             // Agregar componentes a la fila
