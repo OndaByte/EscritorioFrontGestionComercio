@@ -179,8 +179,8 @@ public class VentaCajaPanel extends JPanel {
         resumenPanel.add(lblDescuentoExtra);
         resumenPanel.add(spinnerDescuentoExtra, "wrap");
         resumenPanel.add(lblTotal, "span, wrap");
-        resumenPanel.add(btnCobrar, "span, growx");
-        resumenPanel.add(btnCancelar, "span, growx");
+        resumenPanel.add(btnCancelar, "spany 3, growy, growx");
+        resumenPanel.add(btnCobrar, "spany 3, span, growy, growx");
 
         derecha.add(scrollCarrito, "grow, wrap");
         derecha.add(resumenPanel, "growx");
