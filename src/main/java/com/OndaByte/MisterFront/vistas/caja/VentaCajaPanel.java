@@ -95,6 +95,7 @@ public class VentaCajaPanel extends JPanel {
             }
         });
     }
+
     /**
      * Renderiza de nuevo los elementos de la tabla y paginado con el filtro actual. 
      */
@@ -181,6 +182,7 @@ public class VentaCajaPanel extends JPanel {
         derecha.add(scrollCarrito, "grow, wrap");
         derecha.add(resumenPanel, "growx");
     }
+
     private void actualizarTotales(){
         // Aplicar descuento extra
         int descuentoExtra = (int) spinnerDescuentoExtra.getValue();
