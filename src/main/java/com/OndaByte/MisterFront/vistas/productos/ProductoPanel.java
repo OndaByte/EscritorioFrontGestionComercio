@@ -380,7 +380,7 @@ public class ProductoPanel extends JPanel {
         List<Object[]> rows = new ArrayList<>();
         for (int i = 0; i < productos.size(); i++) {
             Producto p = (Producto) productos.get(i);
-            rows.add(new Object[]{p.getNombre(),p.getPrecio(),p.getStock(), p.getUltMod()});
+            rows.add(new Object[]{p.getNombre(),p.getProductoPrecioUnitario(),p.getStock(), p.getUltMod()});
         }
         return rows;
     }
