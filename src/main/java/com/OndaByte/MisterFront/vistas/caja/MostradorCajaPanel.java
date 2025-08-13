@@ -81,18 +81,18 @@ public class MostradorCajaPanel extends JPanel {
 
         // ====== Labels ======
         lblEstadoCaja = new JLabel("CAJA: CERRADA");
-        lblEstadoCaja.setFont(new Font("SansSerif", Font.BOLD, 16));
-        lblEstadoCaja.setOpaque(true);
-        lblEstadoCaja.setBorder(BorderFactory.createEmptyBorder(5, 12, 5, 12));
-        lblEstadoCaja.putClientProperty("JComponent.roundRect", true); // FlatLaf esquinas redondeadas
+        //lblEstadoCaja.setFont(new Font("Courier New", Font.BOLD, 16));
+        //lblEstadoCaja.setOpaque(true);
+        //lblEstadoCaja.setBorder(BorderFactory.createEmptyBorder(5, 12, 5, 12));
+        //lblEstadoCaja.putClientProperty("JComponent.roundRect", true); // FlatLaf esquinas redondeadas
         actualizarEstadoCaja(false); // Estado inicial cerrado
 
         lblOperador = new JLabel("OPERADOR: -");
-        lblOperador.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        lblOperador.setFont(new Font("Courier New", Font.PLAIN, 14));
         lblOperador.setForeground(new Color(90, 90, 90));
 
         lblHoraInicio = new JLabel("INICIO: --:--");
-        lblHoraInicio.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        lblHoraInicio.setFont(new Font("Courier New", Font.PLAIN, 14));
         lblHoraInicio.setForeground(new Color(90, 90, 90));
 
         lblEstadoCaja.putClientProperty("FlatLaf.styleClass", "TopPanel.estado.cerrado");
@@ -121,13 +121,15 @@ public class MostradorCajaPanel extends JPanel {
         if (abierta) {
             lblEstadoCaja.setText("CAJA: ABIERTA");
             lblEstadoCaja.setIcon(new IconSVG(IconSVG.CAJA_ABIERTA, 3));
-            lblEstadoCaja.setBackground(new Color(200, 255, 200)); // verde claro
-            lblEstadoCaja.setForeground(new Color(0, 120, 0));     // verde oscuro
+            MisEstilos.aplicarEstilo(lblEstadoCaja, MisEstilos.CAJA_LABEL_CAJA_ABIERTA);
+            //lblEstadoCaja.setBackground(new Color(200, 255, 200)); // verde claro
+            //lblEstadoCaja.setForeground(new Color(0, 120, 0));     // verde oscuro
         } else {
             lblEstadoCaja.setText("CAJA: CERRADA");
             lblEstadoCaja.setIcon(new IconSVG(IconSVG.CAJA_CERRADA, 3));
-            lblEstadoCaja.setBackground(new Color(255, 220, 220)); // rojo claro
-            lblEstadoCaja.setForeground(new Color(150, 0, 0));     // rojo oscuro
+            MisEstilos.aplicarEstilo(lblEstadoCaja, MisEstilos.CAJA_LABEL_CAJA_CERRADA);
+            //lblEstadoCaja.setBackground(new Color(255, 220, 220)); // rojo claro
+            //lblEstadoCaja.setForeground(new Color(150, 0, 0));     // rojo oscuro
         }
     }
 

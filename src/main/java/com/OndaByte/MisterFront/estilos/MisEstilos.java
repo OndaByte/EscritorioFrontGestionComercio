@@ -101,7 +101,28 @@ public class MisEstilos {
             "arc:15; borderWidth:0; focusWidth:0; innerFocusWidth:0; margin:5,20,5,20; background:$Panel.background";
 
     public static final String PLACEHOLDER_BUSQUEDA = "Buscar...";
-    
+
+
+    //Estilos caja
+    public static final String CAJA_LABEL_CAJA_ABIERTA =
+            "arc:15; "
+                    + "background:$Panel.top.caja.abierta.background"
+                    + "foreground:$Panel.top.caja.abierta.foreground"
+            //+ "borderWidth:0; "
+            //+ "focusWidth:0; "
+            //+ "innerFocusWidth:0; "
+            + "margin:5,20,5,20; ";
+
+
+    public static final String CAJA_LABEL_CAJA_CERRADA =
+            "arc:15; "
+                    + "background:$PanelCaja.caja.cerrada.background"
+                    + "foreground:$PanelCaja.caja.cerrada.foreground"
+                    //+ "borderWidth:0; "
+                    //+ "focusWidth:0; "
+                    //+ "innerFocusWidth:0; "
+                    + "margin:5,20,5,20; ";
+
     // Método para aplicar estilos a un componente
     public static void aplicarEstilo(JComponent componente, String estilo) {
         componente.putClientProperty(FlatClientProperties.STYLE, estilo);
