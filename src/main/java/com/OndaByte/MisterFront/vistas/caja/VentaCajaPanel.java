@@ -212,9 +212,9 @@ public class VentaCajaPanel extends JPanel {
 
         // Aplicar descuento extra
         int descuentoExtra = (int) spinnerDescuentoExtra.getValue();
-        float totalConExtra = subtotal * (1 - descuentoExtra / 100f);
+        total = subtotal * (1 - descuentoExtra / 100f);
 
-        lblTotal.setText("Total: $" + String.format("%.2f", totalConExtra));
+        lblTotal.setText("Total: $" + String.format("%.2f", total));
     }
 
     public String getNombre() {
@@ -419,9 +419,9 @@ public class VentaCajaPanel extends JPanel {
             iv.setNombre(nombre);
             iv.setCantidad((int) fc.spinnerCantidad.getValue());
             iv.setPorcentaje_descuento((int) fc.spinnerDescuento.getValue());
-            iv.setSubtotal(Float.valueOf(fc.lblSubtotal.getText()));
+            iv.setSubtotal(Float.valueOf(fc.lblSubtotal.getText().replace(",", ".")));
         }
-        VentaCajaModal modal = new VentaCajaModal(MiFrame.getInstance());//itemsR, o.getId(), c
+        VentaCajaModal modal = new VentaCajaModal(MiFrame.getInstance(),subtotal,total,(int) spinnerDescuentoExtra.getValue());//itemsR, o.getId(), c
         modal.setVisible(true); // bloquea el thread hasta que es cerrado
         filtro = "";
 //        pagina = 1;
