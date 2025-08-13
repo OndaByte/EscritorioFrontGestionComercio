@@ -231,27 +231,22 @@ public class VentaCajaPanel extends JPanel {
     private void agregarAlCarrito(Producto p) {
         float precioUnitario = p.getProductoPrecioUnitario();
         String producto = p.getNombre();
-        int unidades;
-        int stock;
+        int unidades = 1;
+        int stock = p.getStock();
 
         // Si ya existe → actualizamos cantidad
         if (mapaCarrito.containsKey(producto)) {
             FilaCarrito filaExistente = mapaCarrito.get(p.getNombre());
             unidades = (int) filaExistente.spinnerCantidad.getValue();
-            stock = p.getStock();
-            if(stock>0){
-                filaExistente.spinnerCantidad.setValue(unidades + 1);
+            if(stock>unidades){
                 unidades++;
-                stock--;
+                //stock--;
+                filaExistente.spinnerCantidad.setValue(unidades);
             }
             return;
         }
-        else{
-            unidades = 1;
-            stock = p.getStock()-1;
-        }
-        int stockTotal = unidades + stock;
-        p.setStock(stockTotal-unidades);
+        //int stockTotal = unidades + stock;
+        //p.setStock(stockTotal-unidades);
 
         // Panel contenedor de la fila (para todo el bloque de info)
         JPanel contenedorFila = new JPanel(new MigLayout("fillx, insets 5", "[grow][100!]10[60!]10[40!]"));
@@ -263,7 +258,7 @@ public class VentaCajaPanel extends JPanel {
         JLabel lblDesc = new JLabel("Descuento (%):");
 
         // Spinner cantidad
-        JSpinner spinnerCantidad = new JSpinner(new SpinnerNumberModel(1, 1, stockTotal, 1));
+        JSpinner spinnerCantidad = new JSpinner(new SpinnerNumberModel(1, 1, stock, 1));
 
         // Spinner descuento (%)
         JSpinner spinnerDescuento = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
@@ -287,7 +282,7 @@ public class VentaCajaPanel extends JPanel {
         // Listeners para recalcular subtotal
         ChangeListener recalcular = e -> {
             int cant = (int) spinnerCantidad.getValue();
-            p.setStock(stockTotal-cant);
+            //p.setStock(stockTotal-cant);
             int desc = (int) spinnerDescuento.getValue();
             float subtotal = precioUnitario * cant * (1 - desc / 100f);
             lblSubtotal.setText(String.format("%.2f", subtotal));
@@ -302,6 +297,7 @@ public class VentaCajaPanel extends JPanel {
             carritoPanel.revalidate();
             carritoPanel.repaint();
             mapaCarrito.remove(producto);
+            //p.setStock(stockTotal);
             actualizarSubTotales();
         });
 
