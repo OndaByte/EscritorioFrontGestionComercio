@@ -145,12 +145,14 @@ public class MovimientoController {
         }
     }
 
-    public void abrirCaja(DatosListener<String> listener) {
-        Caja aux = new Caja();
-        JSONObject res = MovimientoService.abrir();
+    public void abrirCaja(Float montoI, DatosListener<String> listener) {
+        JSONObject res = MovimientoService.abrir(montoI);
         if (res.getInt("status") == 201) {
+            Caja aux = new Caja();
             aux.setId((new JSONObject(res.getString("data"))).getInt("id"));
             SesionController.getInstance().setSesionCaja(aux);
+            listener.onSuccess(res.optString("mensaje"));
+
         } else {
             listener.onError(res.optString("mensaje"));
         }
@@ -161,6 +163,8 @@ public class MovimientoController {
         JSONObject res = MovimientoService.cerrar();
         if (res.getInt("status") == 201) {
             SesionController.getInstance().setSesionCaja(null);
+            listener.onSuccess(res.optString("mensaje"));
+
         } else {
             listener.onError(res.optString("mensaje"));
         }

@@ -25,7 +25,8 @@ public class Caja {
     private String cajero_id;
 //    @JsonProperty("caja_id")
 //    private String caja_id; 
-//   
+//   Las SesionesCaja son Cajas en este entorno.
+    
     public Caja() {}    
 
     public Integer getId() {

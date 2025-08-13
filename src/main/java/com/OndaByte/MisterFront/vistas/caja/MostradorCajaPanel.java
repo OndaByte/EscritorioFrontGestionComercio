@@ -44,7 +44,6 @@ public class MostradorCajaPanel extends JPanel {
         initTopPanel();
         initCenterPanel();
         initBottomPanel();
-        agregarNuevoPanelVenta(); // inicializamos con venta abierta al abrir caja 
         this.add(topPanel, BorderLayout.NORTH);
         this.add(centerPanel, BorderLayout.CENTER);
         this.add(bottomPanel, BorderLayout.SOUTH);
@@ -85,7 +84,8 @@ public class MostradorCajaPanel extends JPanel {
         lblEstadoCaja.setOpaque(true);
         lblEstadoCaja.setBorder(BorderFactory.createEmptyBorder(5, 12, 5, 12));
         lblEstadoCaja.putClientProperty("JComponent.roundRect", true); // FlatLaf esquinas redondeadas
-        actualizarEstadoCaja(false); // Estado inicial cerrado
+        
+        actualizarEstadoCaja(SesionController.getInstance().getSesionCaja() != null); 
 
         lblOperador = new JLabel("OPERADOR: -");
         lblOperador.setFont(new Font("SansSerif", Font.PLAIN, 14));
@@ -139,6 +139,7 @@ public class MostradorCajaPanel extends JPanel {
         if(btnNuevaVenta==null){
             btnNuevaVenta = new JButton("+ Nueva Venta");
         }
+        btnNuevaVenta.setEnabled(SesionController.getInstance().getSesionCaja() != null);
         setVisibleByPermisos(btnNuevaVenta,"VENTA_ALTA");
         btnNuevaVenta.addActionListener(e -> agregarNuevoPanelVenta());
         centerPanel.add(btnNuevaVenta, BorderLayout.NORTH);
@@ -171,19 +172,20 @@ public class MostradorCajaPanel extends JPanel {
         if (SesionController.getInstance().getSesionCaja() == null) {
             String input = Dialogos.mostrarInput("Ingrese monto inicial de la caja:");
             try {
-                actualizarEstadoCaja(true);
                 //lblEstadoCaja.setForeground(new Color(0, 150, 0));
                 float montoInicial = Float.parseFloat(input);
-                DatosListener listener = new DatosListener<String>() {
+                this.cajaController.abrirCaja(montoInicial, new DatosListener<String>() {
                     @Override
                     public void onSuccess(String datos) {
-                        Dialogos.mostrarExito("Lógica, permitir vender bboton ahabilitar ");
-
                         lblEstadoCaja.setText("CAJA: ABIERTA");
                         btnAbrirCerrarCaja.setText("CERRAR CAJA");
                         setVisibleByPermisos(btnAbrirCerrarCaja,"CERRAR_CAJA");
                         lblHoraInicio.setText("INICIO: " + java.time.LocalTime.now().withNano(0));
                         lblEstadoOperacion.setText("ESTADO: operativa");
+                        btnNuevaVenta.setEnabled(true);
+                        actualizarEstadoCaja(true);
+                        Dialogos.mostrarExito(datos);
+                        agregarNuevoPanelVenta();
                     }
 
                     @Override
@@ -195,36 +197,39 @@ public class MostradorCajaPanel extends JPanel {
                     public void onSuccess(String datos, Paginado p) {
                         //     throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
                     }
-                };
-      //         this.cajaController.abrirCaja(montoInicial, listener);
-
+                });
+               
             } catch (NumberFormatException ex) {
                 Dialogos.mostrarError("Monto inválido");
             }
 
         } else {
-            Dialogos.confirmar("¿Esta seguro que quiere cerrar la caja?", "CERRAR CAJA");
-       //     this.cajaController.cerrarCaja(new DatosListener<String>() {
-//                @Override
-//                public void onSuccess(String datos) {
-//                    Dialogos.mostrarExito("Lógica, permitir vender bboton ahabilitar ");
-//
-//                    lblEstadoCaja.setText("CAJA: ABIERTA");
-//                    btnAbrirCerrarCaja.setText("CERRAR CAJA");
-//                    lblHoraInicio.setText("INICIO: " + java.time.LocalTime.now().withNano(0));
-//                    lblEstadoOperacion.setText("ESTADO: operativa");
-//                }
-//
-//                @Override
-//                public void onError(String mensajeError) {
-//                    Dialogos.mostrarError(mensajeError);
-//                }
-//
-//                @Override
-//                public void onSuccess(String datos, Paginado p) {
-//                    //     throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-//                }
-//            });
+            boolean confirmacion = Dialogos.confirmar("¿Esta seguro que quiere cerrar la caja?", "CERRAR CAJA");
+            if(confirmacion){
+                this.cajaController.cerrarCaja(new DatosListener<String>() {
+                    @Override
+                    public void onSuccess(String datos) {
+                        lblEstadoCaja.setText("CAJA: CERRADa");
+                        btnAbrirCerrarCaja.setText("ABRIR CAJA");
+                        lblHoraInicio.setText("INICIO: --:--");
+                        lblEstadoOperacion.setText("ESTADO: operativa");
+                        btnNuevaVenta.setEnabled(false);
+                        actualizarEstadoCaja(false);
+                        Dialogos.mostrarExito(datos);
+                        tabbedPane.removeAll();
+                    }
+
+                    @Override
+                    public void onError(String mensajeError) {
+                        Dialogos.mostrarError(mensajeError);
+                    }
+
+                    @Override
+                    public void onSuccess(String datos, Paginado p) {
+                        //     throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                    }
+                });
+            }
         }
     }
 }
