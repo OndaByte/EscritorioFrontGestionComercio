@@ -8,6 +8,7 @@ import com.OndaByte.MisterFront.modelos.ItemVenta;
 import com.OndaByte.MisterFront.modelos.Producto;
 import com.OndaByte.MisterFront.sesion.SesionController;
 import com.OndaByte.MisterFront.vistas.DatosListener;
+import com.OndaByte.MisterFront.vistas.MiFrame;
 import com.OndaByte.MisterFront.vistas.util.Dialogos;
 import com.OndaByte.MisterFront.vistas.util.Paginado;
 
@@ -91,7 +92,6 @@ public class VentaCajaPanel extends JPanel {
      * Renderiza de nuevo los elementos de la tabla y paginado con el filtro actual. 
      */
     private void reload(){
-
         productoController.filtrar(filtro,"" + 1, "" + 1000, new DatosListener<List<Producto>>(){
             @Override
             public void onSuccess(List<Producto> datos) {
@@ -165,7 +165,10 @@ public class VentaCajaPanel extends JPanel {
                 tabbedPane.remove(index);
             }
         });
-
+        
+        btnCobrar.addActionListener(e -> {
+            vender();
+        });
         resumenPanel.add(lblSubtotal);
         resumenPanel.add(lblDescuentoExtra);
         resumenPanel.add(spinnerDescuentoExtra, "wrap");
@@ -405,6 +408,25 @@ public class VentaCajaPanel extends JPanel {
 
         carritoPanel.revalidate();
         carritoPanel.repaint();
+    }
+    private void vender(){
+        
+        ArrayList<String> productos = new ArrayList<>(mapaCarrito.keySet());
+        
+        for (String nombre : productos){
+            FilaCarrito fc = mapaCarrito.get(nombre);
+            ItemVenta iv = new ItemVenta();
+            iv.setNombre(nombre);
+            iv.setCantidad((int) fc.spinnerCantidad.getValue());
+            iv.setPorcentaje_descuento((int) fc.spinnerDescuento.getValue());
+            iv.setSubtotal(Float.valueOf(fc.lblSubtotal.getText()));
+        }
+        VentaCajaModal modal = new VentaCajaModal(MiFrame.getInstance());//itemsR, o.getId(), c
+        modal.setVisible(true); // bloquea el thread hasta que es cerrado
+        filtro = "";
+//        pagina = 1;
+        reload();
+        //cancelar venta.doclick();
     }
 
 }

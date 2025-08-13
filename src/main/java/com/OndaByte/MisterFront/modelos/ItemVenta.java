@@ -23,7 +23,7 @@ public class ItemVenta {
     @JsonProperty("cantidad") 
     private Integer cantidad;
     @JsonProperty("porcentaje_descuento") 
-    private Float porcentaje_descuento;
+    private Integer porcentaje_descuento;
     @JsonProperty("subtotal") 
     private Float subtotal;
 
@@ -67,11 +67,11 @@ public class ItemVenta {
         this.cantidad = cantidad;
     }
 
-    public Float getPorcentaje_descuento() {
+    public Integer getPorcentaje_descuento() {
         return porcentaje_descuento;
     }
 
-    public void setPorcentaje_descuento(Float porcentaje_descuento) {
+    public void setPorcentaje_descuento(Integer porcentaje_descuento) {
         this.porcentaje_descuento = porcentaje_descuento;
     }
 
