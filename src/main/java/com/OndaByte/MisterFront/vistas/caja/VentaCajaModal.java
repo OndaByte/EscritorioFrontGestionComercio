@@ -2,6 +2,8 @@
 package com.OndaByte.MisterFront.vistas.caja;
 
 import com.OndaByte.MisterFront.modelos.Cliente;
+import net.miginfocom.swing.MigLayout;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -20,6 +22,8 @@ public class VentaCajaModal extends JDialog {
     private JTextArea observaciones;
     private JButton btnConfirmar, btnCancelar;
 
+
+    /*
     public VentaCajaModal(JFrame parent) {
         super(parent, "Confirmar Venta", true);
         setSize(400, 300);
@@ -52,6 +56,41 @@ public class VentaCajaModal extends JDialog {
 
         add(mainPanel);
     }
+     */
+
+    public VentaCajaModal(JFrame parent) {
+        super(parent, "Confirmar Venta", true);
+        setSize(400, 300);
+        setLocationRelativeTo(parent);
+
+        formaPagoCombo = new JComboBox<>(new String[]{"EFECTIVO", "DÉBITO", "CRÉDITO", "TRANSFERENCIA"});
+        clienteCombo = new JComboBox<>(); // rellenar con datos reales
+        observaciones = new JTextArea(4, 20);
+        btnConfirmar = new JButton("Confirmar");
+        btnCancelar = new JButton("Cancelar");
+
+        // Panel principal con MigLayout
+        JPanel mainPanel = new JPanel(new MigLayout("wrap 2, insets 10","[right][grow, fill]", ""));
+
+        // Primera fila: Cliente
+        mainPanel.add(new JLabel("Cliente:"));
+        mainPanel.add(clienteCombo);
+
+        // Segunda fila: Forma de pago
+        mainPanel.add(new JLabel("Forma de pago:"));
+        mainPanel.add(formaPagoCombo);
+
+        // Tercera fila: Observaciones (etiqueta y campo ocupando 2 columnas)
+        mainPanel.add(new JLabel("Observaciones:"), "span 2");
+        mainPanel.add(new JScrollPane(observaciones), "span 2, grow, h 80!");
+
+        // Cuarta fila: Botones
+        mainPanel.add(btnCancelar, "right");
+        mainPanel.add(btnConfirmar, "left");
+
+        add(mainPanel);
+    }
+
 
     // Getters para recuperar datos seleccionados
     public Cliente getCliente() { return (Cliente) clienteCombo.getSelectedItem(); }

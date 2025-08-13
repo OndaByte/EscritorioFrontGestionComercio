@@ -51,29 +51,6 @@ public class MostradorCajaPanel extends JPanel {
     }
 
 
-    /*
-    private void initTopPanel() {
-        topPanel = new JPanel(new MigLayout("insets 10, fillx", "[][grow][]20[][]"));
-        //Labels
-        lblEstadoCaja = new JLabel("CAJA: CERRADA");
-        lblEstadoCaja.putClientProperty("FlatLaf.styleClass", "estado.abierto");
-
-        lblOperador = new JLabel("OPERADOR: -");
-        lblHoraInicio = new JLabel("INICIO: --:--");
-
-        if(btnAbrirCerrarCaja==null){
-            btnAbrirCerrarCaja = new JButton("ABRIR CAJA");
-        }
-        setVisibleByPermisos(btnAbrirCerrarCaja,"ABRIR_CAJA");
-        btnAbrirCerrarCaja.addActionListener(e -> abrirCerrarCaja());
-
-        topPanel.add(lblEstadoCaja);
-        topPanel.add(lblOperador, "center");
-        topPanel.add(lblHoraInicio, "left, growx");
-        topPanel.add(btnAbrirCerrarCaja, "left");
-    }
-
-     */
 
     private void initTopPanel() {
         topPanel = new JPanel(new MigLayout("insets 10, fillx", "[][grow][]20[][]"));
