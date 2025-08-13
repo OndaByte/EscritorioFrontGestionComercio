@@ -92,7 +92,11 @@ public class MovimientoService {
     }
     
 
-    public static JSONObject abrir(){ return enviarRequest("/p/e/caja/1","POST",null); }
+    public static JSONObject abrir(Float montoI){
+        JSONObject jo = new JSONObject();
+        jo.put("monto", montoI);
+        return enviarRequest("/p/e/caja/1","POST",jo); 
+    }
 
     public static JSONObject cerrar(){ return enviarRequest("/p/e/caja/1","PUT",null); }
 }

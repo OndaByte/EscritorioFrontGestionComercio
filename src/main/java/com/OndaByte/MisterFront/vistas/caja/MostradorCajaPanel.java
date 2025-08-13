@@ -44,7 +44,6 @@ public class MostradorCajaPanel extends JPanel {
         initTopPanel();
         initCenterPanel();
         initBottomPanel();
-        agregarNuevoPanelVenta(); // inicializamos con venta abierta al abrir caja 
         this.add(topPanel, BorderLayout.NORTH);
         this.add(centerPanel, BorderLayout.CENTER);
         this.add(bottomPanel, BorderLayout.SOUTH);
@@ -81,18 +80,19 @@ public class MostradorCajaPanel extends JPanel {
 
         // ====== Labels ======
         lblEstadoCaja = new JLabel("CAJA: CERRADA");
-        //lblEstadoCaja.setFont(new Font("Courier New", Font.BOLD, 16));
-        //lblEstadoCaja.setOpaque(true);
-        //lblEstadoCaja.setBorder(BorderFactory.createEmptyBorder(5, 12, 5, 12));
-        //lblEstadoCaja.putClientProperty("JComponent.roundRect", true); // FlatLaf esquinas redondeadas
-        actualizarEstadoCaja(false); // Estado inicial cerrado
+        lblEstadoCaja.setFont(new Font("SansSerif", Font.BOLD, 16));
+        lblEstadoCaja.setOpaque(true);
+        lblEstadoCaja.setBorder(BorderFactory.createEmptyBorder(5, 12, 5, 12));
+        lblEstadoCaja.putClientProperty("JComponent.roundRect", true); // FlatLaf esquinas redondeadas
+        
+        actualizarEstadoCaja(SesionController.getInstance().getSesionCaja() != null); 
 
         lblOperador = new JLabel("OPERADOR: -");
-        lblOperador.setFont(new Font("Courier New", Font.PLAIN, 14));
+        lblOperador.setFont(new Font("SansSerif", Font.PLAIN, 14));
         lblOperador.setForeground(new Color(90, 90, 90));
 
         lblHoraInicio = new JLabel("INICIO: --:--");
-        lblHoraInicio.setFont(new Font("Courier New", Font.PLAIN, 14));
+        lblHoraInicio.setFont(new Font("SansSerif", Font.PLAIN, 14));
         lblHoraInicio.setForeground(new Color(90, 90, 90));
 
         lblEstadoCaja.putClientProperty("FlatLaf.styleClass", "TopPanel.estado.cerrado");
@@ -121,15 +121,13 @@ public class MostradorCajaPanel extends JPanel {
         if (abierta) {
             lblEstadoCaja.setText("CAJA: ABIERTA");
             lblEstadoCaja.setIcon(new IconSVG(IconSVG.CAJA_ABIERTA, 3));
-            MisEstilos.aplicarEstilo(lblEstadoCaja, MisEstilos.CAJA_LABEL_CAJA_ABIERTA);
-            //lblEstadoCaja.setBackground(new Color(200, 255, 200)); // verde claro
-            //lblEstadoCaja.setForeground(new Color(0, 120, 0));     // verde oscuro
+            lblEstadoCaja.setBackground(new Color(200, 255, 200)); // verde claro
+            lblEstadoCaja.setForeground(new Color(0, 120, 0));     // verde oscuro
         } else {
             lblEstadoCaja.setText("CAJA: CERRADA");
             lblEstadoCaja.setIcon(new IconSVG(IconSVG.CAJA_CERRADA, 3));
-            MisEstilos.aplicarEstilo(lblEstadoCaja, MisEstilos.CAJA_LABEL_CAJA_CERRADA);
-            //lblEstadoCaja.setBackground(new Color(255, 220, 220)); // rojo claro
-            //lblEstadoCaja.setForeground(new Color(150, 0, 0));     // rojo oscuro
+            lblEstadoCaja.setBackground(new Color(255, 220, 220)); // rojo claro
+            lblEstadoCaja.setForeground(new Color(150, 0, 0));     // rojo oscuro
         }
     }
 
@@ -141,6 +139,7 @@ public class MostradorCajaPanel extends JPanel {
         if(btnNuevaVenta==null){
             btnNuevaVenta = new JButton("+ Nueva Venta");
         }
+        btnNuevaVenta.setEnabled(SesionController.getInstance().getSesionCaja() != null);
         setVisibleByPermisos(btnNuevaVenta,"VENTA_ALTA");
         btnNuevaVenta.addActionListener(e -> agregarNuevoPanelVenta());
         centerPanel.add(btnNuevaVenta, BorderLayout.NORTH);
@@ -173,19 +172,20 @@ public class MostradorCajaPanel extends JPanel {
         if (SesionController.getInstance().getSesionCaja() == null) {
             String input = Dialogos.mostrarInput("Ingrese monto inicial de la caja:");
             try {
-                actualizarEstadoCaja(true);
                 //lblEstadoCaja.setForeground(new Color(0, 150, 0));
                 float montoInicial = Float.parseFloat(input);
-                DatosListener listener = new DatosListener<String>() {
+                this.cajaController.abrirCaja(montoInicial, new DatosListener<String>() {
                     @Override
                     public void onSuccess(String datos) {
-                        Dialogos.mostrarExito("Lógica, permitir vender bboton ahabilitar ");
-
                         lblEstadoCaja.setText("CAJA: ABIERTA");
                         btnAbrirCerrarCaja.setText("CERRAR CAJA");
                         setVisibleByPermisos(btnAbrirCerrarCaja,"CERRAR_CAJA");
                         lblHoraInicio.setText("INICIO: " + java.time.LocalTime.now().withNano(0));
                         lblEstadoOperacion.setText("ESTADO: operativa");
+                        btnNuevaVenta.setEnabled(true);
+                        actualizarEstadoCaja(true);
+                        Dialogos.mostrarExito(datos);
+                        agregarNuevoPanelVenta();
                     }
 
                     @Override
@@ -197,36 +197,39 @@ public class MostradorCajaPanel extends JPanel {
                     public void onSuccess(String datos, Paginado p) {
                         //     throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
                     }
-                };
-      //         this.cajaController.abrirCaja(montoInicial, listener);
-
+                });
+               
             } catch (NumberFormatException ex) {
                 Dialogos.mostrarError("Monto inválido");
             }
 
         } else {
-            Dialogos.confirmar("¿Esta seguro que quiere cerrar la caja?", "CERRAR CAJA");
-       //     this.cajaController.cerrarCaja(new DatosListener<String>() {
-//                @Override
-//                public void onSuccess(String datos) {
-//                    Dialogos.mostrarExito("Lógica, permitir vender bboton ahabilitar ");
-//
-//                    lblEstadoCaja.setText("CAJA: ABIERTA");
-//                    btnAbrirCerrarCaja.setText("CERRAR CAJA");
-//                    lblHoraInicio.setText("INICIO: " + java.time.LocalTime.now().withNano(0));
-//                    lblEstadoOperacion.setText("ESTADO: operativa");
-//                }
-//
-//                @Override
-//                public void onError(String mensajeError) {
-//                    Dialogos.mostrarError(mensajeError);
-//                }
-//
-//                @Override
-//                public void onSuccess(String datos, Paginado p) {
-//                    //     throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-//                }
-//            });
+            boolean confirmacion = Dialogos.confirmar("¿Esta seguro que quiere cerrar la caja?", "CERRAR CAJA");
+            if(confirmacion){
+                this.cajaController.cerrarCaja(new DatosListener<String>() {
+                    @Override
+                    public void onSuccess(String datos) {
+                        lblEstadoCaja.setText("CAJA: CERRADa");
+                        btnAbrirCerrarCaja.setText("ABRIR CAJA");
+                        lblHoraInicio.setText("INICIO: --:--");
+                        lblEstadoOperacion.setText("ESTADO: operativa");
+                        btnNuevaVenta.setEnabled(false);
+                        actualizarEstadoCaja(false);
+                        Dialogos.mostrarExito(datos);
+                        tabbedPane.removeAll();
+                    }
+
+                    @Override
+                    public void onError(String mensajeError) {
+                        Dialogos.mostrarError(mensajeError);
+                    }
+
+                    @Override
+                    public void onSuccess(String datos, Paginado p) {
+                        //     throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                    }
+                });
+            }
         }
     }
 }

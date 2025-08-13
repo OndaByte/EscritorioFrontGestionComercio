@@ -14,13 +14,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-public class ModalCajaVenta extends JDialog {
+public class VentaCajaModal extends JDialog {
     private JComboBox<String> formaPagoCombo;
     private JComboBox<Cliente> clienteCombo;
     private JTextArea observaciones;
     private JButton btnConfirmar, btnCancelar;
 
-    public ModalCajaVenta(JFrame parent) {
+    public VentaCajaModal(JFrame parent) {
         super(parent, "Confirmar Venta", true);
         setSize(400, 300);
         setLocationRelativeTo(parent);
