@@ -63,7 +63,7 @@ public class MiFrame extends JFrame {
         });
         miFrame.setSize(new Dimension(1366, 768));
         miFrame.setLocationRelativeTo(null);
-        init(true);
+        init(false);
         miFrame.setVisible(true);
     }
 
