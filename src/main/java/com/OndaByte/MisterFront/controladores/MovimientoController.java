@@ -1,7 +1,9 @@
 package com.OndaByte.MisterFront.controladores;
 
 import com.OndaByte.MisterFront.modelos.Caja;
+import com.OndaByte.MisterFront.modelos.ItemVenta;
 import com.OndaByte.MisterFront.modelos.Movimiento;
+import com.OndaByte.MisterFront.modelos.Venta;
 import com.OndaByte.MisterFront.servicios.MovimientoService;
 import com.OndaByte.MisterFront.sesion.SesionController;
 import com.OndaByte.MisterFront.vistas.DatosListener;
@@ -87,6 +89,20 @@ public class MovimientoController {
         }
     }
 
+    /**
+     * Crea un nuevo remito.
+     */
+    public boolean crearVenta(Venta venta, List<ItemVenta> items, DatosListener<String> listener) {
+        JSONObject res = MovimientoService.crearVenta(venta,items);
+        if (res.getInt("status") == 201) {
+            listener.onSuccess(res.optString("mensaje"));
+            return true;
+        } else {
+            listener.onError(res.optString("mensaje"));
+            return false;
+        }
+    }
+    
     /**
      * Crea un nuevo remito.
      */

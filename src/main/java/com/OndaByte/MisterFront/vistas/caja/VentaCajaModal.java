@@ -1,13 +1,17 @@
 package com.OndaByte.MisterFront.vistas.caja;
 
+import com.OndaByte.MisterFront.controladores.MovimientoController;
 import com.OndaByte.MisterFront.modelos.Cliente;
+import com.OndaByte.MisterFront.modelos.ItemVenta;
+import com.OndaByte.MisterFront.modelos.Venta;
+import com.OndaByte.MisterFront.vistas.DatosListener;
+import com.OndaByte.MisterFront.vistas.util.Dialogos;
+import com.OndaByte.MisterFront.vistas.util.Paginado;
 import net.miginfocom.swing.MigLayout;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -30,26 +34,29 @@ public class VentaCajaModal extends JDialog {
     private JLabel lblSubtotalValor;
     private JLabel lblDescValor;
     private JLabel lblTotalValor;
-
-    public VentaCajaModal(JFrame parent, Float subtotal, Float total, Integer porcentaje_descuento) {
+    
+    private Float subtotal,total;
+    private Integer porcentaje_descuento;
+    
+    private List<ItemVenta> items;
+    private MovimientoController cajaController;
+            
+    public VentaCajaModal(JFrame parent, List<ItemVenta> items,  Float subtotal, Float total, Integer porcentaje_descuento) {
         super(parent, "Confirmar Venta", true);
         setSize(460, 420);
         setLocationRelativeTo(parent);
-
+        this.cajaController = MovimientoController.getInstance();
+        
+        this.subtotal=subtotal;
+        this.total=total;
+        this.porcentaje_descuento = porcentaje_descuento;
+        this.items=items;
+        
         formaPagoCombo = new JComboBox<>(new String[]{"EFECTIVO", "DÉBITO", "CRÉDITO", "TRANSFERENCIA"});
         clienteCombo = new JComboBox<>(); // rellenar con datos reales
         observaciones = new JTextArea(4, 20);
         btnConfirmar = new JButton("Confirmar");
         btnCancelar = new JButton("Cancelar");
-
-//        // ===== Formateadores (AR) =====
-//        Locale ar = new Locale("es", "AR");
-//        NumberFormat money = NumberFormat.getCurrencyInstance(ar);
-//        DecimalFormat pct = new DecimalFormat("#0.##' %'");
-
-        // Soporte: si viene 0.10 mostrar 10 %, si viene 10 mostrar 10 %
-//        double pctValue = porcentaje_descuento == null ? 0.0
-//                : (Math.abs(porcentaje_descuento) <= 1.0 ? porcentaje_descuento * 100.0 : porcentaje_descuento);
 
         // ===== Panel principal =====
         JPanel mainPanel = new JPanel(new MigLayout(
@@ -120,21 +127,102 @@ public class VentaCajaModal extends JDialog {
         mainPanel.add(new JLabel("Observaciones:"), "span 2");
         mainPanel.add(new JScrollPane(observaciones), "span 2, grow, h 90!");
 
+        btnConfirmar.addActionListener(e -> {
+            validarYGuardar();
+        });
+
         // Botones
         mainPanel.add(btnCancelar, "right");
         mainPanel.add(btnConfirmar, "left");
 
         add(mainPanel);
     }
+    
+    private void validarYGuardar() {
+        String errores = validarFormulario();
+        if (errores.isEmpty()) {
+            Venta nuevaVenta = this.crearVenta();
+            cajaController.crearVenta(nuevaVenta, items, new DatosListener<String>() {
+                    @Override
+                    public void onSuccess(String datos) {
+                        Dialogos.mostrarExito(datos);
+                    }
 
-    // Getters para recuperar datos seleccionados
-    public Cliente getCliente() { return (Cliente) clienteCombo.getSelectedItem(); }
-    public String getFormaPago() { return (String) formaPagoCombo.getSelectedItem(); }
-    public String getObservaciones() { return observaciones.getText(); }
-    public JButton getBtnConfirmar() { return btnConfirmar; }
-    public JButton getBtnCancelar() { return btnCancelar; }
+                    @Override
+                    public void onError(String mensajeError) {
+                        Dialogos.mostrarError(mensajeError);
+                    }
 
-    public void setClientes(java.util.List<Cliente> clientes) {
-        for (Cliente c : clientes) clienteCombo.addItem(c);
+                    @Override
+                    public void onSuccess(String datos, Paginado p) {
+                        //   throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                    }
+                });                
+            this.dispose();
+        } else {
+            Dialogos.mostrarError(errores);
+        }
     }
+
+ 
+    private Venta crearVenta() {
+        Venta v = new Venta();
+        
+        v.setSubtotal(this.subtotal);
+        v.setPorcentaje_descuento(this.porcentaje_descuento);
+        v.setTotal(this.total);
+        v.setForma_pago((String) formaPagoCombo.getSelectedItem());
+
+        if(observaciones.getText()!= null && !observaciones.getText().isEmpty())
+            v.setObservaciones(observaciones.getText());
+        return v;
+    }
+
+    private String validarFormulario() {
+        StringBuilder errores = new StringBuilder("<html>");
+
+        // cliente
+//        if (clienteCombo.getSelectedItem() == null) {
+//            errores.append("- Debe seleccionar un cliente.<br>");
+//            clienteCombo.setBorder(BorderFactory.createLineBorder(Color.RED));
+//        } else {
+//            clienteCombo.setBorder(null);
+//        }
+
+        // forma de pago
+        if (formaPagoCombo.getSelectedItem() == null) {
+            errores.append("- Debe seleccionar la forma de pago.<br>");
+            formaPagoCombo.setBorder(BorderFactory.createLineBorder(Color.RED));
+        } else {
+            formaPagoCombo.setBorder(null);
+        }
+
+        // items
+        if (items == null || items.isEmpty()) {
+            errores.append("- Debe agregar al menos un ítem a la venta.<br>");
+        }
+
+        // importes (consistencia básica)
+        if (subtotal < 0f) errores.append("- El subtotal no puede ser negativo.<br>");
+        if (total < 0f) errores.append("- El total no puede ser negativo.<br>");
+        if (porcentaje_descuento < 0 || porcentaje_descuento > 100)
+            errores.append("- El porcentaje de descuento debe estar entre 0 y 100.<br>");
+
+        if (errores.length() > 6) { // hay errores
+            errores.append("</html>");
+            return errores.toString();
+        }
+        return "";
+    }
+    
+//    Getters para recuperar datos seleccionados
+//    public Cliente getCliente() { return (Cliente) clienteCombo.getSelectedItem(); }
+//    public String getFormaPago() { return (String) formaPagoCombo.getSelectedItem(); }
+//    public String getObservaciones() { return observaciones.getText(); }
+//    public JButton getBtnConfirmar() { return btnConfirmar; }
+//    public JButton getBtnCancelar() { return btnCancelar; }
+
+//    public void setClientes(java.util.List<Cliente> clientes) {
+//        for (Cliente c : clientes) clienteCombo.addItem(c);
+//    }
 }

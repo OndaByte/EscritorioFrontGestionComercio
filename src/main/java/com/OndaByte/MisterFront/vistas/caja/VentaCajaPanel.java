@@ -229,6 +229,7 @@ public class VentaCajaPanel extends JPanel {
         JSpinner spinnerDescuento;
         JLabel lblSubtotal;
         float precioUnitario;
+        int producto_id;
     }
     
     private void agregarAlCarrito(Producto p) {
@@ -280,6 +281,7 @@ public class VentaCajaPanel extends JPanel {
         filaCarrito.spinnerDescuento = spinnerDescuento;
         filaCarrito.lblSubtotal = lblSubtotal;
         filaCarrito.precioUnitario = precioUnitario;
+        filaCarrito.producto_id = p.getId();
         mapaCarrito.put(producto, filaCarrito);
 
         // Listeners para recalcular subtotal
@@ -409,10 +411,11 @@ public class VentaCajaPanel extends JPanel {
         carritoPanel.revalidate();
         carritoPanel.repaint();
     }
+    
     private void vender(){
         
         ArrayList<String> productos = new ArrayList<>(mapaCarrito.keySet());
-        
+        ArrayList<ItemVenta> items = new ArrayList<>();
         for (String nombre : productos){
             FilaCarrito fc = mapaCarrito.get(nombre);
             ItemVenta iv = new ItemVenta();
@@ -420,8 +423,10 @@ public class VentaCajaPanel extends JPanel {
             iv.setCantidad((int) fc.spinnerCantidad.getValue());
             iv.setPorcentaje_descuento((int) fc.spinnerDescuento.getValue());
             iv.setSubtotal(Float.valueOf(fc.lblSubtotal.getText().replace(",", ".")));
+            iv.setProducto_id( fc.producto_id );
+            items.add(iv);
         }
-        VentaCajaModal modal = new VentaCajaModal(MiFrame.getInstance(),subtotal,total,(int) spinnerDescuentoExtra.getValue());//itemsR, o.getId(), c
+        VentaCajaModal modal = new VentaCajaModal(MiFrame.getInstance(),items,subtotal,total,(int) spinnerDescuentoExtra.getValue());//itemsR, o.getId(), c
         modal.setVisible(true); // bloquea el thread hasta que es cerrado
         filtro = "";
 //        pagina = 1;
