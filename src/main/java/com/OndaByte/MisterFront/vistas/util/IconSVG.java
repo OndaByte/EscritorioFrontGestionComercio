@@ -13,6 +13,7 @@ public class IconSVG extends FlatSVGIcon{
     public static final String ELIMINAR = "icon/trash.svg";
     public static final String IMPRIMIR = "icon/printer.svg";
     public static final String CANCELAR = "icon/cancel.svg";
+    public static final String COBRAR = "icon/cobrar.svg";
     public static final String ACEPTAR = "icon/aceptar.svg";
     public static final String RECHAZAR = "icon/rechazar.svg";
     public static final String GUARDAR = "icon/floppy-disk.svg";
