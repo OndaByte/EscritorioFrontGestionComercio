@@ -57,6 +57,7 @@ public class MiFrame extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 System.out.println("¡Se está cerrando la ventana!");
+                //logout();
                 dispose();
                 System.exit(0);
             }

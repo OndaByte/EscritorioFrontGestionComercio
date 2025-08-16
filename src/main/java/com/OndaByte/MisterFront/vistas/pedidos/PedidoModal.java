@@ -134,7 +134,6 @@ public class PedidoModal extends JDialog {
             }
 
             private void filtrarCliente() {
-                System.out.println("evento minimanente");
                 JTextField b = pb.getBuscador();
                 if (b.getText().trim().length() > 2) {
                     clienteController.filtrar(b.getText(),
