@@ -5,13 +5,17 @@
 package com.OndaByte.MisterFront.servicios;
 
 import com.OndaByte.MisterFront.modelos.Caja;
+import com.OndaByte.MisterFront.modelos.ItemVenta;
 import com.OndaByte.MisterFront.modelos.Movimiento;
+import com.OndaByte.MisterFront.modelos.Venta;
 import static com.OndaByte.MisterFront.servicios.APIRequest.enviarRequest;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import netscape.javascript.JSException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
@@ -35,6 +39,22 @@ public class MovimientoService {
         return enviarRequest("/p/e/caja/movimiento", "POST", new JSONObject(movimiento));
     }
 
+    /**
+     * Crea un Pedido en la API.
+     */
+    public static JSONObject crearVenta(Venta venta, List<ItemVenta> items) {
+        //hacer json 
+        JSONObject jo = new JSONObject();
+        JSONArray jaItems= new JSONArray();
+        JSONObject ven = new JSONObject(venta);
+
+        for(ItemVenta i : items){
+            jaItems.put(new JSONObject(i));
+        }
+        jo.put("venta",ven);
+        jo.put("items",jaItems);
+        return enviarRequest("/p/e/caja/venta", "POST", jo);
+    }
 
     /**
      * Edita un Pedido en la API.
