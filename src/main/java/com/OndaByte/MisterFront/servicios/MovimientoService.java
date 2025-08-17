@@ -119,4 +119,9 @@ public class MovimientoService {
     }
 
     public static JSONObject cerrar(){ return enviarRequest("/p/e/caja/1","PUT",null); }
+    
+    public static JSONObject ultimaCaja(){ 
+        return enviarRequest("/p/e/ultimaCaja","GET",null); 
+    }
+
 }

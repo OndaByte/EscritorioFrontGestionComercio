@@ -101,19 +101,19 @@ public class MovimientoModal extends JDialog {
         }
     }
 
-private Movimiento crearMovimiento() {
-    String tipo = (String) ((JComboBox<String>) builder.getComponente("comboTipo")).getSelectedItem();
-    String montoText = ((JTextField) builder.getComponente("txtMonto")).getText();
-    String descripcion = ((JTextArea) builder.getComponente("txtDescripcion")).getText();
+    private Movimiento crearMovimiento() {
+        String tipo = (String) ((JComboBox<String>) builder.getComponente("comboTipo")).getSelectedItem();
+        String montoText = ((JTextField) builder.getComponente("txtMonto")).getText();
+        String descripcion = ((JTextArea) builder.getComponente("txtDescripcion")).getText();
 
-    Movimiento m = new Movimiento();
-    m.setSesion_caja_id(SesionController.getInstance().getSesionCaja().getId());
-    m.setTipo_mov(tipo);
-    m.setTotal(Float.parseFloat(montoText));
-    m.setDescripcion(descripcion);
+        Movimiento m = new Movimiento();
+        m.setSesion_caja_id(SesionController.getInstance().getSesionCaja().getId());
+        m.setTipo_mov(tipo);
+        m.setTotal(Float.parseFloat(montoText));
+        m.setDescripcion(descripcion);
 
-    return m;
-}
+        return m;
+    }
 
     private String validarFormulario() {
         StringBuilder errores = new StringBuilder("<html>");
@@ -147,8 +147,7 @@ private Movimiento crearMovimiento() {
         if (!editable) {
             builder.getBtnGuardar().setVisible(false);
         }
-
+        
         this.getContentPane().repaint();
     }
-
 }
