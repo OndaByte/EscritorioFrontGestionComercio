@@ -163,8 +163,8 @@ public class VentaCajaPanel extends JPanel {
 
         lblTotal = new JLabel("Total: $0.00");
         lblTotal.setFont(new Font("Courier New", Font.BOLD, 16));
-        btnCobrar = new JButton("COBRAR");
-        JButton btnCancelar = new JButton("CANCELAR VENTA");
+        btnCobrar = new JButton("COBRAR", new IconSVG(IconSVG.COBRAR));
+        JButton btnCancelar = new JButton("CANCELAR VENTA", new IconSVG(IconSVG.CANCELAR));
 
         btnCancelar.addActionListener(e -> {
             cerrar();

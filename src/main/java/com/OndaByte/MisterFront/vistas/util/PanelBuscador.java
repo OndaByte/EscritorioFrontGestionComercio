@@ -18,13 +18,13 @@ public class PanelBuscador extends JPanel {
     private int seleccionado = -1;
 
     public PanelBuscador(String labelTexto) {
-        setLayout(new MigLayout("insets 0, wrap 1", "[grow]"));
+        setLayout(new MigLayout("insets 5, wrap 1", "[grow]"));
 
         buscador = new JTextField();
         combo = new JComboBox<>();
 
         // Estilo inicial
-        Dimension tamCampo = new Dimension(230, 30);
+        Dimension tamCampo = new Dimension(230, 40);
         buscador.setPreferredSize(tamCampo);
         combo.setPreferredSize(tamCampo);
 
@@ -105,7 +105,7 @@ public class PanelBuscador extends JPanel {
     }
     public JComboBox<String> getLabel() {
         return combo;
-    }
+    }/// wtf?????
     
     public int getSeleccionado() {
         return combo.getSelectedIndex();
