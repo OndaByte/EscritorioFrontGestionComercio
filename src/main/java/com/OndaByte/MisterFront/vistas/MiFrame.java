@@ -22,6 +22,7 @@ public class MiFrame extends JFrame {
     private Login login=null;
     private Inicializacion inicializacion=null;
     private ContenedorPrincipal aplicacion=null;
+    private boolean islogedin = false;
 
     public Login getLogin() {
         return login;
@@ -97,7 +98,7 @@ public class MiFrame extends JFrame {
 //            }
 //        });
         FlatAnimatedLafChange.showSnapshot();
-        
+
         miFrame.setContentPane(miFrame.aplicacion);
         miFrame.aplicacion.applyComponentOrientation(miFrame.getComponentOrientation());
        // setSelectedMenu(0, 0);

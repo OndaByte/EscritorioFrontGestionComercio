@@ -31,6 +31,7 @@ public class MostradorCajaPanel extends JPanel {
     private Caja caja;
     private MovimientoController cajaController;
     HashSet<String> permisos = null;
+    private int sesionID = -1;
 
     private JTabbedPane tabbedPane;
     private List<VentaCajaPanel> ventas;
@@ -44,6 +45,29 @@ public class MostradorCajaPanel extends JPanel {
         initTopPanel();
         initCenterPanel();
         initBottomPanel();
+
+
+        MovimientoController.getInstance().obtenerUltimaSesion(1, new DatosListener<String>() {
+            @Override
+            public void onSuccess(String datos) {
+                System.out.println("%%%%%"+datos);
+
+            }
+
+            @Override
+            public void onError(String mensajeError) {
+                Dialogos.mostrarError(mensajeError);
+            }
+
+            @Override
+            public void onSuccess(String datos, Paginado p) {}
+        });
+        if(SesionController.getInstance().getSesionCaja() != null){
+            actualizarEstadoCaja(true);
+        }
+        else{
+            actualizarEstadoCaja(false);
+        }
         this.add(topPanel, BorderLayout.NORTH);
         this.add(centerPanel, BorderLayout.CENTER);
         this.add(bottomPanel, BorderLayout.SOUTH);
@@ -61,8 +85,6 @@ public class MostradorCajaPanel extends JPanel {
         lblEstadoCaja.setOpaque(true);
         lblEstadoCaja.setBorder(BorderFactory.createEmptyBorder(5, 12, 5, 12));
         lblEstadoCaja.putClientProperty("JComponent.roundRect", true); // FlatLaf esquinas redondeadas
-        
-        actualizarEstadoCaja(SesionController.getInstance().getSesionCaja() != null); 
 
         lblOperador = new JLabel("OPERADOR: -");
         lblOperador.setFont(new Font("SansSerif", Font.PLAIN, 14));
@@ -82,9 +104,8 @@ public class MostradorCajaPanel extends JPanel {
 
         // ====== Botón Abrir/Cerrar Caja ======
         if (btnAbrirCerrarCaja == null) {
-            btnAbrirCerrarCaja = new JButton("ABRIR CAJA");
+            btnAbrirCerrarCaja = new JButton("");
         }
-        setVisibleByPermisos(btnAbrirCerrarCaja, "ABRIR_CAJA");
         btnAbrirCerrarCaja.addActionListener(e -> abrirCerrarCaja());
 
         // ====== Añadir al panel ======
@@ -100,11 +121,18 @@ public class MostradorCajaPanel extends JPanel {
             lblEstadoCaja.setIcon(new IconSVG(IconSVG.CAJA_ABIERTA, 3));
             lblEstadoCaja.setBackground(new Color(200, 255, 200)); // verde claro
             lblEstadoCaja.setForeground(new Color(0, 120, 0));     // verde oscuro
+            btnAbrirCerrarCaja.setText("CERRAR CAJA");
+            setVisibleByPermisos(btnAbrirCerrarCaja, "CERRAR_CAJA");
+            lblHoraInicio.setText("INICIO: " + java.time.LocalTime.now().withNano(0));
+            lblEstadoOperacion.setText("ESTADO: operativa");
         } else {
             lblEstadoCaja.setText("CAJA: CERRADA");
             lblEstadoCaja.setIcon(new IconSVG(IconSVG.CAJA_CERRADA, 3));
             lblEstadoCaja.setBackground(new Color(255, 220, 220)); // rojo claro
             lblEstadoCaja.setForeground(new Color(150, 0, 0));     // rojo oscuro
+            btnAbrirCerrarCaja.setText("ABRIR CAJA");
+            setVisibleByPermisos(btnAbrirCerrarCaja, "ABRIR_CAJA");
+            lblHoraInicio.setText("INICIO:  --:--");
         }
     }
 
@@ -149,18 +177,13 @@ public class MostradorCajaPanel extends JPanel {
         if (SesionController.getInstance().getSesionCaja() == null) {
             String input = Dialogos.mostrarInput("Ingrese monto inicial de la caja:");
             try {
-                //lblEstadoCaja.setForeground(new Color(0, 150, 0));
                 float montoInicial = Float.parseFloat(input);
                 this.cajaController.abrirCaja(montoInicial, new DatosListener<String>() {
                     @Override
                     public void onSuccess(String datos) {
-                        lblEstadoCaja.setText("CAJA: ABIERTA");
-                        btnAbrirCerrarCaja.setText("CERRAR CAJA");
-                        setVisibleByPermisos(btnAbrirCerrarCaja,"CERRAR_CAJA");
-                        lblHoraInicio.setText("INICIO: " + java.time.LocalTime.now().withNano(0));
-                        lblEstadoOperacion.setText("ESTADO: operativa");
-                        btnNuevaVenta.setEnabled(true);
                         actualizarEstadoCaja(true);
+                        setVisibleByPermisos(btnAbrirCerrarCaja,"CERRAR_CAJA");
+                        btnNuevaVenta.setEnabled(true);
                         Dialogos.mostrarExito(datos);
                         agregarNuevoPanelVenta();
                     }
@@ -186,10 +209,6 @@ public class MostradorCajaPanel extends JPanel {
                 this.cajaController.cerrarCaja(new DatosListener<String>() {
                     @Override
                     public void onSuccess(String datos) {
-                        lblEstadoCaja.setText("CAJA: CERRADa");
-                        btnAbrirCerrarCaja.setText("ABRIR CAJA");
-                        lblHoraInicio.setText("INICIO: --:--");
-                        lblEstadoOperacion.setText("ESTADO: operativa");
                         btnNuevaVenta.setEnabled(false);
                         actualizarEstadoCaja(false);
                         Dialogos.mostrarExito(datos);

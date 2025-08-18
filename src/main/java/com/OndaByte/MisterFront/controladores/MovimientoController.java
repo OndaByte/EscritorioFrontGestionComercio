@@ -14,15 +14,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/**
- *
- * @author luciano
- */
 public class MovimientoController {
 
     private SesionController sesionController = null;
@@ -93,7 +90,7 @@ public class MovimientoController {
      * Crea un nuevo remito.
      */
     public boolean crearVenta(Venta venta, List<ItemVenta> items, DatosListener<String> listener) {
-        JSONObject res = MovimientoService.crearVenta(venta,items);
+        JSONObject res = MovimientoService.crearVenta(venta, items);
         if (res.getInt("status") == 201) {
             listener.onSuccess(res.optString("mensaje"));
             return true;
@@ -102,7 +99,7 @@ public class MovimientoController {
             return false;
         }
     }
-    
+
     /**
      * Crea un nuevo remito.
      */
@@ -162,6 +159,7 @@ public class MovimientoController {
     }
 
     public void abrirCaja(Float montoI, DatosListener<String> listener) {
+        MovimientoService.cerrar();
         JSONObject res = MovimientoService.abrir(montoI);
         if (res.getInt("status") == 201) {
             Caja aux = new Caja();
@@ -181,6 +179,17 @@ public class MovimientoController {
             SesionController.getInstance().setSesionCaja(null);
             listener.onSuccess(res.optString("mensaje"));
 
+        } else {
+            listener.onError(res.optString("mensaje"));
+        }
+    }
+
+    public void obtenerUltimaSesion(int id, DatosListener<String> listener) {
+        JSONObject res = MovimientoService.obtenerUltimaSesion(id);
+        if (res.getInt("status") == 200) {
+            JSONObject data = new JSONObject(res.getString("data"));
+            int sesionID = data.getInt("id");
+            listener.onSuccess(""+sesionID);
         } else {
             listener.onError(res.optString("mensaje"));
         }
