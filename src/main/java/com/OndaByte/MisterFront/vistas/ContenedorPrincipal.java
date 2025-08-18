@@ -16,6 +16,7 @@ import com.OndaByte.MisterFront.vistas.remitos.RemitoPanel;
 import com.OndaByte.MisterFront.vistas.turnos.TurnoPanel;
 import com.OndaByte.MisterFront.vistas.usuarios.UsuarioTabs;
 import com.OndaByte.MisterFront.vistas.dashboard.DashboardPanel;
+import com.OndaByte.MisterFront.vistas.empleados.EmpleadoPanel;
 import com.OndaByte.MisterFront.vistas.insumos.InsumoPanel;
 import com.OndaByte.MisterFront.vistas.productos.ProductoPanel;
 import com.OndaByte.MisterFront.vistas.util.EventosInterface;
@@ -134,31 +135,25 @@ public class ContenedorPrincipal extends JLayeredPane implements ContenedorPrinc
             case "Caja":
                 this.renderCentral(evento,new MostradorCajaPanel());
                 break;
-            case "Pedidos":
-                this.renderCentral(evento,new PedidoPanel());
+            case "Resumen Cajas":
+//                this.renderCentral(evento,new SesionPanel());
                 break;
-            case "Turnos":
-                this.renderCentral(evento,new TurnoPanel());
-                break;
-            case "Presupuestos":
-                this.renderCentral(evento,new PresupuestoPanel());
-                break;
-            case "Reparaciones":
-                this.renderCentral(evento,new OrdenPanel());
-                break;
-            case "Remitos":
-                this.renderCentral(evento,new RemitoPanel());
-                break;
-            case "Historial/Reportes":
+            case "Movimientos":
                 this.renderCentral(evento,new MovimientoPanel());
                 break;
-            case "Insumos":
-                this.renderCentral(evento,new InsumoPanel());
+            case "Ventas":
+//                this.renderCentral(evento,new VentaPanel());
                 break;
+//            case "Historial/Reportes":
+//                this.renderCentral(evento,new MovimientoPanel());
+//                break;
             case "Productos":
                 this.renderCentral(evento,new ProductoPanel());
                 break;
             case "Empleados":
+                this.renderCentral(evento,new EmpleadoPanel());
+                break;
+            case "Categorias":
                 this.renderCentral(evento,new CategoriaPanel());
                 break;
             case "Clientes":

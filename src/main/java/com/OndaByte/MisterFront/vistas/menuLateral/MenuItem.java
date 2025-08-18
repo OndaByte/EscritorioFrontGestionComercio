@@ -116,7 +116,7 @@ public class MenuItem extends JPanel implements EventosInterface{
     @Override
     public void runEvento(String evento) {
         switch (evento){
-                case "Ordenes":
+                case "Finanzas":
                     if (menu.isMenuFull()) {
                             MenuAnimation.animate(MenuItem.this, !menuShow);
                         } else {
