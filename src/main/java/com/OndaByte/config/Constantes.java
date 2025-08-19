@@ -45,7 +45,7 @@ public class Constantes {
     
         String[][] grupo1 = {{"Dashboard"},{"Caja"}};
         String[][] grupo2 = {/*{"Ordenes","Pedidos","Turnos", "Presupuestos", "Reparaciones","Remitos","Historial/Reportes"}*/};
-        String[][] grupo3  = {{"Clientes"},{"Empleados"},{"Productos"},{"Gastos Fijos"}};
+        String[][] grupo3  = {{"Clientes"},{"Categorias"},{"Productos"},{"Gastos Fijos"}};
         String[][] grupo4 = { {"Perfil"},{"Cerrar Sesion"}};
         
         componentesCategoriaGrupo.put("~PRINCIPAL~",grupo1);
@@ -57,7 +57,7 @@ public class Constantes {
         secretariaMenu.put("~EMPRESA~",grupo3);
         secretariaMenu.put("~OTROS~",grupo4);
         
-        String[][] grupo3Usuario  = {{"Clientes"},{"Empleados"}};
+        String[][] grupo3Usuario  = {{"Clientes"},{"Categorias"},{"Productos"}};
         
         usuarioMenu.put("~EMPRESA~",grupo3Usuario);
         usuarioMenu.put("~OTROS~",grupo4);        

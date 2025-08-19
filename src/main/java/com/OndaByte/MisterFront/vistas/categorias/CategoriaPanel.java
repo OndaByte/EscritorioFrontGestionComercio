@@ -359,7 +359,7 @@ private void addAcciones(){
     public void initTabla() {
         String[] headers = new String[]{"Cód:", "Nombre: "};
         List<Object[]> rows = generarData();
-        TablaBuilder builder = new TablaBuilder(headers,rows,headers.length - 1,null);
+        TablaBuilder builder = new TablaBuilder(headers,rows, -1,null);
         scroll = builder.crearTabla();
         tabla = builder.getTable();
         // Estilos de la tabla

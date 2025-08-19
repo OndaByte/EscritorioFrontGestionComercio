@@ -58,5 +58,12 @@ public class Categoria {
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
-   
+
+    public String getPadre_id() {
+        return padre_id;
+    }
+
+    public void setPadre_id(String padre_id) {
+        this.padre_id = padre_id;
+    }
 }

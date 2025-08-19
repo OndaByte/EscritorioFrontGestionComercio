@@ -91,6 +91,9 @@ public class MenuItem extends JPanel implements EventosInterface{
             case "Clientes":
                 numero = "icon/persons.svg";
                 break;
+            case "Categorias":
+                numero = "icon/person-checkmark.svg";
+                break;
             case "Empleados":
                 numero = "icon/person-checkmark.svg";
                 break;

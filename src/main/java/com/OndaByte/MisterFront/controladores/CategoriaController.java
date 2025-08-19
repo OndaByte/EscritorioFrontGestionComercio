@@ -125,11 +125,11 @@ public class CategoriaController {
      * Elimina un insumo por ID.
      */
     public void eliminarCategoria(int id, DatosListener<String> listener) {
-        JSONObject insumoRes = CategoriaService.eliminarCategoria(id);
-        if (insumoRes.getInt("status") == 201) {
-            listener.onSuccess(insumoRes.optString("mensaje"));
+        JSONObject res = CategoriaService.eliminarCategoria(id);
+        if (res.getInt("status") == 200) {
+            listener.onSuccess(res.optString("mensaje"));
         } else {
-            listener.onError(insumoRes.optString("mensaje"));
+            listener.onError(res.optString("mensaje"));
         }
     }
 }

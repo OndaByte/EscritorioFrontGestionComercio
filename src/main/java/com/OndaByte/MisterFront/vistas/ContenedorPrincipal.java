@@ -158,7 +158,7 @@ public class ContenedorPrincipal extends JLayeredPane implements ContenedorPrinc
             case "Productos":
                 this.renderCentral(evento,new ProductoPanel());
                 break;
-            case "Empleados":
+            case "Categorias":
                 this.renderCentral(evento,new CategoriaPanel());
                 break;
             case "Clientes":
