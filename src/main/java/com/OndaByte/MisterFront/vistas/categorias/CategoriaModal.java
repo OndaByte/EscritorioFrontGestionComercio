@@ -68,9 +68,6 @@ public class CategoriaModal extends JDialog {
 
         builder.agregarTitulo("lblID", "Categoria: ");
         builder.agregarComponente("txtNombre", "textfield", "Nombre de la categoría: * ", null, 0);
-//        builder.agregarComponente("txtDni", "textfield", "DNI: * ", null, 0);
-//        builder.agregarComponente("txtTelefono", "textfield", "Teléfono: *", null, 0);
-//        builder.agregarComponente("txtDireccion", "textfield", "Dirección: *", null, 0);
 
         setContentPane(builder.construir());
         
@@ -111,14 +108,10 @@ public class CategoriaModal extends JDialog {
 
     private Categoria crearCategoria(){
         String nombre = ((JTextField) builder.getComponente("txtNombre")).getText();
-//        String dni = ((JTextField) builder.getComponente("txtDni")).getText();
-//        String telefono = ((JTextField) builder.getComponente("txtTelefono")).getText();
-//        String direccion = ((JTextField) builder.getComponente("txtDireccion")).getText();
         Categoria c = new Categoria();
         c.setNombre(nombre);
-//        e.setDni(dni);
-//        e.setTelefono(telefono);
-//        e.setDireccion(direccion);
+        c.setPorcentaje_descuento(0);
+        c.setTipo("PRODUCTO");
         return c;
     }
 
@@ -161,10 +154,6 @@ public class CategoriaModal extends JDialog {
 
         ((JLabel) builder.getComponente("lblID")).setText("Categoria con ID: " + categoria.getId());
         ((JTextField) builder.getComponente("txtNombre")).setText(categoria.getNombre());
-//        ((JTextField) builder.getComponente("txtDni")).setText(categoria.getDni());
-//        ((JTextField) builder.getComponente("txtDni")).setEditable(false);
-//        ((JTextField) builder.getComponente("txtTelefono")).setText(categoria.getTelefono());
-//        ((JTextField) builder.getComponente("txtDireccion")).setText(categoria.getDireccion());
 
         if (!editable) {
             builder.getBtnGuardar().setVisible(false);

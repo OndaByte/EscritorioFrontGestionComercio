@@ -141,6 +141,7 @@ public class Producto {
         Float ganancia = costo * (this.getPorcentaje_ganancia() / 100f);
         Float descuento = costo * (this.getPorcentaje_descuento() / 100f);
         Float result =  costo + ganancia - descuento ;
+        result = Math.round(result * 100f) / 100f;
         return result;
     }
 
@@ -152,6 +153,7 @@ public class Producto {
         Float costo = this.getPrecio_costo();
         Float ganancia = costo * (this.getPorcentaje_ganancia() / 100f);
         Float result =  costo + ganancia  ;
+        result = Math.round(result * 100f) / 100f;
         return result;
     }
     

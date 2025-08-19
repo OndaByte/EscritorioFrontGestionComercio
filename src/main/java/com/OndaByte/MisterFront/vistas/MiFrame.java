@@ -14,24 +14,16 @@ import com.OndaByte.MisterFront.vistas.util.Dialogos;
 import com.OndaByte.MisterFront.vistas.util.Paginado;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class MiFrame extends JFrame {
 
     private static MiFrame miFrame;
-    private static Logger logger = LogManager.getLogger(MiFrame.class.getName());
     
     private Login login=null;
     private Inicializacion inicializacion=null;
     private ContenedorPrincipal aplicacion=null;
+    private boolean islogedin = false;
 
-    static {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Init logger en Frame");
-        }
-    }
-      
     public Login getLogin() {
         return login;
     }
@@ -90,12 +82,10 @@ public class MiFrame extends JFrame {
 
     public static void login() {
         miFrame.aplicacion = new ContenedorPrincipal();
-//        MovimientoController.getInstance().ultimaCaja(new DatosListener<String>() {
+//        MovimientoController.getInstance().abrirCaja(new DatosListener<String>() {
 //            @Override
 //            public void onSuccess(String resultado) {
-//                logger.debug("Frame - caja obtenida con exito");
-//                
-//                //Dialogos.mostrarExito(resultado);
+//                Dialogos.mostrarExito(resultado);
 //            }
 //
 //            @Override
@@ -108,9 +98,10 @@ public class MiFrame extends JFrame {
 //            }
 //        });
         FlatAnimatedLafChange.showSnapshot();
-        
+
         miFrame.setContentPane(miFrame.aplicacion);
         miFrame.aplicacion.applyComponentOrientation(miFrame.getComponentOrientation());
+       // setSelectedMenu(0, 0);
         miFrame.aplicacion.hideMenu();
         SwingUtilities.updateComponentTreeUI(miFrame.aplicacion);
         FlatAnimatedLafChange.hideSnapshotWithAnimation();

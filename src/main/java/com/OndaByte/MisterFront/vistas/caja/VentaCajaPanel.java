@@ -28,7 +28,6 @@ import net.miginfocom.swing.MigLayout;
 
 public class VentaCajaPanel extends JPanel {
 
-    private int idTab;
     private String nombre;
     private ArrayList<ItemVenta> items;
     private Float subtotal;
@@ -52,15 +51,12 @@ public class VentaCajaPanel extends JPanel {
     private String filtro;
     private java.util.Timer timer;
 
-    private JComponent parent;
-    
-    public VentaCajaPanel(JComponent parent,String nombre,int idTab) {
+    public VentaCajaPanel(String nombre) {
         this.permisos = (HashSet<String>) SesionController.getInstance().getSesionPermisos();
-        this.idTab=idTab;
-        this.nombre = nombre + " " + idTab;
+        this.nombre = nombre;
         this.total = 0f;
         this.subtotal = 0f;
-        this.parent=parent;
+        
         this.setLayout(new MigLayout("insets 5, gap 10", "[grow 50]10[grow 50]", "[grow]"));
         this.initPanelIzquierda();
         this.initPanelDerecha();
@@ -117,10 +113,6 @@ public class VentaCajaPanel extends JPanel {
         });
     };
     
-    private void cerrar(){
-        MostradorCajaPanel mcp = (MostradorCajaPanel) this.parent;
-        mcp.quitarNuevoPanelVenta(this);//tema arreglos
-    }
     private void initPanelIzquierda(){
         izquierda = new JPanel(new MigLayout("insets 5, fill", "[grow]", "[]10[grow]"));
 
@@ -167,7 +159,11 @@ public class VentaCajaPanel extends JPanel {
         JButton btnCancelar = new JButton("CANCELAR VENTA", new IconSVG(IconSVG.CANCELAR));
 
         btnCancelar.addActionListener(e -> {
-            cerrar();
+            JTabbedPane tabbedPane = (JTabbedPane) this.getParent();
+            int index = tabbedPane.indexOfComponent(this);
+            if (index != -1) {
+                tabbedPane.remove(index);
+            }
         });
         
         btnCobrar.addActionListener(e -> {
@@ -435,7 +431,6 @@ public class VentaCajaPanel extends JPanel {
         filtro = "";
 //        pagina = 1;
         reload();
-        cerrar();
         //cancelar venta.doclick();
     }
 

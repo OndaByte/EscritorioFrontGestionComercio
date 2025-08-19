@@ -91,6 +91,9 @@ public class MenuItem extends JPanel implements EventosInterface{
             case "Clientes":
                 numero = "icon/persons.svg";
                 break;
+            case "Categorias":
+                numero = "icon/person-checkmark.svg";
+                break;
             case "Empleados":
                 numero = "icon/person-checkmark.svg";
                 break;
@@ -116,7 +119,7 @@ public class MenuItem extends JPanel implements EventosInterface{
     @Override
     public void runEvento(String evento) {
         switch (evento){
-                case "Finanzas":
+                case "Ordenes":
                     if (menu.isMenuFull()) {
                             MenuAnimation.animate(MenuItem.this, !menuShow);
                         } else {
