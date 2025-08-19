@@ -2,10 +2,13 @@
 package com.OndaByte.MisterFront.sesion;
 
 import com.OndaByte.MisterFront.modelos.Caja;
+import com.OndaByte.MisterFront.vistas.caja.VentaCajaPanel;
+import java.util.HashMap;
 import java.util.Set;
+import javax.swing.JTabbedPane;
 
 class Sesion {
-
+    
     private static Sesion sesion;
 
     private String token;
@@ -14,7 +17,8 @@ class Sesion {
     private String nombreUsuario;
     private Integer usuario_id;
     private Caja sesionCaja;
-
+    private JTabbedPane tabsVentas;
+    private HashMap<String,VentaCajaPanel> ventasActivas;
     protected static Sesion getSesion() {
         return sesion;
     }
@@ -48,6 +52,8 @@ class Sesion {
     }
 
     private Sesion() {
+        this.tabsVentas = new JTabbedPane();
+        this.ventasActivas = new HashMap<>();
     }
 
     protected static Sesion getInstance() {
@@ -80,5 +86,13 @@ class Sesion {
     public void setUsuario_id(Integer usuario_id) {
         this.usuario_id = usuario_id;
     }
-    
+
+    public JTabbedPane getTabsVentas() {
+        return tabsVentas;
+    }
+
+    public HashMap<String, VentaCajaPanel> getVentasActivas() {
+        return ventasActivas;
+    }
+       
 }
