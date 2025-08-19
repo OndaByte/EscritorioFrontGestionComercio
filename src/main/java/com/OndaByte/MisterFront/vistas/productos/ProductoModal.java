@@ -148,7 +148,7 @@ public class ProductoModal extends JDialog {
         String codBarra = ((JTextField) builder.getComponente("txtCodBarra")).getText();
         String stock = ((JTextField) builder.getComponente("txtStock")).getText();
         int categoria = ((JComboBox) builder.getComponente("cmbCategorias")).getSelectedIndex();
-
+        categoria++;
         p.setNombre(nombre);
         p.setPrecio_costo(Float.valueOf(precio));
         p.setPorcentaje_ganancia(Float.valueOf(ganancia));
@@ -238,8 +238,7 @@ public class ProductoModal extends JDialog {
         ((JTextField) builder.getComponente("txtStock")).setText(producto.getStock() + "");
         ((JTextField) builder.getComponente("txtCodBarra")).setText(producto.getCodigo_barra() + "");
         int categoria = producto.getCategoria_id();
-        System.out.println("%%%%  :"+categoria);
-        ((JComboBox) builder.getComponente("cmbCategorias")).setSelectedIndex(categoria);
+        ((JComboBox) builder.getComponente("cmbCategorias")).setSelectedIndex(categoria-1);
 
         if (!editable) {
             builder.getBtnGuardar().setVisible(false);
