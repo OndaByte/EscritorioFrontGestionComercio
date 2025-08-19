@@ -254,6 +254,7 @@ private void addAcciones(){
                 if(categoriaSeleccionado != null){
                     CategoriaModal modal = new CategoriaModal(MiFrame.getInstance(),categoriaSeleccionado);
                     modal.setVisible(true); // bloquea el thread hasta que es cerrado
+                    Categoria categoriaSeleccionado = null;
                     filtro="";
                     pagina = 1;
                     reload();
