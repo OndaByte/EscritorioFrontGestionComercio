@@ -4,7 +4,6 @@ package com.OndaByte.MisterFront.vistas.productos;
 import com.OndaByte.MisterFront.controladores.CategoriaController;
 import com.OndaByte.MisterFront.controladores.ProductoController;
 import com.OndaByte.MisterFront.modelos.Categoria;
-import com.OndaByte.MisterFront.modelos.Cliente;
 import com.OndaByte.MisterFront.modelos.Producto;
 import com.OndaByte.MisterFront.vistas.DatosListener;
 import com.OndaByte.MisterFront.vistas.util.Dialogos;
@@ -13,16 +12,8 @@ import com.OndaByte.MisterFront.vistas.util.Paginado;
 
 import java.awt.Color;
 import java.awt.Frame;
-import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JDialog;
-import javax.swing.BorderFactory;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-
-import com.OndaByte.MisterFront.vistas.util.PanelBuscador;
+import javax.swing.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,17 +37,19 @@ public class ProductoModal extends JDialog {
     public ProductoModal(Frame parent) {
         super(parent, "Crear Producto", true);
         productoController = ProductoController.getInstance();
+        categoriaController = CategoriaController.getInstance();
         this.producto = null;
         builder = new FormularioBuilder();
-        crearForm(600, 300);
+        crearForm(600, 600);
     }
 
     public ProductoModal(Frame parent, Producto producto) {
         super(parent, "Editar Producto", true);
         productoController = ProductoController.getInstance();
+        categoriaController = CategoriaController.getInstance();
         builder = new FormularioBuilder();
         this.producto = producto;
-        crearForm(600, 300);
+        crearForm(600, 600);
         cargarDatos(producto, true);
     }
 
@@ -68,18 +61,36 @@ public class ProductoModal extends JDialog {
         builder.agregarTitulo("lblID", "Producto: ");
         builder.agregarComponente("txtNombre", "textfield", "Nombre: *", null, 0);
         builder.agregarComponente("txtCodBarra", "textfield", "codigoBarra :", null, 0);
-        // builder.agregarComponente("taDescripcion", "textarea","descripcion :", null, 3);
         builder.agregarComponente("txtPrecio", "textfield", "Precio (costo) : *", null, 0);
         builder.agregarComponente("txtPorcentajeGanancia", "textfield", "Porcentaje Ganancia : *", null, 0);
         builder.agregarComponente("txtPorcentajeDescuento", "textfield", "Porcentaje Descuento : *", null, 0);
+        ((JTextField) builder.getComponente("txtPorcentajeDescuento")).setText(0 + ""); // Setteado
         builder.agregarComponente("txtStock", "textfield", "Stock: *", null, 0);
+        ((JTextField) builder.getComponente("txtStock")).setText(1 + ""); // Setteado
 
-        //String categorias[] = categoriascontroller.get
+        JComboBox cmbCategorias = new JComboBox();
+        categoriaController.filtrar("" , "1", "100",
+                new DatosListener<List<Categoria>>() {
+                    @Override
+                    public void onSuccess(List<Categoria> datos) {
+                    }
 
-        PanelBuscador pb = crearPanelBuscador();
-        builder.agregarComponenteCustom("pbCategoria", pb, "Buscar Categoría: *");
+                    @Override
+                    public void onError(String mesajeError) {
+                        Dialogos.mostrarError(mesajeError);
+                    }
 
-        //builder.agregarComponente("cmbCategoria", "combobox", "Categoría: ", new String[]{"Kiosco"}, 0);
+                    @Override
+                    public void onSuccess(List<Categoria> datos, Paginado p) {
+                        categorias = datos;
+                        cmbCategorias.removeAllItems(); // limpio antes de cargar
+                        for (Categoria c : categorias) {
+                            cmbCategorias.addItem(c.getNombre()); // agregar solo el nombre
+                        }
+                    }
+                });
+        builder.agregarComponenteCustom("cmbCategorias", cmbCategorias, "Seleccionar Categoría: *");
+
 
         setContentPane(builder.construir());
         setSize(width, height);
@@ -122,73 +133,29 @@ public class ProductoModal extends JDialog {
     }
 
 
-    private PanelBuscador crearPanelBuscador() {
-        PanelBuscador pb = new PanelBuscador("Buscar Categoria: ");
-        pb.setPlaceholder("Nombre...");
-        pb.configurarEventoBuscar(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) {
-                filtrarCategoria();
-            }
-
-            public void removeUpdate(DocumentEvent e) {
-                filtrarCategoria();
-            }
-
-            public void changedUpdate(DocumentEvent e) {
-                filtrarCategoria();
-            }
-
-            private void filtrarCategoria() {
-                System.out.println("llamando filtrar categoria. cuando alta panel.");
-                JTextField b = pb.getBuscador();
-                categoriaController.filtrar(b.getText(), "1", "100",
-                        new DatosListener<List<Categoria>>() {
-                            @Override
-                            public void onSuccess(List<Categoria> datos) {
-                            }
-
-                            @Override
-                            public void onError(String mesajeError) {
-                                Dialogos.mostrarError(mesajeError);
-                            }
-
-                            @Override
-                            public void onSuccess(List<Categoria> datos, Paginado p) {
-                                categorias = datos;
-                                ArrayList<String> categoriasString = new ArrayList<>();
-                                for (Categoria c : categorias) {
-                                    categoriasString.add(c.toString());
-                                }
-                                pb.setDatos(categoriasString);
-                            }
-                        });
-            }
-
-        });
-        return pb;
-    }
-
-
     private Producto crearProducto() {
+
+        Producto p = new Producto();
+        p.setPorcentaje_ganancia(Float.valueOf(0));
+        p.setPorcentaje_descuento(Float.valueOf(0));
+        p.setCategoria_id(1);
+        p.setStock(Integer.valueOf(1));
+
         String nombre = ((JTextField) builder.getComponente("txtNombre")).getText();
         String precio = ((JTextField) builder.getComponente("txtPrecio")).getText();
         String ganancia = ((JTextField) builder.getComponente("txtPorcentajeGanancia")).getText();
         String descuento = ((JTextField) builder.getComponente("txtPorcentajeDescuento")).getText();
         String codBarra = ((JTextField) builder.getComponente("txtCodBarra")).getText();
-//        String descripcion = ((JTextField) builder.getComponente("taDescripcion")).getText();
         String stock = ((JTextField) builder.getComponente("txtStock")).getText();
-        String categoria = ((JTextField) builder.getComponente("txtCategoria")).getText();
-
-        Producto p = new Producto();
+        int categoria = ((JComboBox) builder.getComponente("cmbCategorias")).getSelectedIndex();
+        categoria++;
         p.setNombre(nombre);
         p.setPrecio_costo(Float.valueOf(precio));
         p.setPorcentaje_ganancia(Float.valueOf(ganancia));
         p.setPorcentaje_descuento(Float.valueOf(descuento));
         p.setCodigo_barra(codBarra);
-//        p.setDescripcion(descripcion);
-        p.setCategoria_id(0);
         p.setStock(Integer.valueOf(stock));
-
+        p.setCategoria_id(categoria);
 
         return p;
     }
@@ -232,8 +199,8 @@ public class ProductoModal extends JDialog {
         Integer pd = null;
         try {
             pd = Integer.valueOf(txtPorcentajeDescuento.getText());
-            if (pd <= 0) {
-                errores.append("- El porcentaje de descuento debe ser mayor a 0.<br>");
+            if (pd < 0) {
+                errores.append("- El porcentaje de descuento no puede ser menor que 0.<br>");
                 txtPorcentajeDescuento.setBorder(BorderFactory.createLineBorder(Color.RED));
             }
         } catch (NumberFormatException e) {
@@ -269,6 +236,9 @@ public class ProductoModal extends JDialog {
         ((JTextField) builder.getComponente("txtPorcentajeGanancia")).setText(producto.getPorcentaje_ganancia() + ""); // Setteado
         ((JTextField) builder.getComponente("txtPorcentajeDescuento")).setText(producto.getPorcentaje_descuento() + ""); // Setteado
         ((JTextField) builder.getComponente("txtStock")).setText(producto.getStock() + "");
+        ((JTextField) builder.getComponente("txtCodBarra")).setText(producto.getCodigo_barra() + "");
+        int categoria = producto.getCategoria_id();
+        ((JComboBox) builder.getComponente("cmbCategorias")).setSelectedIndex(categoria-1);
 
         if (!editable) {
             builder.getBtnGuardar().setVisible(false);
