@@ -60,7 +60,7 @@ public class ProductoModal extends JDialog {
 
         builder.agregarTitulo("lblID", "Producto: ");
         builder.agregarComponente("txtNombre", "textfield", "Nombre: *", null, 0);
-        builder.agregarComponente("txtCodBarra", "textfield", "codigoBarra :", null, 0);
+        builder.agregarComponente("txtCodBarra", "textfield", "codigoBarra : *", null, 0);
         builder.agregarComponente("txtPrecio", "textfield", "Precio (costo) : *", null, 0);
         builder.agregarComponente("txtPorcentajeGanancia", "textfield", "Porcentaje Ganancia : *", null, 0);
         builder.agregarComponente("txtPorcentajeDescuento", "textfield", "Porcentaje Descuento : *", null, 0);
@@ -136,8 +136,6 @@ public class ProductoModal extends JDialog {
     private Producto crearProducto() {
 
         Producto p = new Producto();
-        p.setPorcentaje_ganancia(Float.valueOf(0));
-        p.setPorcentaje_descuento(Float.valueOf(0));
         p.setCategoria_id(1);
         p.setStock(Integer.valueOf(1));
 
@@ -151,8 +149,8 @@ public class ProductoModal extends JDialog {
         categoria++;
         p.setNombre(nombre);
         p.setPrecio_costo(Float.valueOf(precio));
-        p.setPorcentaje_ganancia(Float.valueOf(ganancia));
-        p.setPorcentaje_descuento(Float.valueOf(descuento));
+        p.setPorcentaje_ganancia(Integer.valueOf(ganancia));
+        p.setPorcentaje_descuento(Integer.valueOf(descuento));
         p.setCodigo_barra(codBarra);
         p.setStock(Integer.valueOf(stock));
         p.setCategoria_id(categoria);
@@ -167,6 +165,12 @@ public class ProductoModal extends JDialog {
         if (txtNombre.getText().trim().isEmpty()) {
             errores.append("- El campo Nombre es obligatorio.<br>");
             txtNombre.setBorder(BorderFactory.createLineBorder(Color.RED));
+        }
+
+        JTextField txtCodBarra = builder.getComponenteByClass("txtCodBarra");
+        if (txtCodBarra.getText().trim().isEmpty()) {
+            errores.append("- El campo Código de barra es obligatorio.<br>");
+            txtCodBarra.setBorder(BorderFactory.createLineBorder(Color.RED));
         }
 
         JTextField txtPrecio = builder.getComponenteByClass("txtPrecio");
@@ -239,6 +243,7 @@ public class ProductoModal extends JDialog {
         ((JTextField) builder.getComponente("txtCodBarra")).setText(producto.getCodigo_barra() + "");
         int categoria = producto.getCategoria_id();
         ((JComboBox) builder.getComponente("cmbCategorias")).setSelectedIndex(categoria-1);
+        ((JComboBox) builder.getComponente("cmbCategorias")).setEditable(false);
 
         if (!editable) {
             builder.getBtnGuardar().setVisible(false);

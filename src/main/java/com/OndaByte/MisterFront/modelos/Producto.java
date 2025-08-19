@@ -20,9 +20,9 @@ public class Producto {
     @JsonProperty("precio_costo")
     private Float precio_costo;
     @JsonProperty("porcentaje_ganancia")
-    private Float porcentaje_ganancia;
+    private Integer porcentaje_ganancia;
     @JsonProperty("porcentaje_descuento")
-    private Float porcentaje_descuento;
+    private Integer porcentaje_descuento;
     @JsonProperty("stock")
     private Integer stock;
     @JsonProperty("creado")
@@ -85,19 +85,19 @@ public class Producto {
         this.precio_costo = precio_costo;
     }
 
-    public Float getPorcentaje_ganancia() {
+    public Integer getPorcentaje_ganancia() {
         return porcentaje_ganancia;
     }
 
-    public void setPorcentaje_ganancia(Float porcentaje_ganancia) {
+    public void setPorcentaje_ganancia(Integer porcentaje_ganancia) {
         this.porcentaje_ganancia = porcentaje_ganancia;
     }
 
-    public Float getPorcentaje_descuento() {
+    public Integer getPorcentaje_descuento() {
         return porcentaje_descuento;
     }
 
-    public void setPorcentaje_descuento(Float porcentaje_descuento) {
+    public void setPorcentaje_descuento(Integer porcentaje_descuento) {
         this.porcentaje_descuento = porcentaje_descuento;
     }
 

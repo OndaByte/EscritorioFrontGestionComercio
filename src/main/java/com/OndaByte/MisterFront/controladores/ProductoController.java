@@ -126,7 +126,7 @@ public class ProductoController {
      */
     public void eliminarProducto(int id, DatosListener<String> listener) {
         JSONObject insumoRes = ProductoService.eliminarProducto(id);
-        if (insumoRes.getInt("status") == 201) {
+        if (insumoRes.getInt("status") == 200) {
             listener.onSuccess(insumoRes.optString("mensaje"));
         } else {
             listener.onError(insumoRes.optString("mensaje"));
