@@ -151,12 +151,12 @@ public class VentaController {
 //                pre.setTotal(preJson.getFloat("total"));
 
                 for (int i = 0; i < itemsRJson.length(); i++) {
-                    ItemVenta ir = new ItemVenta();
-                    ir.setId(itemsRJson.getJSONObject(i).getInt("id"));
-                    ir.setDescripcion(itemsRJson.getJSONObject(i).getString("descripcion"));
-                    ir.setCantidad(itemsRJson.getJSONObject(i).optIntegerObject("cantidad",null));
-                    ir.setPrecio(itemsRJson.getJSONObject(i).getFloat("precio"));
-                    itemsR.add(ir);
+//                    ItemVenta ir = new ItemVenta();
+//                    ir.setId(itemsRJson.getJSONObject(i).getInt("id"));
+//                    ir.setDescripcion(itemsRJson.getJSONObject(i).getString("descripcion"));
+//                    ir.setCantidad(itemsRJson.getJSONObject(i).optIntegerObject("cantidad",null));
+//                    ir.setPrecio(itemsRJson.getJSONObject(i).getFloat("precio"));
+//                    itemsR.add(ir);
                 }
 //                presupuestoDTO.put("pedido", p);
                 ventaDTO.put("venta", r);
