@@ -20,6 +20,7 @@ import com.OndaByte.MisterFront.vistas.empleados.EmpleadoPanel;
 import com.OndaByte.MisterFront.vistas.insumos.InsumoPanel;
 import com.OndaByte.MisterFront.vistas.productos.ProductoPanel;
 import com.OndaByte.MisterFront.vistas.util.EventosInterface;
+import com.OndaByte.MisterFront.vistas.ventas.VentaPanel;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.util.UIScale;
 import java.awt.BorderLayout;
@@ -142,7 +143,7 @@ public class ContenedorPrincipal extends JLayeredPane implements ContenedorPrinc
                 this.renderCentral(evento,new MovimientoPanel());
                 break;
             case "Ventas":
-//                this.renderCentral(evento,new VentaPanel());
+                this.renderCentral(evento,new VentaPanel());
                 break;
 //            case "Historial/Reportes":
 //                this.renderCentral(evento,new MovimientoPanel());

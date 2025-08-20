@@ -89,7 +89,7 @@ public class MostradorCajaPanel extends JPanel {
         if (btnVerInfo == null) {
             btnVerInfo = new JButton("", new IconSVG(IconSVG.OJO));
         }
-        //setVisibleByPermisos(btnVerInfo, "CAJA_VER_INFO");
+        setVisibleByPermisos(btnVerInfo, "CAJA_VER_INFO");
         btnVerInfo.addActionListener(e -> verInfoCaja());
 
         // ====== Añadir al panel ======
@@ -101,6 +101,7 @@ public class MostradorCajaPanel extends JPanel {
     }
 
     private void actualizarEstadoCaja(boolean abierta) {
+        btnVerInfo.setEnabled(abierta);
         if (abierta) {
             lblEstadoCaja.setText("CAJA: ABIERTA");
             lblEstadoCaja.setIcon(new IconSVG(IconSVG.CAJA_ABIERTA, 3));
