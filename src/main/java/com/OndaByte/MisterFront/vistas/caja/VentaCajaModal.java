@@ -6,6 +6,7 @@ import com.OndaByte.MisterFront.modelos.ItemVenta;
 import com.OndaByte.MisterFront.modelos.Venta;
 import com.OndaByte.MisterFront.vistas.DatosListener;
 import com.OndaByte.MisterFront.vistas.util.Dialogos;
+import com.OndaByte.MisterFront.vistas.util.IconSVG;
 import com.OndaByte.MisterFront.vistas.util.Paginado;
 import net.miginfocom.swing.MigLayout;
 
@@ -43,7 +44,7 @@ public class VentaCajaModal extends JDialog {
             
     public VentaCajaModal(JFrame parent, List<ItemVenta> items,  Float subtotal, Float total, Integer porcentaje_descuento) {
         super(parent, "Confirmar Venta", true);
-        setSize(460, 420);
+        setSize(600, 540);
         setLocationRelativeTo(parent);
         this.cajaController = MovimientoController.getInstance();
         
@@ -55,8 +56,8 @@ public class VentaCajaModal extends JDialog {
         formaPagoCombo = new JComboBox<>(new String[]{"EFECTIVO", "DÉBITO", "CRÉDITO", "TRANSFERENCIA"});
         clienteCombo = new JComboBox<>(); // rellenar con datos reales
         observaciones = new JTextArea(4, 20);
-        btnConfirmar = new JButton("Confirmar");
-        btnCancelar = new JButton("Cancelar");
+        btnConfirmar = new JButton("CONFIRMAR", new IconSVG(IconSVG.ACEPTAR));
+        btnCancelar = new JButton("CANCELAR", new IconSVG(IconSVG.RECHAZAR));
 
         // ===== Panel principal =====
         JPanel mainPanel = new JPanel(new MigLayout(
@@ -130,6 +131,8 @@ public class VentaCajaModal extends JDialog {
         btnConfirmar.addActionListener(e -> {
             validarYGuardar();
         });
+
+        btnCancelar.addActionListener(e -> dispose());
 
         // Botones
         mainPanel.add(btnCancelar, "right");
