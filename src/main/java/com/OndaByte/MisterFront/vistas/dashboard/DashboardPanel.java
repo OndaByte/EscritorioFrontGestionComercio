@@ -76,24 +76,24 @@ public class DashboardPanel extends JPanel {
         initBody();
         renderCalendario();
         renderEventos();
-        turnoControlador.filtrar("",filtroSelectedDate,filtroSelectedDate,"", "" + 1, "" + 20,new DatosListener<List<HashMap<String,Object>>>(){
-            @Override
-            public void onSuccess(List<HashMap<String,Object>> datos) {
-            }
-
-            @Override
-            public void onError(String mensajeError) {
-                Dialogos.mostrarError(mensajeError);
-                revalidate();
-                repaint();
-            }
-
-            @Override
-            public void onSuccess(List<HashMap<String,Object>> datos, Paginado p) {
-                turnos = new ArrayList<>(datos);
-                renderEventos();
-            }
-        });
+//        turnoControlador.filtrar("", filtroSelectedDate, filtroSelectedDate, "", "" + 1, "" + 20, new DatosListener<List<HashMap<String, Object>>>() {
+//            @Override
+//            public void onSuccess(List<HashMap<String, Object>> datos) {
+//            }
+//
+//            @Override
+//            public void onError(String mensajeError) {
+//                Dialogos.mostrarError(mensajeError);
+//                revalidate();
+//                repaint();
+//            }
+//
+//            @Override
+//            public void onSuccess(List<HashMap<String, Object>> datos, Paginado p) {
+//                turnos = new ArrayList<>(datos);
+//                renderEventos();
+//            }
+//        });
     }
 
     private void initTop() {
@@ -208,24 +208,24 @@ public class DashboardPanel extends JPanel {
             btnDia.addActionListener(e -> {
                 selectedDate = fecha;
                 this.filtroSelectedDate = FechaUtils.ldToString(selectedDate);
-                turnoControlador.filtrar("",filtroSelectedDate,filtroSelectedDate,"", "" + 1, "" + 20,new DatosListener<List<HashMap<String,Object>>>(){
-                    @Override
-                    public void onSuccess(List<HashMap<String,Object>> datos) {
-                    }
-
-                    @Override
-                    public void onError(String mensajeError) {
-                        Dialogos.mostrarError(mensajeError);
-                        revalidate();
-                        repaint();
-                    }
-
-                    @Override
-                    public void onSuccess(List<HashMap<String,Object>> datos, Paginado p) {
-                        turnos = new ArrayList<>(datos);
-                        renderEventos();
-                    }
-                });
+//                turnoControlador.filtrar("",filtroSelectedDate,filtroSelectedDate,"", "" + 1, "" + 20,new DatosListener<List<HashMap<String,Object>>>(){
+//                    @Override
+//                    public void onSuccess(List<HashMap<String,Object>> datos) {
+//                    }
+//
+//                    @Override
+//                    public void onError(String mensajeError) {
+//                        Dialogos.mostrarError(mensajeError);
+//                        revalidate();
+//                        repaint();
+//                    }
+//
+//                    @Override
+//                    public void onSuccess(List<HashMap<String,Object>> datos, Paginado p) {
+//                        turnos = new ArrayList<>(datos);
+//                        renderEventos();
+//                    }
+//                });
 
             });
 

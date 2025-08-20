@@ -28,6 +28,7 @@ import net.miginfocom.swing.MigLayout;
 
 public class VentaCajaPanel extends JPanel {
 
+    private int idTab;
     private String nombre;
     private ArrayList<ItemVenta> items;
     private Float subtotal;
@@ -51,12 +52,15 @@ public class VentaCajaPanel extends JPanel {
     private String filtro;
     private java.util.Timer timer;
 
-    public VentaCajaPanel(String nombre) {
+    private JComponent parent;
+    
+    public VentaCajaPanel(JComponent parent,String nombre,int idTab) {
         this.permisos = (HashSet<String>) SesionController.getInstance().getSesionPermisos();
-        this.nombre = nombre;
+        this.idTab=idTab;
+        this.nombre = nombre + " " + idTab;
         this.total = 0f;
         this.subtotal = 0f;
-        
+        this.parent=parent;
         this.setLayout(new MigLayout("insets 5, gap 10", "[grow 50]10[grow 50]", "[grow]"));
         this.initPanelIzquierda();
         this.initPanelDerecha();
@@ -113,6 +117,10 @@ public class VentaCajaPanel extends JPanel {
         });
     };
     
+    private void cerrar(){
+        MostradorCajaPanel mcp = (MostradorCajaPanel) this.parent;
+        mcp.quitarNuevoPanelVenta(this);//tema arreglos
+    }
     private void initPanelIzquierda(){
         izquierda = new JPanel(new MigLayout("insets 5, fill", "[grow]", "[]10[grow]"));
 
@@ -155,15 +163,11 @@ public class VentaCajaPanel extends JPanel {
 
         lblTotal = new JLabel("Total: $0.00");
         lblTotal.setFont(new Font("Courier New", Font.BOLD, 16));
-        btnCobrar = new JButton("COBRAR", new IconSVG(IconSVG.COBRAR));
-        JButton btnCancelar = new JButton("CANCELAR VENTA", new IconSVG(IconSVG.CANCELAR));
+        btnCobrar = new JButton("COBRAR");
+        JButton btnCancelar = new JButton("CANCELAR VENTA");
 
         btnCancelar.addActionListener(e -> {
-            JTabbedPane tabbedPane = (JTabbedPane) this.getParent();
-            int index = tabbedPane.indexOfComponent(this);
-            if (index != -1) {
-                tabbedPane.remove(index);
-            }
+            cerrar();
         });
         
         btnCobrar.addActionListener(e -> {
@@ -431,6 +435,7 @@ public class VentaCajaPanel extends JPanel {
         filtro = "";
 //        pagina = 1;
         reload();
+        cerrar();
         //cancelar venta.doclick();
     }
 
