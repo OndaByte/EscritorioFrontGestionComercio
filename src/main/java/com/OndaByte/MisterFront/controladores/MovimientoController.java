@@ -86,20 +86,7 @@ public class MovimientoController {
         }
     }
 
-    /**
-     * Crea un nuevo remito.
-     */
-    public boolean crearVenta(Venta venta, List<ItemVenta> items, DatosListener<String> listener) {
-        JSONObject res = MovimientoService.crearVenta(venta, items);
-        if (res.getInt("status") == 201) {
-            listener.onSuccess(res.optString("mensaje"));
-            return true;
-        } else {
-            listener.onError(res.optString("mensaje"));
-            return false;
-        }
-    }
-
+  
     /**
      * Crea un nuevo remito.
      */
