@@ -2,9 +2,11 @@
 package com.OndaByte.MisterFront.vistas.ventas;
 
 
+import com.OndaByte.MisterFront.controladores.VentaController;
 import com.OndaByte.MisterFront.modelos.Cliente;
 import com.OndaByte.MisterFront.vistas.util.VistaPreviaImpresion;
 import com.OndaByte.MisterFront.estilos.MisEstilos;
+import com.OndaByte.MisterFront.modelos.Venta;
 import com.OndaByte.MisterFront.sesion.SesionController;
 import com.OndaByte.MisterFront.vistas.DatosListener;
 import com.OndaByte.MisterFront.vistas.MiFrame;
@@ -81,7 +83,7 @@ public class VentaPanel extends JPanel {
     private VentaController ventaControlador;
     private HashSet<String> permisos;
     private ArrayList<HashMap<String, Object>> ventasDetallado;
-    private Venta ventaSeleccionado;
+    private Venta ventaSeleccionada;
 
     private VentaPanel esta;
 
@@ -277,44 +279,42 @@ public class VentaPanel extends JPanel {
         
         btnEditar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                if(ventaSeleccionado != null ){
-                    logger.debug("fecha de pago == null ?" + ventaSeleccionado.getFecha_pago());
-                    if(ventaSeleccionado.getFecha_pago()==null){
-                        VentaController.getInstance().buscarVenta(
-                        ventaSeleccionado.getId(),
-                        new DatosListener<HashMap<String, Object>>() {
-                            @Override
-                            public void onSuccess(HashMap<String, Object> resultado) {
-                                Cliente c = (Cliente)resultado.get("cliente");
-                                ArrayList<ItemVenta> items = (ArrayList<ItemVenta>)resultado.get("items");
-                                VentaModal modal = new VentaModal(MiFrame.getInstance(),ventaSeleccionado, items,c);
-                                modal.setVisible(true); // bloquea el thread hasta que es cerrado
-                                filtro = "";
-                                pagina = 1;
-                                reload();
-                            }
-
-                            @Override
-                            public void onError(String mensajeError) {
-                                System.err.println("Error al imprimir: " + mensajeError);
-                            }
-
-                            @Override
-                            public void onSuccess(HashMap<String, Object> datos, Paginado p) {
-                                // throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-                            }
-                        });
-                    }else{
-                        Dialogos.mostrarInfo("Solo se pueden editar presupuestos en estado 'PENDIENTE' ");
-                    }
-                    
+                if(ventaSeleccionada != null ){
+                    //logger.debug("fecha de pago == null ?" + ventaSeleccionada.getFecha_pago());
+//                    if(ventaSeleccionada.getFecha_pago()==null){
+//                        VentaController.getInstance().buscarVenta(ventaSeleccionada.getId(),
+//                        new DatosListener<HashMap<String, Object>>() {
+//                            @Override
+//                            public void onSuccess(HashMap<String, Object> resultado) {
+//                                Cliente c = (Cliente)resultado.get("cliente");
+//                                ArrayList<ItemVenta> items = (ArrayList<ItemVenta>)resultado.get("items");
+//                                VentaModal modal = new VentaModal(MiFrame.getInstance(),ventaSeleccionada, items,c);
+//                                modal.setVisible(true); // bloquea el thread hasta que es cerrado
+//                                filtro = "";
+//                                pagina = 1;
+//                                reload();
+//                            }
+//
+//                            @Override
+//                            public void onError(String mensajeError) {
+//                                System.err.println("Error al imprimir: " + mensajeError);
+//                            }
+//
+//                            @Override
+//                            public void onSuccess(HashMap<String, Object> datos, Paginado p) {
+//                                // throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//                            }
+//                        });
+//                    }else{
+//                        Dialogos.mostrarInfo("Solo se pueden editar presupuestos en estado 'PENDIENTE' ");
+//                    }
                 }
             }
         });
         
         btnEliminar.addActionListener(e -> {
-            if (ventaSeleccionado != null) {
-                ventaControlador.eliminarVenta(ventaSeleccionado.getId(), new DatosListener<String>() {
+            if (ventaSeleccionada != null) {
+                ventaControlador.eliminarVenta(ventaSeleccionada.getId(), new DatosListener<String>() {
                     @Override
                     public void onSuccess(String resultado) {
                         System.out.println("Eliminado OK: " + resultado);
@@ -410,49 +410,13 @@ public class VentaPanel extends JPanel {
     }
 
     private void initTabla() {
-        String[] headers = {"Cód:", "Cliente", "Teléfono", "Fecha Emisión", "Fecha Pagado","Nro. Venta", "Total","Observaciones", "Acciones"};
+        String[] headers = {"Cód:", "Cliente", "Teléfono", "Fecha Emisión", "Forma de Pago","Subtotal", "Descuento","Total","Observaciones"};
         List<Object[]> rows = generarData();
         BiConsumer<PanelAccion, Integer> configurador = (panel, row) -> {
-            Venta remi = (Venta) ventasDetallado.get(row).get("venta");
-
-            if(remi.getFecha_pago()==null){
-                panel.agregarBoton("Pagar", IconSVG.ACEPTAR, e -> {
-                    boolean res = Dialogos.confirmar("¿Confirmar el pago?", "Pagar venta");
-                    if (res) {
-                        //TODO dejar a cargo al back con un endpoint
-                        Venta aux = new Venta();
-                        aux.setFecha_pago(FechaUtils.ldToString(LocalDate.now()) );
-                        aux.setId(remi.getId());
-                        ventaControlador.actualizarVenta(aux,
-                                new DatosListener() {
-                                    @Override
-                                    public void onSuccess(Object datos) {
-                                        Dialogos.mostrarExito("" + datos);
-                                        filtro = "";
-                                        pagina = 1;
-                                        reload();
-                                    }
-                                    @Override
-                                    public void onError(String mensajeError) {
-                                        Dialogos.mostrarError(mensajeError);
-                                        filtro = "";
-                                        pagina = 1;
-                                        reload();
-                                    }
-                                    @Override
-                                    public void onSuccess(Object datos, Paginado p) {
-                                    }
-                                });
-                    }
-                });
-            }
-            panel.agregarBoton("Imprimir", IconSVG.IMPRIMIR, e -> {
-                imprimirVenta(remi);
-            });
-
+            // Venta ven = (Venta) ventasDetallado.get(row).get("venta");
         };
 
-        TablaBuilder builder = new TablaBuilder(headers, rows, headers.length - 1, configurador);
+        TablaBuilder builder = new TablaBuilder(headers, rows, - 1, configurador);
         scroll = builder.crearTabla();
         tabla = builder.getTable();
         this.repaint();
@@ -461,8 +425,8 @@ public class VentaPanel extends JPanel {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 int row = tabla.rowAtPoint(evt.getPoint());
                 if (row >= 0) {
-                    ventaSeleccionado = (Venta) ventasDetallado.get(row).get("venta");
-                    logger.trace("Venta seleccionado: " + ventaSeleccionado.getId());
+                    ventaSeleccionada = (Venta) ventasDetallado.get(row).get("venta");
+                    logger.trace("Venta seleccionado: " + ventaSeleccionada.getId());
                 }
             }
         });
@@ -471,16 +435,18 @@ public class VentaPanel extends JPanel {
     private List<Object[]> generarData() {
         List<Object[]> rows = new ArrayList<>();
         for (HashMap<String, Object> map : ventasDetallado) {
-            Venta r = (Venta) map.get("venta");
+            Venta v = (Venta) map.get("venta");
+            Cliente c = (Cliente) map.get("cliente");
             rows.add(new Object[]{
-                    r.getId(),
-                    r.getC_nombre(),
-                    r.getC_telefono(),
-                    r.getFecha_emision(),
-                    r.getFecha_pago(),
-                    r.getNro_venta(),
-                    r.getTotal(),
-                    r.getObservaciones()
+                    v.getId(),
+                    c.getNombre(),
+                    c.getTelefono(),
+                    v.getCreado(),
+                    v.getForma_pago(),
+                    v.getSubtotal(),
+                    v.getPorcentaje_descuento(),
+                    v.getTotal(),
+                    v.getObservaciones()
             });
         }
         return rows;
@@ -517,15 +483,15 @@ public class VentaPanel extends JPanel {
             }
         }, 300);
     }
-//    
-//    private void imprimirVenta(Venta venta) {
-//        ventaControlador.buscarVenta(
-//                venta.getId(),
-//                new DatosListener<HashMap<String, Object>>() {
-//                    
-//            @Override
-//            public void onSuccess(HashMap<String, Object> resultado) {
-//                Venta remi = (Venta)resultado.get("venta");
+    
+    private void imprimirVenta(Venta venta) {
+        ventaControlador.buscarVenta(
+                venta.getId(),
+                new DatosListener<HashMap<String, Object>>() {
+                    
+            @Override
+            public void onSuccess(HashMap<String, Object> resultado) {
+//                Venta ven = (Venta)resultado.get("venta");
 ////                Orden o = (Orden)resultado.get("orden");
 //                Cliente c = (Cliente)resultado.get("cliente");
 //                ArrayList<ItemVenta> itemsRemi = (ArrayList<ItemVenta>)resultado.get("items");
@@ -540,15 +506,15 @@ public class VentaPanel extends JPanel {
 //                // 3. Reemplazar los placeholders
 //                String htmlFinal = template
 //                        .replace("{{fecha}}", java.time.LocalDate.now().toString())
-//                        .replace("{{numero}}", remi.getId()+"")
+//                        .replace("{{numero}}", ven.getId()+"")
 //                        .replace("{{cliente_nombre}}", c.getNombre())
 //                        .replace("{{cliente_telefono}}", c.getTelefono())
 //                        .replace("{{cliente_localidad}}", c.getLocalidad() != null ? c.getLocalidad() : "No informado")
 //                        .replace("{{cliente_domicilio}}", c.getDireccion() != null ? c.getDireccion() : "No informado")
 //                        .replace("{{cliente_cp}}", c.getCodigo_postal() != null ? c.getCodigo_postal() : "No informado")
 //                        .replace("{{cliente_provincia}}", c.getLocalidad() != null ? c.getLocalidad() : "No informado")
-//                        .replace("{{descripcion}}", remi.getObservaciones() != null ? remi.getObservaciones() : "No informado")
-//                        .replace("{{total}}", remi.getTotal()+"")
+//                        .replace("{{descripcion}}", ven.getObservaciones() != null ? ven.getObservaciones() : "No informado")
+//                        .replace("{{total}}", ven.getTotal()+"")
 //                        .replace("{{tabla_items}}", tablaHTML);
 //                // 4. Mostrar Vista Previa
 //                VistaPreviaImpresion vista = new VistaPreviaImpresion(
@@ -557,19 +523,19 @@ public class VentaPanel extends JPanel {
 //                        "venta_" + c.getNombre().replace(" ", "_")
 //                );
 //                vista.setVisible(true);
-//            }
-//
-//            @Override
-//            public void onError(String mensajeError) {
-//                System.err.println("Error al imprimir: " + mensajeError);
-//            }
-//
-//            @Override
-//            public void onSuccess(HashMap<String, Object> datos, Paginado p) {
-//                // throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-//            }
-//        }); 
-//    }
+            }
+
+            @Override
+            public void onError(String mensajeError) {
+                System.err.println("Error al imprimir: " + mensajeError);
+            }
+
+            @Override
+            public void onSuccess(HashMap<String, Object> datos, Paginado p) {
+                // throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+            }
+        }); 
+    }
 //
 //    public static String generarFilasTabla(List<ItemVenta> items) {
 //        StringBuilder sb = new StringBuilder();
