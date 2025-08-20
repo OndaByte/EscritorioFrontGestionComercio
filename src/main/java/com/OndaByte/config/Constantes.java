@@ -32,7 +32,8 @@ public class Constantes {
     public static final String RESOURCES_FILE_PATH = "file:"+ RESOURCES_PATH;
     ;
     public static final Map<String, String[][]> componentesCategoriaGrupo = new LinkedHashMap<>();// Mantiene el orden deinsersion
-    public static final Map<String, String[][]> secretariaMenu = new LinkedHashMap<>();;
+    public static final Map<String, String[][]> secretariaMenu = new LinkedHashMap<>();
+    public static final Map<String, String[][]> vendedorMenu = new LinkedHashMap<>();
     public static final Map<String, String[][]> usuarioMenu = new LinkedHashMap<>();
 
     private static Logger logger = LogManager.getLogger(Constantes.class.getName());
@@ -44,14 +45,21 @@ public class Constantes {
         }
 
         String[][] grupo1 = {{"Dashboard"},{"Caja"}};
+        String[][] grupo11 = {{"Caja"}};
         String[][] grupo2 = {{"Finanzas","Resumen Cajas","Movimientos","Ventas"}/*,"Historial/Reportes"}*/};
         String[][] grupo3  = {{"Clientes"},{"Empleados"},{"Productos"},{"Categorias"},{"Gastos Fijos"}};
+        String[][] grupo31  = {{"Productos"},{"Categorias"}};
         String[][] grupo4 = { {"Perfil"},{"Cerrar Sesion"}};
 
         componentesCategoriaGrupo.put("~PRINCIPAL~",grupo1);
         componentesCategoriaGrupo.put("~PROCESOS~",grupo2);
         componentesCategoriaGrupo.put("~EMPRESA~",grupo3);
         componentesCategoriaGrupo.put("~OTROS~",grupo4);
+
+
+        vendedorMenu.put("~PRINCIPAL~",grupo11);
+        vendedorMenu.put("~EMPRESA~",grupo31);
+        vendedorMenu.put("~OTROS~",grupo4);
 
         secretariaMenu.put("~PROCESOS~",grupo2);
         secretariaMenu.put("~EMPRESA~",grupo3);
@@ -71,7 +79,8 @@ public class Constantes {
                 break;
             }
             case "EMPLEADO":{
-                conponentesByRol = secretariaMenu;
+                //conponentesByRol = secretariaMenu;
+                conponentesByRol = vendedorMenu;
                 break;
             }
             case "USUARIO":{

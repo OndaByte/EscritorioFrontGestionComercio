@@ -39,22 +39,7 @@ public class MovimientoService {
         return enviarRequest("/p/e/caja/movimiento", "POST", new JSONObject(movimiento));
     }
 
-    /**
-     * Crea un Pedido en la API.
-     */
-    public static JSONObject crearVenta(Venta venta, List<ItemVenta> items) {
-        //hacer json 
-        JSONObject jo = new JSONObject();
-        JSONArray jaItems= new JSONArray();
-        JSONObject ven = new JSONObject(venta);
-
-        for(ItemVenta i : items){
-            jaItems.put(new JSONObject(i));
-        }
-        jo.put("venta",ven);
-        jo.put("items",jaItems);
-        return enviarRequest("/p/e/caja/venta", "POST", jo);
-    }
+   
 
     /**
      * Edita un Pedido en la API.

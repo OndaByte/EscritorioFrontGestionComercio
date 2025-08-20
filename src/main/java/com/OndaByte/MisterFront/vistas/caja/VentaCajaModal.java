@@ -57,7 +57,7 @@ public class VentaCajaModal extends JDialog {
         formaPagoCombo = new JComboBox<>(new String[]{"EFECTIVO", "DÉBITO", "CRÉDITO", "TRANSFERENCIA"});
         clienteCombo = new JComboBox<>(); // rellenar con datos reales
         observaciones = new JTextArea(4, 20);
-        btnConfirmar = new JButton("CONFIRMAR", new IconSVG(IconSVG.ACEPTAR));
+        btnConfirmar = new JButton("CONFIRMAR", new IconSVG(IconSVG.COBRAR));
         btnCancelar = new JButton("CANCELAR", new IconSVG(IconSVG.RECHAZAR));
 
         // ===== Panel principal =====

@@ -51,7 +51,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class VentaPanel extends JPanel {
-
+ 
     private JTable tabla;
     private JScrollPane scroll;
     private JTextField txtBuscar;
@@ -572,4 +572,8 @@ public class VentaPanel extends JPanel {
         }
         return "";
     }
+
+
+
+     
 }
