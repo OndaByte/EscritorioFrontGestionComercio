@@ -4,6 +4,7 @@ package com.OndaByte.MisterFront.vistas.ventas;
 import com.OndaByte.MisterFront.controladores.VentaController;
 import com.OndaByte.MisterFront.estilos.MisEstilos;
 import com.OndaByte.MisterFront.modelos.Cliente;
+import com.OndaByte.MisterFront.modelos.Venta;
 import com.OndaByte.MisterFront.vistas.DatosListener;
 import com.OndaByte.MisterFront.vistas.util.Dialogos;
 import com.OndaByte.MisterFront.vistas.util.FechaUtils;
@@ -41,7 +42,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class VentaModal extends JDialog {
-
+ /*
     private Venta venta;
     private ArrayList<ItemVenta> items;
     private Cliente cliente;
@@ -338,4 +339,6 @@ public class VentaModal extends JDialog {
         }
     }
 
+
+  */
 }

@@ -24,9 +24,10 @@ public class MostradorCajaPanel extends JPanel {
 
     private JPanel topPanel, centerPanel, bottomPanel;
     private JLabel lblEstadoCaja, lblOperador, lblHoraInicio;
-    private JButton btnAbrirCerrarCaja;
     private JLabel lblEstadoOperacion, lblHora;
+    private JButton btnAbrirCerrarCaja;
     private JButton btnNuevaVenta;
+    private JButton btnVerInfo;
 
     private Caja caja;
     private MovimientoController cajaController;
@@ -81,11 +82,19 @@ public class MostradorCajaPanel extends JPanel {
         if (btnAbrirCerrarCaja == null) {
             btnAbrirCerrarCaja = new JButton("ABRIR CAJA");
         }
-        setVisibleByPermisos(btnAbrirCerrarCaja, "ABRIR_CAJA");
+        setVisibleByPermisos(btnAbrirCerrarCaja, "CAJA_ABRIR");
         btnAbrirCerrarCaja.addActionListener(e -> abrirCerrarCaja());
+
+        // ====== Botón Ver Info Caja ======
+        if (btnVerInfo == null) {
+            btnVerInfo = new JButton("", new IconSVG(IconSVG.OJO));
+        }
+        //setVisibleByPermisos(btnVerInfo, "CAJA_VER_INFO");
+        btnVerInfo.addActionListener(e -> verInfoCaja());
 
         // ====== Añadir al panel ======
         topPanel.add(lblEstadoCaja, "left");
+        topPanel.add(btnVerInfo, "left");
         topPanel.add(lblOperador, "center");
         topPanel.add(lblHoraInicio, "left, growx");
         topPanel.add(btnAbrirCerrarCaja, "left");
@@ -113,7 +122,7 @@ public class MostradorCajaPanel extends JPanel {
             btnNuevaVenta = new JButton("+ Nueva Venta");
         }
         btnNuevaVenta.setEnabled(SesionController.getInstance().getSesionCaja() != null);
-        setVisibleByPermisos(btnNuevaVenta, "VENTA_ALTA");
+        setVisibleByPermisos(btnNuevaVenta, "CAJA_VENTA");
         btnNuevaVenta.addActionListener(e -> agregarNuevoPanelVenta());
         centerPanel.add(btnNuevaVenta, BorderLayout.NORTH);
         centerPanel.add(tabbedPane, BorderLayout.CENTER);
@@ -130,7 +139,6 @@ public class MostradorCajaPanel extends JPanel {
 
     private void setVisibleByPermisos(JComponent c, String permiso) {
         c.setVisible(permisos.contains(permiso));
-        c.setVisible(true);
     }
 
     private void agregarNuevoPanelVenta() {
@@ -150,14 +158,53 @@ public class MostradorCajaPanel extends JPanel {
     private void onSuccessAbrirCaja(String datos) {
         lblEstadoCaja.setText("CAJA: ABIERTA");
         btnAbrirCerrarCaja.setText("CERRAR CAJA");
-        setVisibleByPermisos(btnAbrirCerrarCaja, "CERRAR_CAJA");
+        setVisibleByPermisos(btnVerInfo, "CAJA_VER_INFO");
+        setVisibleByPermisos(btnAbrirCerrarCaja, "CAJA_CERRAR");
         lblHoraInicio.setText("INICIO: " + java.time.LocalTime.now().withNano(0));
         lblEstadoOperacion.setText("ESTADO: operativa");
         btnNuevaVenta.setEnabled(true);
         actualizarEstadoCaja(true);
         Dialogos.mostrarExito(datos);
         agregarNuevoPanelVenta();
+    }
+    private void verInfoCaja() {
+
+        Caja c = SesionController.getInstance().getSesionCaja();
+
+        if (c == null) {
+            Dialogos.mostrarError("No hay ninguna caja abierta.");
+            return;
         }
+
+        // Obtener datos
+        String montoInicial = c.getMonto_inicial();
+        String montoActual = c.getMonto_actual();
+
+        // Crear el modal
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Información de Caja", true);
+        dialog.setLayout(new BorderLayout());
+        dialog.setSize(300, 200);
+        dialog.setLocationRelativeTo(this);
+
+        JPanel panel = new JPanel(new MigLayout("wrap 2", "10[right]5[grow,fill]10"));
+
+        panel.add(new JLabel("Monto Inicial:"));
+        panel.add(new JLabel(montoInicial));
+
+        panel.add(new JLabel("Monto Actual:"));
+        panel.add(new JLabel(montoActual));
+
+        //panel.add(new JLabel("Cantidad de Ventas:"));
+        //panel.add(new JLabel(String.valueOf("fictisiop")));
+
+        JButton btnCerrar = new JButton("Cerrar");
+        btnCerrar.addActionListener(e -> dialog.dispose());
+
+        dialog.add(panel, BorderLayout.CENTER);
+        dialog.add(btnCerrar, BorderLayout.SOUTH);
+
+        dialog.setVisible(true);
+    }
 
     private void abrirCerrarCaja() {
 
@@ -169,6 +216,7 @@ public class MostradorCajaPanel extends JPanel {
                 this.cajaController.abrirCaja(montoInicial, new DatosListener<String>() {
                     @Override
                     public void onSuccess(String datos) {
+                        SesionController.getInstance().getSesionCaja().setMonto_inicial(input);
                         onSuccessAbrirCaja(datos);
                     }
 
@@ -226,7 +274,7 @@ public class MostradorCajaPanel extends JPanel {
                 this.cajaController.cerrarCaja(new DatosListener<String>() {
                     @Override
                     public void onSuccess(String datos) {
-                        lblEstadoCaja.setText("CAJA: CERRADa");
+                        lblEstadoCaja.setText("CAJA: CERRADA");
                         btnAbrirCerrarCaja.setText("ABRIR CAJA");
                         lblHoraInicio.setText("INICIO: --:--");
                         lblEstadoOperacion.setText("ESTADO: operativa");

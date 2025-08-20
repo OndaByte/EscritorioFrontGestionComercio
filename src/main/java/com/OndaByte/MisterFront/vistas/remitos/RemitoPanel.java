@@ -418,7 +418,7 @@ public class RemitoPanel extends JPanel {
             Remito remi = (Remito) remitosDetallado.get(row).get("remito");
 
             if(remi.getFecha_pago()==null){
-                panel.agregarBoton("Pagar", IconSVG.ACEPTAR, e -> {
+                panel.agregarBoton("Pagar", IconSVG.COBRAR, e -> {
                     boolean res = Dialogos.confirmar("¿Confirmar el pago?", "Pagar remito");
                     if (res) {
                         //TODO dejar a cargo al back con un endpoint

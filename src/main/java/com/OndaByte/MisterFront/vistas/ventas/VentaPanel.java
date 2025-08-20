@@ -49,6 +49,7 @@ import org.apache.logging.log4j.Logger;
 
 public class VentaPanel extends JPanel {
 
+    /*
     private JTable tabla;
     private JScrollPane scroll;
     private JTextField txtBuscar;
@@ -138,6 +139,7 @@ public class VentaPanel extends JPanel {
      * Renderiza de nuevo los elementos de la tabla y paginado con el filtro
      * actual.
      */
+    /*
     private void reload() {
         ventaControlador.filtrar(filtro, filtroDesde, filtroHasta, filtroEstado, "" + pagina, "" + tamPagina, new DatosListener<List<HashMap<String, Object>>>() {
             @Override
@@ -602,4 +604,6 @@ public class VentaPanel extends JPanel {
 //        }
 //        return "";
 //    }
+
+     */
 }

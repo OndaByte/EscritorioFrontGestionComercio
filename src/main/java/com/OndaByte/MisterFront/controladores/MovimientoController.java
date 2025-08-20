@@ -159,11 +159,13 @@ public class MovimientoController {
     }
 
     public void abrirCaja(Float montoI, DatosListener<String> listener) {
-        MovimientoService.cerrar();
+        //MovimientoService.cerrar();
         JSONObject res = MovimientoService.abrir(montoI);
         if (res.getInt("status") == 201) {
             Caja aux = new Caja();
             aux.setId((new JSONObject(res.getString("data"))).getInt("id"));
+            aux.setMonto_inicial(String.valueOf(montoI));
+            aux.setMonto_actual(String.valueOf(montoI));
             SesionController.getInstance().setSesionCaja(aux);
             listener.onSuccess(res.optString("mensaje"));
 

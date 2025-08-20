@@ -125,7 +125,7 @@ public class MovimientoPanel extends JPanel {
                 esta.totalElementos=p.getTotalElementos();
                 esta.totalPaginas=p.getTotalPaginas();
                 initTabla(); //tabla
-                setVisibleByPermisos(tabla,"PEDIDO_LISTAR");
+                setVisibleByPermisos(tabla,"MOVIMIENTO_LISTAR");
                 
                 initVista(); // Inicializa la vista segun los permisos disponibles menos la tabla
                 initEstilos(); //estilos menos los de la tabla
@@ -180,7 +180,7 @@ public class MovimientoPanel extends JPanel {
                 esta.totalPaginas=p.getTotalPaginas();
                 remove(scroll);
                 initTabla(); //tabla
-                setVisibleByPermisos(tabla,"PEDIDO_LISTAR");
+                setVisibleByPermisos(tabla,"MOVIMIENTO_LISTAR");
                 add(scroll, BorderLayout.CENTER);
                 actualizarPaginado();
                 revalidate();

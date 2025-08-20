@@ -127,7 +127,7 @@ public class DashboardPanel extends JPanel {
         //calendarioPanel.setBackground(Color.RED);
         MisEstilos.aplicarEstilo(this, MisEstilos.MENU_LATERAL);
         eventosPanel = new JPanel(new BorderLayout());
-        eventosPanel.setBorder(BorderFactory.createTitledBorder("Turnos del día"));
+        eventosPanel.setBorder(BorderFactory.createTitledBorder("Ventas del día"));
 
         eventosPanel.add(new JScrollPane(new JPanel()), BorderLayout.CENTER); //
 

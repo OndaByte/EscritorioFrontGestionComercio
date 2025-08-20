@@ -4,10 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Las Sesiones Caja son Cajas en este entorno.
- * @author luciano
- */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Caja {
@@ -17,6 +13,7 @@ public class Caja {
     private String monto_inicial;
     @JsonProperty("monto_final")
     private String monto_final;
+    private String monto_actual;
     @JsonProperty("apertura")
     private String apertura;
     @JsonProperty("cierre")
@@ -77,4 +74,11 @@ public class Caja {
         this.cajero_id = cajero_id;
     }
 
+    public String getMonto_actual() {
+        return monto_actual;
+    }
+
+    public void setMonto_actual(String monto_actual) {
+        this.monto_actual = monto_actual;
+    }
 }

@@ -154,17 +154,18 @@ public class VentaCajaPanel extends JPanel {
         lblSubtotal.setFont(new Font("Courier New", Font.BOLD, 16));
 
         JLabel lblDescuentoExtra = new JLabel("Descuento (%):");
+        setVisibleByPermisos(lblDescuentoExtra, "DESCUENTO_SOBRE_TOTAL");
         lblDescuentoExtra.setFont(new Font("Courier New", Font.PLAIN, 14));
         if(spinnerDescuentoExtra == null){
             spinnerDescuentoExtra = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
         }
-        setVisibleByPermisos(spinnerDescuentoExtra, "DESC_EXTRA");
+        setVisibleByPermisos(spinnerDescuentoExtra, "DESCUENTO_SOBRE_TOTAL");
         spinnerDescuentoExtra.addChangeListener(e -> actualizarTotales());
 
         lblTotal = new JLabel("Total: $0.00");
         lblTotal.setFont(new Font("Courier New", Font.BOLD, 16));
-        btnCobrar = new JButton("COBRAR");
-        JButton btnCancelar = new JButton("CANCELAR VENTA");
+        btnCobrar = new JButton("COBRAR", new IconSVG(IconSVG.COBRAR));
+        JButton btnCancelar = new JButton("CANCELAR VENTA", new IconSVG(IconSVG.CANCELAR));
 
         btnCancelar.addActionListener(e -> {
             cerrar();
@@ -177,7 +178,7 @@ public class VentaCajaPanel extends JPanel {
         resumenPanel.add(lblDescuentoExtra);
         resumenPanel.add(spinnerDescuentoExtra, "wrap");
         resumenPanel.add(lblTotal, "span, wrap");
-        resumenPanel.add(btnCancelar, "spany 3, growy, growx");
+        resumenPanel.add(btnCancelar, "spany 3, grow");
         resumenPanel.add(btnCobrar, "spany 3, span, growy, growx");
 
         derecha.add(scrollCarrito, "grow, wrap");
@@ -186,7 +187,6 @@ public class VentaCajaPanel extends JPanel {
 
     private void setVisibleByPermisos(JComponent c, String permiso){
         c.setVisible(permisos.contains(permiso));
-        c.setVisible(true);
     }
 
     private void actualizarTotales(){
@@ -263,13 +263,14 @@ public class VentaCajaPanel extends JPanel {
         JLabel lblNombre = new JLabel(producto);
         JLabel lblCant = new JLabel("Unidades:");
         JLabel lblDesc = new JLabel("Descuento (%):");
+        setVisibleByPermisos(lblDesc, "DESCUENTO_PRECIO_UNITARIO");
 
         // Spinner cantidad
         JSpinner spinnerCantidad = new JSpinner(new SpinnerNumberModel(1, 1, stock, 1));
-        setVisibleByPermisos(spinnerCantidad, "DESCUENTO_UNITARIO");
 
         // Spinner descuento (%)
         JSpinner spinnerDescuento = new JSpinner(new SpinnerNumberModel(0, 0, 100, 1));
+        setVisibleByPermisos(spinnerDescuento, "DESCUENTO_PRECIO_UNITARIO");
 
         // Botón eliminar
         JButton btnEliminar = new JButton(new IconSVG(IconSVG.ELIMINAR));

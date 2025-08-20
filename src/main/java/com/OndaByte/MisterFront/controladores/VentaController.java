@@ -19,7 +19,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class VentaController {
-    
+
+    /*
     private SesionController sesionController = null;
     private static VentaController instance;
     private static Logger logger = LogManager.getLogger(VentaController.class.getName());
@@ -184,10 +185,12 @@ public class VentaController {
 //            listener.onError(res.optString("mensaje"));
 //        }
 //    }
-     
+
     /**
      * Crea un nuevo venta.
      */
+
+    /*
     public void crearVenta(Venta venta,List<ItemVenta> items, DatosListener<String> listener) {
         JSONObject res = VentaService.crearVenta(venta,items);
         if (res.getInt("status") == 201) {
@@ -200,6 +203,8 @@ public class VentaController {
     /**
      * Crea un nuevo venta.
      */
+
+    /*
     public void editarVenta(Venta venta, List<ItemVenta> items, DatosListener<String> listener) {
         JSONObject res = VentaService.editarVenta(venta,items);
         if (res.getInt("status") == 201) {
@@ -212,6 +217,8 @@ public class VentaController {
     /**
      * Elimina un venta por ID.
      */
+
+    /*
     public void eliminarVenta(int id, DatosListener<String> listener) {
         JSONObject res = VentaService.eliminarVenta(id);
         if (res.getInt("status") == 200) {
@@ -220,4 +227,6 @@ public class VentaController {
             listener.onError(res.optString("mensaje"));
         }
     }
+
+     */
 }

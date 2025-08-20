@@ -100,7 +100,7 @@ public class CategoriaPanel extends JPanel {
                 esta.totalElementos=p.getTotalElementos();
                 esta.totalPaginas=p.getTotalPaginas();
                 initTabla(); //tabla
-                setVisibleByPermisos(tabla,"EMPLEADO_LISTAR");
+                setVisibleByPermisos(tabla,"CATEGORIA_LISTAR");
                 initVista(); // Inicializa la vista segun los permisos disponibles menos la tabla
                 initEstilos(); //estilos menos los de la tabla
                 addAcciones(); // acciones de buscador, botoones abm, etc. menos la tabla
@@ -135,7 +135,7 @@ public class CategoriaPanel extends JPanel {
                 esta.totalPaginas=p.getTotalPaginas();
                 remove(scroll);
                 initTabla(); //tabla
-                setVisibleByPermisos(tabla,"EMPLEADO_LISTAR");
+                setVisibleByPermisos(tabla,"CATEGORIA_LISTAR");
                 add(scroll, BorderLayout.CENTER);
                 actualizarPaginado();
                 revalidate();
@@ -150,21 +150,21 @@ public class CategoriaPanel extends JPanel {
         if(txtBuscar==null){
             txtBuscar = new JTextField();
         }
-        setVisibleByPermisos(txtBuscar,"EMPLEADO_LISTAR");
+        setVisibleByPermisos(txtBuscar,"CATEGORIA_LISTAR");
         if(btnNuevo==null){
             btnNuevo = new JButton("Nuevo");
 
         }
-        setVisibleByPermisos(btnNuevo,"EMPLEADO_ALTA");
+        setVisibleByPermisos(btnNuevo,"CATEGORIA_ALTA");
         if(btnEditar==null){
             btnEditar = new JButton("Editar");
 
         }
-        setVisibleByPermisos(btnEditar,"EMPLEADO_MODIFICAR");
+        setVisibleByPermisos(btnEditar,"CATEGORIA_MODIFICAR");
         if(btnEliminar==null){
             btnEliminar = new JButton("Eliminar");
         }
-        setVisibleByPermisos(btnEliminar,"EMPLEADO_BAJA");
+        setVisibleByPermisos(btnEliminar,"CATEGORIA_BAJA");
 
         buscarPanel = new JPanel(new MigLayout("insets 0, fillx", "[grow]"));
         buscarPanel.add(txtBuscar, "growx");

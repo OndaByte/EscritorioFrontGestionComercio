@@ -67,6 +67,9 @@ public class MenuItem extends JPanel implements EventosInterface{
             case "Dashboard":
                 numero = "icon/bulletin-notice.svg";
                 break;
+            case "Caja":
+                numero = "icon/cash-register.svg";
+                break;
             case "Ordenes":
                 numero = "icon/list.svg";
                 break;
@@ -93,6 +96,12 @@ public class MenuItem extends JPanel implements EventosInterface{
                 break;
             case "Empleados":
                 numero = "icon/person-checkmark.svg";
+                break;
+            case "Productos":
+                numero = "icon/hammer-claw.svg";
+                break;
+            case "Categorias":
+                numero = "icon/hammer-claw.svg";
                 break;
             case "Insumos":
                 numero = "icon/hammer-claw.svg";
