@@ -91,9 +91,6 @@ public class MenuItem extends JPanel implements EventosInterface{
             case "Clientes":
                 numero = "icon/persons.svg";
                 break;
-            case "Categorias":
-                numero = "icon/person-checkmark.svg";
-                break;
             case "Empleados":
                 numero = "icon/person-checkmark.svg";
                 break;
@@ -119,14 +116,14 @@ public class MenuItem extends JPanel implements EventosInterface{
     @Override
     public void runEvento(String evento) {
         switch (evento){
-                case "Ordenes":
-                    if (menu.isMenuFull()) {
-                            MenuAnimation.animate(MenuItem.this, !menuShow);
-                        } else {
-                            popup.show(MenuItem.this, (int) MenuItem.this.getWidth() + UIScale.scale(5), UIScale.scale(menuItemHeight) / 2);
-                        }
-                    break;
-                default : MiFrame.getInstance().getAplicacion().runEvento(evento);
+            case "Finanzas":
+                if (menu.isMenuFull()) {
+                    MenuAnimation.animate(MenuItem.this, !menuShow);
+                } else {
+                    popup.show(MenuItem.this, (int) MenuItem.this.getWidth() + UIScale.scale(5), UIScale.scale(menuItemHeight) / 2);
+                }
+                break;
+            default : MiFrame.getInstance().getAplicacion().runEvento(evento);
         }
     }
 
