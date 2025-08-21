@@ -43,7 +43,7 @@ public class VentaCajaPanel extends JPanel {
     private Map<String, FilaCarrito> mapaCarrito = new HashMap<>();
     private JSpinner spinnerDescuentoExtra;
 
-    private MovimientoController cajaController;
+    private MovimientoController movimientoController;
     private ProductoController productoController;
     HashSet<String> permisos = null;
 
@@ -67,7 +67,7 @@ public class VentaCajaPanel extends JPanel {
         this.add(izquierda, "grow");
         this.add(derecha, "grow");
         this.productoController = ProductoController.getInstance();
-        this.cajaController = MovimientoController.getInstance();
+        this.movimientoController = MovimientoController.getInstance();
         this.filtro="";
 
         productoController.filtrar(filtro,"" + 1, "" + 1000, new DatosListener<List<Producto>>(){

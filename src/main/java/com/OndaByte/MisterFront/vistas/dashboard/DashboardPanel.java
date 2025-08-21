@@ -9,9 +9,6 @@ import com.OndaByte.MisterFront.modelos.Pedido;
 import com.OndaByte.MisterFront.modelos.Turno;
 import com.OndaByte.MisterFront.vistas.DatosListener;
 import com.OndaByte.MisterFront.vistas.MiFrame;
-import com.OndaByte.MisterFront.vistas.ordenes.OrdenModal;
-import com.OndaByte.MisterFront.vistas.pedidos.PedidoModal;
-import com.OndaByte.MisterFront.vistas.turnos.TurnoModal;
 import com.OndaByte.MisterFront.vistas.util.Dialogos;
 import com.OndaByte.MisterFront.vistas.util.FechaUtils;
 import com.OndaByte.MisterFront.vistas.util.Paginado;
@@ -146,10 +143,10 @@ public class DashboardPanel extends JPanel {
         this.add(kpiPanel, BorderLayout.SOUTH);
 
         // Placeholder data
-        agregarCard("Turnos Pendientes", "12", pendiente);
-        agregarCard("Turnos Atrasados", "3", atrasado);
-        agregarCard("Turnos Terminados", "27", terminado);
-        agregarCard("Turnos Totales", "4", total);
+        agregarCard("Ventas Efectivo", "12", pendiente);
+        agregarCard("Ventas Transferencia", "3", atrasado);
+        agregarCard("Cantidad Ventas", "27", terminado);
+        agregarCard("Ventas Totales", "40", total);
     }
 
     private void agregarCard(String titulo, String valor, Color color) {

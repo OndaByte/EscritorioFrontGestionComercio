@@ -128,7 +128,7 @@ public class VentaPanel extends JPanel {
                 esta.totalElementos = p.getTotalElementos();
                 esta.totalPaginas = p.getTotalPaginas();
                 initTabla(); //tabla
-                setVisibleByPermisos(tabla, "REMITO_LISTAR");
+                setVisibleByPermisos(tabla, "VENTA_LISTAR");
 
                 initVista(); // Inicializa la vista segun los permisos disponibles menos la tabla
                 initEstilos(); //estilos menos los de la tabla
@@ -163,7 +163,7 @@ public class VentaPanel extends JPanel {
                 esta.totalPaginas = p.getTotalPaginas();
                 remove(scroll);
                 initTabla(); //tabla
-                setVisibleByPermisos(tabla, "REMITO_LISTAR");
+                setVisibleByPermisos(tabla, "VENTA_LISTAR");
                 add(scroll, BorderLayout.CENTER);
                 actualizarPaginado();
                 revalidate();
@@ -182,12 +182,12 @@ public class VentaPanel extends JPanel {
         if (btnEliminar == null) {
             btnEliminar = new JButton("Eliminar");
         }
-        setVisibleByPermisos(btnEliminar, "REMITO_BAJA");
+        setVisibleByPermisos(btnEliminar, "VENTA_BAJA");
         
         if (btnEditar == null) {
             btnEditar = new JButton("Editar");
         }
-        setVisibleByPermisos(btnEditar, "REMITO_MODIFICAR");
+        setVisibleByPermisos(btnEditar, "VENTA_MODIFICAR");
 
         buscarPanel = new JPanel(new MigLayout("insets 0, fillx", "[grow]"));
         buscarPanel.add(txtBuscar, "growx");
@@ -215,7 +215,7 @@ public class VentaPanel extends JPanel {
 
         botonesPanel = new JPanel(new MigLayout("insets 0", "[]10[]10[]"));
         //botonesPanel.add(btnEliminar);
-        botonesPanel.add(btnEditar);
+        //botonesPanel.add(btnEditar);
 
         topPanel = new JPanel(new MigLayout("insets 5, fillx", "[grow][grow][right]"));
         topPanel.add(buscarPanel, "growx");

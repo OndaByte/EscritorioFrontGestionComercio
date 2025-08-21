@@ -1,11 +1,12 @@
 package com.OndaByte.MisterFront.controladores;
 
-import com.OndaByte.MisterFront.modelos.Movimiento;
-import com.OndaByte.MisterFront.servicios.MovimientoService;
+import com.OndaByte.MisterFront.modelos.Caja; 
+import com.OndaByte.MisterFront.modelos.Movimiento; 
+import com.OndaByte.MisterFront.servicios.CajaService;
 import com.OndaByte.MisterFront.sesion.SesionController;
-import com.OndaByte.MisterFront.vistas.DatosListener;
+import com.OndaByte.MisterFront.vistas.DatosListener; 
 import com.OndaByte.MisterFront.vistas.util.Paginado;
-
+ 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,11 +16,11 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class MovimientoController {
+public class CajaController {
 
     private SesionController sesionController = null;
-    private static MovimientoController instance;
-    private static Logger logger = LogManager.getLogger(MovimientoController.class.getName());
+    private static CajaController instance;
+    private static Logger logger = LogManager.getLogger(CajaController.class.getName());
 
     static {
         if (logger.isDebugEnabled()) {
@@ -27,19 +28,21 @@ public class MovimientoController {
         }
     }
 
-    private MovimientoController() {
+    private CajaController() {
         this.sesionController = SesionController.getInstance();
     }
 
-    public static MovimientoController getInstance() {
+    public static CajaController getInstance() {
         if (instance == null) {
-            instance = new MovimientoController();
+            instance = new CajaController();
         }
         return instance;
     }
-
+    /**
+     * Sesiones
+     */
     public void filtrar(String filtro, String desde, String hasta, String estado, String pagina, String cantElementos, DatosListener<List<HashMap<String, Object>>> listener) {
-        JSONObject cajasRes = MovimientoService.filtrar(filtro, desde, hasta, estado, pagina, cantElementos);
+        JSONObject cajasRes = CajaService.filtrar(filtro, desde, hasta, estado, pagina, cantElementos);
         if (cajasRes.getInt("status") == 200) {
             try {
                 JSONArray movimientosArray = new JSONArray(cajasRes.getString("data"));
@@ -80,50 +83,9 @@ public class MovimientoController {
             listener.onError(cajasRes.optString("mensaje"));
         }
     }
-
-  
-    /**
-     * Crea un nuevo remito.
-     */
-    public boolean crearMovimiento(Movimiento movimiento, DatosListener<String> listener) {
-        JSONObject res = MovimientoService.crear(movimiento);
-        if (res.getInt("status") == 201) {
-            listener.onSuccess(res.optString("mensaje"));
-            return true;
-        } else {
-            listener.onError(res.optString("mensaje"));
-            return false;
-        }
-    }
-
-    /**
-     * Crea un nuevo remito.
-     */
-    public boolean editarMovimiento(Movimiento movimiento, DatosListener<String> listener) {
-        JSONObject res = MovimientoService.editar(movimiento);
-        if (res.getInt("status") == 201) {
-            listener.onSuccess(res.optString("mensaje"));
-            return true;
-        } else {
-            listener.onError(res.optString("mensaje"));
-            return false;
-        }
-    }
-
-    /**
-     * Elimina un remito por ID.
-     */
-    public void eliminarMovimiento(int id, DatosListener<String> listener) {
-        JSONObject res = MovimientoService.eliminar(id);
-        if (res.getInt("status") == 200) {
-            listener.onSuccess(res.optString("mensaje"));
-        } else {
-            listener.onError(res.optString("mensaje"));
-        }
-    }
-
-    public void resumenCaja(String filtro, String desde, String hasta, DatosListener<HashMap<String, Object>> listener) {
-        JSONObject res = MovimientoService.resumen(filtro, desde, hasta);
+    
+    public void resumenSesionesCaja(String filtro, String desde, String hasta, DatosListener<HashMap<String, Object>> listener) {
+        JSONObject res = CajaService.resumen(filtro, desde, hasta);
         if (res != null && res.getInt("status") == 200) {
             try {
                 JSONObject data = new JSONObject(res.getString("data"));
@@ -137,6 +99,45 @@ public class MovimientoController {
             }
         } else {
             listener.onError(res != null ? res.optString("mensaje") : "Error de conexión");
+        }
+    }
+
+    public void abrirCaja(Float montoI, DatosListener<String> listener) {
+        //CajaService.cerrar();
+        JSONObject res = CajaService.abrir(montoI);
+        if (res.getInt("status") == 201) {
+            Caja aux = new Caja();
+            aux.setId((new JSONObject(res.getString("data"))).getInt("id"));
+            aux.setMonto_inicial(String.valueOf(montoI));
+            aux.setMonto_actual(String.valueOf(montoI));
+            SesionController.getInstance().setSesionCaja(aux);
+            listener.onSuccess(res.optString("mensaje"));
+
+        } else {
+            listener.onError(res.optString("mensaje"));
+        }
+    }
+
+    public void cerrarCaja(DatosListener<String> listener) {
+        Caja aux = new Caja();
+        JSONObject res = CajaService.cerrar();
+        if (res.getInt("status") == 201) {
+            SesionController.getInstance().setSesionCaja(null);
+            listener.onSuccess(res.optString("mensaje"));
+
+        } else {
+            listener.onError(res.optString("mensaje"));
+        }
+    }
+
+    public void obtenerUltimaSesion(int id, DatosListener<String> listener) {
+        JSONObject res = CajaService.obtenerUltimaSesion(id);
+        if (res.getInt("status") == 200) {
+            JSONObject data = new JSONObject(res.getString("data"));
+            int sesionID = data.getInt("id");
+            listener.onSuccess(""+sesionID);
+        } else {
+            listener.onError(res.optString("mensaje"));
         }
     }
 }

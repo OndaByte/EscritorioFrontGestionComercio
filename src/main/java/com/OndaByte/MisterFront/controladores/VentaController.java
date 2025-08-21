@@ -53,7 +53,7 @@ public class VentaController {
 
                     JSONObject rJson = ventasArray.getJSONObject(i).getJSONObject("venta");
                     JSONObject cJson = ventasArray.getJSONObject(i).getJSONObject("cliente");
-                    JSONObject oJson = ventasArray.getJSONObject(i).getJSONObject("orden");
+//                    JSONObject oJson = ventasArray.getJSONObject(i).getJSONObject("orden");
 //                  JSONObject preJson = ventasArray.getJSONObject(i).getJSONObject("presupuesto");
 
                     Venta v = new Venta();
@@ -67,17 +67,15 @@ public class VentaController {
                     v.setObservaciones(rJson.optString("observaciones",null));
                     v.setNro_comprobante(rJson.getInt("nro_comprobante"));
 
-
                     Cliente c = new Cliente();
-                    c.setId(cJson.getInt("id"));
-                    c.setNombre(cJson.getString("nombre"));
-                    c.setTelefono(cJson.getString("telefono"));
-                    
+                    if(!cJson.isNull("id")){
+                        c.setId(cJson.getInt("id"));
+                        c.setNombre(cJson.getString("nombre"));
+                        c.setTelefono(cJson.getString("telefono"));
+                    }
 
                     HashMap<String, Object> objeto = new HashMap<>();
-                 //   objeto.put("orden", o);
                     objeto.put("cliente", c);
-                 //   objeto.put("turno", t);
                     objeto.put("venta", v);
                     ventasDTO.add(objeto);
                 }

@@ -1,5 +1,6 @@
 
 package com.OndaByte.MisterFront.vistas;
+import com.OndaByte.MisterFront.controladores.CajaController;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -7,7 +8,6 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import com.OndaByte.MisterFront.controladores.MovimientoController;
 import com.OndaByte.MisterFront.vistas.inicializacion.Inicializacion;
 import com.OndaByte.MisterFront.vistas.login.Login;
 import com.OndaByte.MisterFront.vistas.util.Dialogos;
@@ -122,7 +122,7 @@ public class MiFrame extends JFrame {
             miFrame.login = new Login();
         }
         init(false);
-        MovimientoController.getInstance().cerrarCaja(new DatosListener<String>() {
+        CajaController.getInstance().cerrarCaja(new DatosListener<String>() {
             @Override
             public void onSuccess(String resultado) {
                 Dialogos.mostrarExito(resultado);
