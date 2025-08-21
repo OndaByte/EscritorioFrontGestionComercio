@@ -182,12 +182,12 @@ public class VentaPanel extends JPanel {
         if (btnEliminar == null) {
             btnEliminar = new JButton("Eliminar");
         }
-        setVisibleByPermisos(btnEliminar, "VENTA_BAJA");
+        //setVisibleByPermisos(btnEliminar, "VENTA_BAJA");
         
         if (btnEditar == null) {
             btnEditar = new JButton("Editar");
         }
-        setVisibleByPermisos(btnEditar, "VENTA_MODIFICAR");
+        //setVisibleByPermisos(btnEditar, "VENTA_MODIFICAR");
 
         buscarPanel = new JPanel(new MigLayout("insets 0, fillx", "[grow]"));
         buscarPanel.add(txtBuscar, "growx");

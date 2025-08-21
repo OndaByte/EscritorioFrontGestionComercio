@@ -213,20 +213,20 @@ public class MovimientoPanel extends JPanel {
     private void initVista() {
         if (txtBuscar == null){
             txtBuscar = new JTextField();
-          //  setVisibleByPermisos(txtBuscar, "MOVIMIENTO_LISTAR");
+            setVisibleByPermisos(txtBuscar, "MOVIMIENTO_LISTAR");
         }
         if (btnNuevo == null){
             btnNuevo = new JButton("Nuevo");
         }
-        //setVisibleByPermisos(btnNuevo, "MOVIMIENTO_ALTA");
+        setVisibleByPermisos(btnNuevo, "MOVIMIENTO_ALTA");
         if (btnEditar == null){
             btnEditar = new JButton("Editar");
         }
-        //setVisibleByPermisos(btnEditar, "MOVIMIENTO_MODIFICAR");
+        setVisibleByPermisos(btnEditar, "MOVIMIENTO_MODIFICAR");
         if (btnEliminar == null){
             btnEliminar = new JButton("Eliminar");
         }
-        //setVisibleByPermisos(btnEliminar, "MOVIMIENTO_BAJA");
+        setVisibleByPermisos(btnEliminar, "MOVIMIENTO_BAJA");
 
         buscarPanel = new JPanel(new MigLayout("insets 0, fillx", "[grow]"));
         buscarPanel.add(txtBuscar, "growx");

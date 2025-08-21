@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 public class Constantes {
 
     //Datos de la empresa
-    public static final String TITULO_PRINCIPAL = "<HTML>Mister Queso</HTML>";
+    public static final String TITULO_PRINCIPAL = "<HTML>Mister Almacen</HTML>";
     public static final String LOGO = "icon/marketplace.svg";
 
     //constantes del mad viejo
