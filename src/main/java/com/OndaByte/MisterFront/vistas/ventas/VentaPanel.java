@@ -6,6 +6,7 @@ import com.OndaByte.MisterFront.controladores.VentaController;
 import com.OndaByte.MisterFront.modelos.Cliente;
 import com.OndaByte.MisterFront.vistas.util.VistaPreviaImpresion;
 import com.OndaByte.MisterFront.estilos.MisEstilos;
+import com.OndaByte.MisterFront.modelos.ItemVenta;
 import com.OndaByte.MisterFront.modelos.Venta;
 import com.OndaByte.MisterFront.sesion.SesionController;
 import com.OndaByte.MisterFront.vistas.DatosListener;
@@ -50,8 +51,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class VentaPanel extends JPanel {
-
-    /*
+ 
     private JTable tabla;
     private JScrollPane scroll;
     private JTextField txtBuscar;
@@ -128,7 +128,7 @@ public class VentaPanel extends JPanel {
                 esta.totalElementos = p.getTotalElementos();
                 esta.totalPaginas = p.getTotalPaginas();
                 initTabla(); //tabla
-                setVisibleByPermisos(tabla, "REMITO_LISTAR");
+                setVisibleByPermisos(tabla, "VENTA_LISTAR");
 
                 initVista(); // Inicializa la vista segun los permisos disponibles menos la tabla
                 initEstilos(); //estilos menos los de la tabla
@@ -141,7 +141,6 @@ public class VentaPanel extends JPanel {
      * Renderiza de nuevo los elementos de la tabla y paginado con el filtro
      * actual.
      */
-    /*
     private void reload() {
         ventaControlador.filtrar(filtro, filtroDesde, filtroHasta, filtroEstado, "" + pagina, "" + tamPagina, new DatosListener<List<HashMap<String, Object>>>() {
             @Override
@@ -164,7 +163,7 @@ public class VentaPanel extends JPanel {
                 esta.totalPaginas = p.getTotalPaginas();
                 remove(scroll);
                 initTabla(); //tabla
-                setVisibleByPermisos(tabla, "REMITO_LISTAR");
+                setVisibleByPermisos(tabla, "VENTA_LISTAR");
                 add(scroll, BorderLayout.CENTER);
                 actualizarPaginado();
                 revalidate();
@@ -183,12 +182,12 @@ public class VentaPanel extends JPanel {
         if (btnEliminar == null) {
             btnEliminar = new JButton("Eliminar");
         }
-        setVisibleByPermisos(btnEliminar, "REMITO_BAJA");
+        setVisibleByPermisos(btnEliminar, "VENTA_BAJA");
         
         if (btnEditar == null) {
             btnEditar = new JButton("Editar");
         }
-        setVisibleByPermisos(btnEditar, "REMITO_MODIFICAR");
+        setVisibleByPermisos(btnEditar, "VENTA_MODIFICAR");
 
         buscarPanel = new JPanel(new MigLayout("insets 0, fillx", "[grow]"));
         buscarPanel.add(txtBuscar, "growx");
@@ -216,7 +215,7 @@ public class VentaPanel extends JPanel {
 
         botonesPanel = new JPanel(new MigLayout("insets 0", "[]10[]10[]"));
         //botonesPanel.add(btnEliminar);
-        botonesPanel.add(btnEditar);
+        //botonesPanel.add(btnEditar);
 
         topPanel = new JPanel(new MigLayout("insets 5, fillx", "[grow][grow][right]"));
         topPanel.add(buscarPanel, "growx");
@@ -415,7 +414,10 @@ public class VentaPanel extends JPanel {
         String[] headers = {"Cód:", "Cliente", "Teléfono", "Fecha Emisión", "Forma de Pago","Subtotal", "Descuento","Total","Observaciones"};
         List<Object[]> rows = generarData();
         BiConsumer<PanelAccion, Integer> configurador = (panel, row) -> {
-            // Venta ven = (Venta) ventasDetallado.get(row).get("venta");
+            Venta ven = (Venta) ventasDetallado.get(row).get("venta");
+            panel.agregarBoton("Imprimir", IconSVG.IMPRIMIR, e -> {
+                imprimirVenta(ven);
+            });
         };
 
         TablaBuilder builder = new TablaBuilder(headers, rows, - 1, configurador);
@@ -493,38 +495,38 @@ public class VentaPanel extends JPanel {
                     
             @Override
             public void onSuccess(HashMap<String, Object> resultado) {
-//                Venta ven = (Venta)resultado.get("venta");
-////                Orden o = (Orden)resultado.get("orden");
-//                Cliente c = (Cliente)resultado.get("cliente");
-//                ArrayList<ItemVenta> itemsRemi = (ArrayList<ItemVenta>)resultado.get("items");
-//                
-//                System.out.println("Imprimir OK: " + resultado);
-//                // 1. Generar HTML de filas de la tabla
-//                String tablaHTML = generarFilasTabla(itemsRemi);
-//
-//                // 2. Cargar plantilla base
-//                String template = cargarTemplate();
-//
-//                // 3. Reemplazar los placeholders
-//                String htmlFinal = template
-//                        .replace("{{fecha}}", java.time.LocalDate.now().toString())
-//                        .replace("{{numero}}", ven.getId()+"")
-//                        .replace("{{cliente_nombre}}", c.getNombre())
-//                        .replace("{{cliente_telefono}}", c.getTelefono())
-//                        .replace("{{cliente_localidad}}", c.getLocalidad() != null ? c.getLocalidad() : "No informado")
-//                        .replace("{{cliente_domicilio}}", c.getDireccion() != null ? c.getDireccion() : "No informado")
-//                        .replace("{{cliente_cp}}", c.getCodigo_postal() != null ? c.getCodigo_postal() : "No informado")
-//                        .replace("{{cliente_provincia}}", c.getLocalidad() != null ? c.getLocalidad() : "No informado")
-//                        .replace("{{descripcion}}", ven.getObservaciones() != null ? ven.getObservaciones() : "No informado")
-//                        .replace("{{total}}", ven.getTotal()+"")
-//                        .replace("{{tabla_items}}", tablaHTML);
-//                // 4. Mostrar Vista Previa
-//                VistaPreviaImpresion vista = new VistaPreviaImpresion(
-//                        MiFrame.getInstance(),
-//                        htmlFinal,
-//                        "venta_" + c.getNombre().replace(" ", "_")
-//                );
-//                vista.setVisible(true);
+                Venta ven = (Venta)resultado.get("venta");
+//                Orden o = (Orden)resultado.get("orden");
+                Cliente c = (Cliente)resultado.get("cliente");
+                ArrayList<ItemVenta> itemsRemi = (ArrayList<ItemVenta>)resultado.get("items");
+                
+                System.out.println("Imprimir OK: " + resultado);
+                // 1. Generar HTML de filas de la tabla
+                String tablaHTML = generarFilasTabla(itemsRemi);
+
+                // 2. Cargar plantilla base
+                String template = cargarTemplate();
+
+                // 3. Reemplazar los placeholders
+                String htmlFinal = template
+                        .replace("{{fecha}}", java.time.LocalDate.now().toString())
+                        .replace("{{numero}}", ven.getId()+"")
+                        .replace("{{cliente_nombre}}", c.getNombre())
+                        .replace("{{cliente_telefono}}", c.getTelefono())
+                        .replace("{{cliente_localidad}}", c.getLocalidad() != null ? c.getLocalidad() : "No informado")
+                        .replace("{{cliente_domicilio}}", c.getDireccion() != null ? c.getDireccion() : "No informado")
+                        .replace("{{cliente_cp}}", c.getCodigo_postal() != null ? c.getCodigo_postal() : "No informado")
+                        .replace("{{cliente_provincia}}", c.getLocalidad() != null ? c.getLocalidad() : "No informado")
+                        .replace("{{descripcion}}", ven.getObservaciones() != null ? ven.getObservaciones() : "No informado")
+                        .replace("{{total}}", ven.getTotal()+"")
+                        .replace("{{tabla_items}}", tablaHTML);
+                // 4. Mostrar Vista Previa
+                VistaPreviaImpresion vista = new VistaPreviaImpresion(
+                        MiFrame.getInstance(),
+                        htmlFinal,
+                        "venta_" + c.getNombre().replace(" ", "_")
+                );
+                vista.setVisible(true);
             }
 
             @Override
@@ -538,38 +540,40 @@ public class VentaPanel extends JPanel {
             }
         }); 
     }
-//
-//    public static String generarFilasTabla(List<ItemVenta> items) {
-//        StringBuilder sb = new StringBuilder();
-//        for (int i = 0; i < items.size(); i++) {
-//            ItemVenta ir = items.get(i);
-//            sb.append("<tr>");
-//
-//            sb.append("<td>")
-//                    .append(ir.getDescripcion())
-//                    .append("</td>")
-//                    .append("<td>")
-//                    .append(ir.getCantidad())
-//                    .append("</td>")
-//                    .append("<td>")
-//                    .append(ir.getPrecio())
-//                    .append("</td>");
-//
-//            sb.append("</tr>");
-//        }
-//        return sb.toString();
-//    }
 
-//    private String cargarTemplate() {
-//        try {
-//            InputStream is = VentaModal.class.getClassLoader().getResourceAsStream("templates/template_venta.html");
-//            BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-//            return br.lines().collect(Collectors.joining("\n"));
-//        } catch (Exception e) {
-//            logger.error("VentaModal: ", e.getMessage(), e);
-//        }
-//        return "";
-//    }
+    public static String generarFilasTabla(List<ItemVenta> items) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < items.size(); i++) {
+            ItemVenta iv = items.get(i);
+            sb.append("<tr>");
 
-     */
+            sb.append("<td>")
+                    .append(iv.getNombre())
+                    .append("</td>")
+                    .append("<td>")
+                    .append(iv.getCantidad())
+                    .append("</td>")
+                    .append("<td>")
+                    .append(iv.getSubtotal())
+                    .append("</td>");
+
+            sb.append("</tr>");
+        }
+        return sb.toString();
+    }
+
+    private String cargarTemplate() {
+        try {
+            InputStream is = VentaPanel.class.getClassLoader().getResourceAsStream("templates/template_venta.html");
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+            return br.lines().collect(Collectors.joining("\n"));
+        } catch (Exception e) {
+            logger.error("VentaModal: ", e.getMessage(), e);
+        }
+        return "";
+    }
+
+
+
+     
 }

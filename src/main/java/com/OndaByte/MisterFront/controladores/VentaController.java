@@ -5,6 +5,7 @@ import com.OndaByte.MisterFront.modelos.Cliente;
 import com.OndaByte.MisterFront.modelos.ItemVenta;
 import com.OndaByte.MisterFront.modelos.Orden;
 import com.OndaByte.MisterFront.modelos.Venta;
+import com.OndaByte.MisterFront.servicios.MovimientoService;
 import com.OndaByte.MisterFront.servicios.VentaService;
 import com.OndaByte.MisterFront.sesion.SesionController;
 import com.OndaByte.MisterFront.vistas.DatosListener;
@@ -20,7 +21,6 @@ import org.json.JSONObject;
 
 public class VentaController {
 
-    /*
     private SesionController sesionController = null;
     private static VentaController instance;
     private static Logger logger = LogManager.getLogger(VentaController.class.getName());
@@ -53,51 +53,30 @@ public class VentaController {
 
                     JSONObject rJson = ventasArray.getJSONObject(i).getJSONObject("venta");
                     JSONObject cJson = ventasArray.getJSONObject(i).getJSONObject("cliente");
-                    JSONObject oJson = ventasArray.getJSONObject(i).getJSONObject("orden");
+//                    JSONObject oJson = ventasArray.getJSONObject(i).getJSONObject("orden");
 //                  JSONObject preJson = ventasArray.getJSONObject(i).getJSONObject("presupuesto");
 
-                    Venta r = new Venta();
-                    r.setId(rJson.getInt("id"));
-                    r.setFecha_emision(rJson.getString("fecha_emision"));
-                    r.setFecha_pago(rJson.optString("fecha_pago",null));
-                    r.setTotal(rJson.getFloat("total"));
-                    r.setObservaciones(rJson.optString("observaciones",null));
-                    r.setC_cuit_cuil(rJson.getString("cliente_cuit_cuil"));
-                    r.setC_domicilio(rJson.getString("cliente_domicilio"));
-                    r.setC_localidad(rJson.getString("cliente_localidad"));
-                    r.setC_nombre(rJson.getString("cliente_nombre"));
-                    r.setC_telefono(rJson.getString("cliente_telefono"));
-                    r.setPunto_venta(rJson.getString("punto_venta"));
-                    r.setNro_venta(rJson.getInt("nro_venta"));
-
+                    Venta v = new Venta();
+                    v.setId(rJson.getInt("id"));
+                    v.setCreado(rJson.getString("creado"));
+                    v.setForma_pago(rJson.getString("forma_pago"));
+                    v.setSubtotal(rJson.getFloat("subtotal"));
+                    v.setPorcentaje_descuento(rJson.getInt("porcentaje_descuento"));
+                    v.setTotal(rJson.getFloat("total"));
+                    v.setPunto_venta(rJson.getString("punto_venta"));
+                    v.setObservaciones(rJson.optString("observaciones",null));
+                    v.setNro_comprobante(rJson.getInt("nro_comprobante"));
 
                     Cliente c = new Cliente();
-                    c.setId(cJson.getInt("id"));
-                    c.setNombre(cJson.getString("nombre"));
-                    c.setTelefono(cJson.getString("telefono"));
-                    
-//                    Presupuesto pre = new Presupuesto();
-//                    if(!preJson.isNull("id")){
-//                        pre.setId(preJson.optInt("id"));
-//                        pre.setNombre(preJson.getString("nombre"));
-//                        pre.setDescripcion(preJson.getString("descripcion"));
-//                        pre.setEstado_presupuesto(preJson.getString("estado_presupuesto"));
-//
-//                    }
-                    
-                    Orden o = new Orden();
-                    o.setId(oJson.getInt("id"));
-                    o.setDescripcion(oJson.optString("descripcion",null));
-                    o.setFecha_fin(oJson.optString("fecha_fin",null));
-                    o.setTipo(oJson.getString("tipo"));
-                    o.setEstado_orden(oJson.getString("estado_orden"));
-                    o.setCreado(oJson.getString("creado"));
+                    if(!cJson.isNull("id")){
+                        c.setId(cJson.getInt("id"));
+                        c.setNombre(cJson.getString("nombre"));
+                        c.setTelefono(cJson.getString("telefono"));
+                    }
 
                     HashMap<String, Object> objeto = new HashMap<>();
-                    objeto.put("orden", o);
                     objeto.put("cliente", c);
-                 //   objeto.put("turno", t);
-                    objeto.put("venta", r);
+                    objeto.put("venta", v);
                     ventasDTO.add(objeto);
                 }
 
@@ -122,46 +101,42 @@ public class VentaController {
         JSONObject res = VentaService.buscarVenta(id);
         if (res.getInt("status") == 200) {
             try {
-                JSONObject rDetalle = new JSONObject(res.getString("data"));
+                JSONObject vDetalle = new JSONObject(res.getString("data"));
                 HashMap<String, Object> ventaDTO = new HashMap<>();
-                ArrayList<ItemVenta> itemsR = new ArrayList<>();
+                ArrayList<ItemVenta> itemsV = new ArrayList<>();
                 
-                JSONObject rJson = rDetalle.getJSONObject("venta");
-                JSONObject oJson = rDetalle.getJSONObject("orden");
-                JSONObject cJson = rDetalle.getJSONObject("cliente");
-                JSONArray itemsRJson = rDetalle.getJSONArray("items");
+                JSONObject vJson = vDetalle.getJSONObject("venta");
+                JSONObject cJson = vDetalle.getJSONObject("cliente");
+                JSONArray itemsRJson = vDetalle.getJSONArray("items");
 
-                Venta r = new Venta();
-                r.setId(rJson.getInt("id"));
-                r.setFecha_emision(rJson.getString("fecha_emision"));
-                r.setFecha_pago(rJson.optString("fecha_pago",null));
-                r.setTotal(rJson.getFloat("total"));
-                r.setObservaciones(rJson.optString("observaciones",null));
+                Venta v = new Venta();
+                v.setId(vJson.getInt("id"));
+                v.setCreado(vJson.getString("creado"));
+                v.setForma_pago(vJson.getString("forma_pago"));
+                v.setSubtotal(vJson.getFloat("subtotal"));
+                v.setPorcentaje_descuento(vJson.getInt("porcentaje_descuento"));
+                v.setTotal(vJson.getFloat("total"));
+                v.setPunto_venta(vJson.getString("punto_venta"));
+                v.setObservaciones(vJson.optString("observaciones",null));
+                v.setNro_comprobante(vJson.getInt("nro_comprobante"));
                     
                 Cliente c = new Cliente();
                 c.setId(cJson.getInt("id"));
                 c.setNombre(cJson.getString("nombre"));
                 c.setTelefono(cJson.getString("telefono"));
 
-//                Presupuesto pre = new Presupuesto();
-//                pre.setId(preJson.getInt("id"));
-//                pre.setNombre(preJson.getString("nombre"));
-//                pre.setDescripcion(preJson.getString("descripcion"));
-//                pre.setEstado_presupuesto(preJson.getString("estado_presupuesto"));
-//                pre.setTotal(preJson.getFloat("total"));
-
                 for (int i = 0; i < itemsRJson.length(); i++) {
-//                    ItemVenta ir = new ItemVenta();
-//                    ir.setId(itemsRJson.getJSONObject(i).getInt("id"));
-//                    ir.setDescripcion(itemsRJson.getJSONObject(i).getString("descripcion"));
-//                    ir.setCantidad(itemsRJson.getJSONObject(i).optIntegerObject("cantidad",null));
-//                    ir.setPrecio(itemsRJson.getJSONObject(i).getFloat("precio"));
-//                    itemsR.add(ir);
+                    ItemVenta iv = new ItemVenta();
+                    iv.setId(itemsRJson.getJSONObject(i).getInt("id"));
+                    iv.setNombre(itemsRJson.getJSONObject(i).getString("descripcion"));
+                    iv.setCantidad(itemsRJson.getJSONObject(i).optIntegerObject("cantidad",null));
+                    iv.setSubtotal(itemsRJson.getJSONObject(i).getFloat("subtotal"));
+                    itemsV.add(iv);
                 }
 //                presupuestoDTO.put("pedido", p);
-                ventaDTO.put("venta", r);
+                ventaDTO.put("venta", v);
                 ventaDTO.put("cliente", c);
-                ventaDTO.put("items", itemsR); 
+                ventaDTO.put("items", itemsV); 
 
                 listener.onSuccess(ventaDTO);
             } catch (Exception e) {
@@ -185,26 +160,22 @@ public class VentaController {
 //            listener.onError(res.optString("mensaje"));
 //        }
 //    }
-
-    /**
+    
+   /**
      * Crea un nuevo venta.
      */
-
-    /*
-    public void crearVenta(Venta venta,List<ItemVenta> items, DatosListener<String> listener) {
-        JSONObject res = VentaService.crearVenta(venta,items);
+    public boolean crearVenta(Venta venta, List<ItemVenta> items, DatosListener<String> listener) {
+        JSONObject res = VentaService.crearVenta(venta, items);
         if (res.getInt("status") == 201) {
             listener.onSuccess(res.optString("mensaje"));
-        } else {    
+            return true;
+        } else {
             listener.onError(res.optString("mensaje"));
+            return false;
         }
     }
 
-    /**
-     * Crea un nuevo venta.
-     */
-
-    /*
+ 
     public void editarVenta(Venta venta, List<ItemVenta> items, DatosListener<String> listener) {
         JSONObject res = VentaService.editarVenta(venta,items);
         if (res.getInt("status") == 201) {
@@ -217,8 +188,6 @@ public class VentaController {
     /**
      * Elimina un venta por ID.
      */
-
-    /*
     public void eliminarVenta(int id, DatosListener<String> listener) {
         JSONObject res = VentaService.eliminarVenta(id);
         if (res.getInt("status") == 200) {
@@ -227,6 +196,4 @@ public class VentaController {
             listener.onError(res.optString("mensaje"));
         }
     }
-
-     */
 }

@@ -34,12 +34,12 @@ public class VentaService {
     public static JSONObject crearVenta(Venta venta, List<ItemVenta> items) {
         //hacer json 
         JSONObject jo = new JSONObject();
-        JSONObject pre = new JSONObject(venta);
+        JSONObject ven = new JSONObject(venta);
         JSONArray jaItems= new JSONArray();
         for(ItemVenta i : items){
             jaItems.put(new JSONObject(i));
         }
-        jo.put("venta",pre);
+        jo.put("venta",ven);
         jo.put("items",jaItems);
         return enviarRequest("/p/e/venta", "POST", jo);
     }

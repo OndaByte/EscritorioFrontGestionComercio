@@ -3,23 +3,19 @@ package com.OndaByte.MisterFront.vistas;
 
 import com.OndaByte.MisterFront.sesion.SesionController;
 import com.OndaByte.MisterFront.estilos.MisEstilos;
-import com.OndaByte.MisterFront.vistas.caja.MovimientoPanel;
+import com.OndaByte.MisterFront.vistas.caja.CajaPanel;
+import com.OndaByte.MisterFront.vistas.movimientos.MovimientoPanel;
 import com.OndaByte.MisterFront.vistas.caja.MostradorCajaPanel;
 import com.OndaByte.MisterFront.vistas.clientes.ClientePanel;
 import com.OndaByte.MisterFront.vistas.categorias.CategoriaPanel;
 import com.OndaByte.MisterFront.vistas.gastosFijos.GastoFijoPanel;
 import com.OndaByte.MisterFront.vistas.menuLateral.PanelLateral;
-import com.OndaByte.MisterFront.vistas.ordenes.OrdenPanel;
-import com.OndaByte.MisterFront.vistas.pedidos.PedidoPanel;
-import com.OndaByte.MisterFront.vistas.presupuestos.PresupuestoPanel;
-import com.OndaByte.MisterFront.vistas.remitos.RemitoPanel;
-import com.OndaByte.MisterFront.vistas.turnos.TurnoPanel;
 import com.OndaByte.MisterFront.vistas.usuarios.UsuarioTabs;
 import com.OndaByte.MisterFront.vistas.dashboard.DashboardPanel;
 import com.OndaByte.MisterFront.vistas.empleados.EmpleadoPanel;
-import com.OndaByte.MisterFront.vistas.insumos.InsumoPanel;
 import com.OndaByte.MisterFront.vistas.productos.ProductoPanel;
 import com.OndaByte.MisterFront.vistas.util.EventosInterface;
+import com.OndaByte.MisterFront.vistas.ventas.VentaPanel;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.util.UIScale;
 import java.awt.BorderLayout;
@@ -136,13 +132,13 @@ public class ContenedorPrincipal extends JLayeredPane implements ContenedorPrinc
                 this.renderCentral(evento,new MostradorCajaPanel());
                 break;
             case "Resumen Cajas":
-//                this.renderCentral(evento,new SesionPanel());
+                this.renderCentral(evento,new CajaPanel());
                 break;
             case "Movimientos":
                 this.renderCentral(evento,new MovimientoPanel());
                 break;
             case "Ventas":
-//                this.renderCentral(evento,new VentaPanel());
+                this.renderCentral(evento,new VentaPanel());
                 break;
 //            case "Historial/Reportes":
 //                this.renderCentral(evento,new MovimientoPanel());

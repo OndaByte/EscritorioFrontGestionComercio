@@ -1,6 +1,6 @@
 package com.OndaByte.MisterFront.vistas.caja;
 
-import com.OndaByte.MisterFront.controladores.MovimientoController;
+import com.OndaByte.MisterFront.controladores.CajaController;
 import com.OndaByte.MisterFront.estilos.MisEstilos;
 import com.OndaByte.MisterFront.modelos.Caja;
 import com.OndaByte.MisterFront.modelos.ItemVenta;
@@ -30,7 +30,7 @@ public class MostradorCajaPanel extends JPanel {
     private JButton btnVerInfo;
 
     private Caja caja;
-    private MovimientoController cajaController;
+    private CajaController cajaController;
     HashSet<String> permisos = null;
 
     private JTabbedPane tabbedPane;
@@ -40,7 +40,7 @@ public class MostradorCajaPanel extends JPanel {
 
     public MostradorCajaPanel() {
         this.permisos = (HashSet<String>) SesionController.getInstance().getSesionPermisos();
-        this.cajaController = MovimientoController.getInstance();
+        this.cajaController = CajaController.getInstance();
         this.setLayout(new BorderLayout());
         initTopPanel();
         initCenterPanel();
@@ -89,7 +89,7 @@ public class MostradorCajaPanel extends JPanel {
         if (btnVerInfo == null) {
             btnVerInfo = new JButton("", new IconSVG(IconSVG.OJO));
         }
-        //setVisibleByPermisos(btnVerInfo, "CAJA_VER_INFO");
+        setVisibleByPermisos(btnVerInfo, "CAJA_VER_INFO");
         btnVerInfo.addActionListener(e -> verInfoCaja());
 
         // ====== Añadir al panel ======
@@ -101,6 +101,7 @@ public class MostradorCajaPanel extends JPanel {
     }
 
     private void actualizarEstadoCaja(boolean abierta) {
+        btnVerInfo.setEnabled(abierta);
         if (abierta) {
             lblEstadoCaja.setText("CAJA: ABIERTA");
             lblEstadoCaja.setIcon(new IconSVG(IconSVG.CAJA_ABIERTA, 3));
@@ -222,11 +223,11 @@ public class MostradorCajaPanel extends JPanel {
 
                     @Override
                     public void onError(String mensajeError) {
-                        MovimientoController.getInstance().cerrarCaja(new DatosListener<String>() {
+                        cajaController.cerrarCaja(new DatosListener<String>() {
                             @Override
                             public void onSuccess(String resultado) {
                                 //Dialogos.mostrarExito(resultado);
-                                MovimientoController.getInstance().abrirCaja(montoInicial, new DatosListener<String>() {
+                                cajaController.abrirCaja(montoInicial, new DatosListener<String>() {
                                     @Override
                                     public void onSuccess(String datos) {
                                         onSuccessAbrirCaja(datos);

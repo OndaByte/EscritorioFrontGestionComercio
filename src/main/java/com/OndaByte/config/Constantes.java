@@ -47,7 +47,7 @@ public class Constantes {
         String[][] grupo1 = {{"Dashboard"},{"Caja"}};
         String[][] grupo11 = {{"Caja"}};
         String[][] grupo2 = {{"Finanzas","Resumen Cajas","Movimientos","Ventas"}/*,"Historial/Reportes"}*/};
-        String[][] grupo3  = {{"Clientes"},{"Empleados"},{"Productos"},{"Categorias"},{"Gastos Fijos"}};
+        String[][] grupo3  = {/*{"Clientes"},{"Empleados"},*/{"Productos"},{"Categorias"}/*,{"Gastos Fijos"}*/};
         String[][] grupo31  = {{"Productos"},{"Categorias"}};
         String[][] grupo4 = { {"Perfil"},{"Cerrar Sesion"}};
 

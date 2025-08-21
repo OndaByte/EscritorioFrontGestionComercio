@@ -1,4 +1,4 @@
-package com.OndaByte.MisterFront.vistas.caja;
+package com.OndaByte.MisterFront.vistas.movimientos;
 
 import com.OndaByte.MisterFront.controladores.MovimientoController;
 import com.OndaByte.MisterFront.modelos.Movimiento;

@@ -1,6 +1,7 @@
 package com.OndaByte.MisterFront.vistas.caja;
 
 import com.OndaByte.MisterFront.controladores.MovimientoController;
+import com.OndaByte.MisterFront.controladores.VentaController;
 import com.OndaByte.MisterFront.modelos.Cliente;
 import com.OndaByte.MisterFront.modelos.ItemVenta;
 import com.OndaByte.MisterFront.modelos.Venta;
@@ -40,13 +41,13 @@ public class VentaCajaModal extends JDialog {
     private Integer porcentaje_descuento;
     
     private List<ItemVenta> items;
-    private MovimientoController cajaController;
+    private VentaController ventaController;
             
     public VentaCajaModal(JFrame parent, List<ItemVenta> items,  Float subtotal, Float total, Integer porcentaje_descuento) {
         super(parent, "Confirmar Venta", true);
         setSize(600, 540);
         setLocationRelativeTo(parent);
-        this.cajaController = MovimientoController.getInstance();
+        this.ventaController = VentaController.getInstance();
         
         this.subtotal=subtotal;
         this.total=total;
@@ -145,7 +146,7 @@ public class VentaCajaModal extends JDialog {
         String errores = validarFormulario();
         if (errores.isEmpty()) {
             Venta nuevaVenta = this.crearVenta();
-            cajaController.crearVenta(nuevaVenta, items, new DatosListener<String>() {
+            ventaController.crearVenta(nuevaVenta, items, new DatosListener<String>() {
                     @Override
                     public void onSuccess(String datos) {
                         Dialogos.mostrarExito(datos);

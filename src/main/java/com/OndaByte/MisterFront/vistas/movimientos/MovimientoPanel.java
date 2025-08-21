@@ -1,16 +1,11 @@
+package com.OndaByte.MisterFront.vistas.movimientos;
 
-package com.OndaByte.MisterFront.vistas.pedidos;
- 
-import com.OndaByte.MisterFront.controladores.PedidoController;
-import com.OndaByte.MisterFront.modelos.Cliente;
-import com.OndaByte.MisterFront.modelos.Pedido;
-import com.OndaByte.MisterFront.modelos.Turno;
-import com.OndaByte.MisterFront.estilos.MisEstilos; 
+import com.OndaByte.MisterFront.controladores.MovimientoController;
+import com.OndaByte.MisterFront.estilos.MisEstilos;
+import com.OndaByte.MisterFront.modelos.Movimiento;
 import com.OndaByte.MisterFront.sesion.SesionController;
 import com.OndaByte.MisterFront.vistas.DatosListener;
-import com.OndaByte.MisterFront.vistas.MiFrame; 
-import com.OndaByte.MisterFront.vistas.presupuestos.PresupuestoModal;
-import com.OndaByte.MisterFront.vistas.turnos.TurnoModal;
+import com.OndaByte.MisterFront.vistas.MiFrame;
 import com.OndaByte.MisterFront.vistas.util.Dialogos;
 import com.OndaByte.MisterFront.vistas.util.FechaUtils;
 import com.OndaByte.MisterFront.vistas.util.IconSVG;
@@ -18,35 +13,38 @@ import com.OndaByte.MisterFront.vistas.util.Paginado;
 import com.OndaByte.MisterFront.vistas.util.tabla.PanelAccion;
 import com.OndaByte.MisterFront.vistas.util.tabla.TablaBuilder;
 import com.formdev.flatlaf.FlatClientProperties;
+import com.toedter.calendar.JDateChooser;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.beans.PropertyChangeListener;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import com.toedter.calendar.JDateChooser;
-import java.beans.PropertyChangeListener;
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.BiConsumer;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import net.miginfocom.swing.MigLayout;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PedidoPanel extends JPanel{
+public class MovimientoPanel extends JPanel { 
 
+   
     private JTable tabla;
     private JScrollPane scroll;
     private JTextField txtBuscar;
@@ -62,7 +60,12 @@ public class PedidoPanel extends JPanel{
     private JButton btnUltimo = new JButton(">|");
     private JComboBox<Integer> comboTamanioPagina = new JComboBox<>(new Integer[]{10, 20, 50, 100});
     private JLabel labelPaginas = new JLabel("Página 1 de 1");
-
+    // Resumen financiero
+    private JLabel lblIngresos;
+    private JLabel lblEgresos;
+    private JLabel lblGastosFijos;
+    private JLabel lblBalance;
+    private JLabel lblBalanceSinGastos;
     //Paginado
     private String filtro;
     private String filtroDesde;
@@ -76,25 +79,25 @@ public class PedidoPanel extends JPanel{
     private Integer totalPaginas;
     private Timer timer;
 
-    private PedidoController pedidoControlador;
+    private MovimientoController movimientoControlador;
     private HashSet<String> permisos;
-    private ArrayList<HashMap<String, Object>> pedidosDetallado;
-    private Pedido pedidoSeleccionado;
+    private ArrayList<HashMap<String, Object>> movimientosDetallado;
+    private Movimiento movimientoSeleccionado;
 
-    private PedidoPanel esta;
+    private MovimientoPanel esta;
 
-    private static Logger logger = LogManager.getLogger(PedidoPanel.class.getName());
+    private static Logger logger = LogManager.getLogger(MovimientoPanel.class.getName());
 
     static{
         if(logger.isDebugEnabled()){
             logger.debug("Init logger en PedidosPanel");
         }
-    }
-
-    public PedidoPanel() {
+    } 
+ 
+    public MovimientoPanel() {
         this.esta = this;
         this.permisos = (HashSet<String>) SesionController.getInstance().getSesionPermisos();
-        pedidoControlador = PedidoController.getInstance();
+        movimientoControlador = MovimientoController.getInstance();
         totalElementos=0;
         filtro="";
         filtroEstado="";
@@ -102,7 +105,7 @@ public class PedidoPanel extends JPanel{
         filtroHasta="";
         pagina = 1;
         tamPagina = 20;
-        pedidoControlador.filtrar(filtro,filtroDesde,filtroHasta,filtroEstado, "" + pagina, "" + tamPagina,new DatosListener<List<HashMap<String,Object>>>(){
+        movimientoControlador.filtrar(filtro,filtroDesde,filtroHasta,filtroEstado, "" + pagina, "" + tamPagina,new DatosListener<List<HashMap<String,Object>>>(){
             @Override
             public void onSuccess(List<HashMap<String,Object>> datos) {
             }
@@ -116,18 +119,39 @@ public class PedidoPanel extends JPanel{
 
             @Override
             public void onSuccess(List<HashMap<String,Object>> datos, Paginado p) {
-                pedidosDetallado = new ArrayList<>(datos);
+                movimientosDetallado = new ArrayList<>(datos);
                 esta.pagina=p.getPagina();
                 esta.tamPagina=p.getTamPagina();
                 esta.totalElementos=p.getTotalElementos();
                 esta.totalPaginas=p.getTotalPaginas();
                 initTabla(); //tabla
-                setVisibleByPermisos(tabla,"PEDIDO_LISTAR");
+                setVisibleByPermisos(tabla,"MOVIMIENTO_LISTAR");
                 
                 initVista(); // Inicializa la vista segun los permisos disponibles menos la tabla
                 initEstilos(); //estilos menos los de la tabla
                 addAcciones(); // acciones de buscador, botoones abm, etc. menos la tabla
             }
+        });
+        movimientoControlador.resumenCaja(filtro, filtroDesde, filtroHasta, new DatosListener<HashMap<String, Object>>() {
+            @Override
+            public void onSuccess(HashMap<String, Object> resumen) {
+                float ingresos = ((Number) resumen.get("total_ingresos")).floatValue();
+                float egresos = ((Number) resumen.get("total_egresos")).floatValue();
+                float periodos = ((Number) resumen.get("total_periodos")).floatValue();
+                actualizarResumenPanel(ingresos, egresos, periodos);
+                revalidate();
+                repaint();
+            }
+
+            @Override
+            public void onError(String mensajeError) {
+                Dialogos.mostrarError(mensajeError);
+                revalidate();
+                repaint();
+            }
+
+            @Override
+            public void onSuccess(HashMap<String, Object> datos, Paginado p) {} // no usamos
         });
     }
     
@@ -135,7 +159,7 @@ public class PedidoPanel extends JPanel{
      * Renderiza de nuevo los elementos de la tabla y paginado con el filtro actual. 
      */
     private void reload() {
-        pedidoControlador.filtrar(filtro,filtroDesde,filtroHasta,filtroEstado, "" + pagina, "" + tamPagina, new DatosListener<List<HashMap<String, Object>>>() {
+        movimientoControlador.filtrar(filtro,filtroDesde,filtroHasta,filtroEstado, "" + pagina, "" + tamPagina, new DatosListener<List<HashMap<String, Object>>>() {
             @Override
             public void onSuccess(List<HashMap<String, Object>> datos) {
             }
@@ -149,40 +173,60 @@ public class PedidoPanel extends JPanel{
 
             @Override
             public void onSuccess(List<HashMap<String, Object>> datos, Paginado p) {
-                pedidosDetallado = new ArrayList<>(datos);
+                movimientosDetallado = new ArrayList<>(datos);
                 esta.pagina=p.getPagina();
                 esta.tamPagina=p.getTamPagina();
                 esta.totalElementos=p.getTotalElementos();
                 esta.totalPaginas=p.getTotalPaginas();
                 remove(scroll);
                 initTabla(); //tabla
-                setVisibleByPermisos(tabla,"PEDIDO_LISTAR");
+                setVisibleByPermisos(tabla,"MOVIMIENTO_LISTAR");
                 add(scroll, BorderLayout.CENTER);
                 actualizarPaginado();
                 revalidate();
                 repaint();
             }
         });
+        movimientoControlador.resumenCaja(filtro, filtroDesde, filtroHasta, new DatosListener<HashMap<String, Object>>() {
+            @Override
+            public void onSuccess(HashMap<String, Object> resumen) {
+                float ingresos = ((Number) resumen.get("total_ingresos")).floatValue();
+                float egresos = ((Number) resumen.get("total_egresos")).floatValue();
+                float periodos = ((Number) resumen.get("total_periodos")).floatValue();
+                actualizarResumenPanel(ingresos, egresos, periodos);
+                revalidate();
+                repaint();
+            }
+
+            @Override
+            public void onError(String mensajeError) {
+                Dialogos.mostrarError(mensajeError);
+                revalidate();
+                repaint();
+            }
+
+            @Override
+            public void onSuccess(HashMap<String, Object> datos, Paginado p) {} // no usamos
+        });
     }
 
     private void initVista() {
-        
         if (txtBuscar == null){
             txtBuscar = new JTextField();
-            setVisibleByPermisos(txtBuscar, "PEDIDO_LISTAR");
+          //  setVisibleByPermisos(txtBuscar, "MOVIMIENTO_LISTAR");
         }
         if (btnNuevo == null){
             btnNuevo = new JButton("Nuevo");
         }
-        setVisibleByPermisos(btnNuevo, "PEDIDO_ALTA");
+        //setVisibleByPermisos(btnNuevo, "MOVIMIENTO_ALTA");
         if (btnEditar == null){
             btnEditar = new JButton("Editar");
         }
-        setVisibleByPermisos(btnEditar, "PEDIDO_MODIFICAR");
+        //setVisibleByPermisos(btnEditar, "MOVIMIENTO_MODIFICAR");
         if (btnEliminar == null){
             btnEliminar = new JButton("Eliminar");
         }
-        setVisibleByPermisos(btnEliminar, "PEDIDO_BAJA");
+        //setVisibleByPermisos(btnEliminar, "MOVIMIENTO_BAJA");
 
         buscarPanel = new JPanel(new MigLayout("insets 0, fillx", "[grow]"));
         buscarPanel.add(txtBuscar, "growx");
@@ -196,7 +240,7 @@ public class PedidoPanel extends JPanel{
             fechaHasta.setPreferredSize(new Dimension(111, 30));
         }
         if (comboEstado == null) {
-            comboEstado = new JComboBox(new String[] {"Todos", "Sin asignar", "Pendiente", "Presupuestado", "Aprobado", "Rechazado"});
+            comboEstado = new JComboBox(new String[] {"Todos", "Ingresos", "Egresos", "Remitos"});
         }
         
         // ---- filtrosPanel (fechas y estado) ----
@@ -212,18 +256,35 @@ public class PedidoPanel extends JPanel{
         botonesPanel.add(btnNuevo);
         botonesPanel.add(btnEditar);
         botonesPanel.add(btnEliminar);
-
-
+        
         topPanel = new JPanel(new MigLayout("insets 5, fillx", "[grow][grow][right]"));
         topPanel.add(buscarPanel, "growx");
         topPanel.add(filtrosPanel, "growx");
         topPanel.add(botonesPanel, "right");
-        
-        setLayout(new BorderLayout());
-        add(topPanel, BorderLayout.NORTH);
-        add(scroll, BorderLayout.CENTER);
+                
+        JPanel resumenPanel = new JPanel(new MigLayout("insets 10, fillx", "[grow][grow][grow][grow][grow]"));
+        resumenPanel.setBorder(BorderFactory.createTitledBorder("Resumen"));
+        lblIngresos = new JLabel("Ingresos: $0");
+        lblEgresos = new JLabel("Egresos: $0");
+        lblGastosFijos = new JLabel("Gastos Fijos: $0");
+        lblBalanceSinGastos = new JLabel("Balance (sin GF): $0");
+        lblBalance = new JLabel("Balance: $0");
+
+        resumenPanel.add(lblIngresos);
+        resumenPanel.add(lblEgresos);
+        resumenPanel.add(lblGastosFijos);
+        resumenPanel.add(lblBalanceSinGastos);
+        resumenPanel.add(lblBalance);
+
+        this.setLayout(new BorderLayout());
+        this.add(topPanel, BorderLayout.NORTH);
+        this.add(scroll, BorderLayout.CENTER);
         bottomPanel = armarPaginado();
-        this.add(bottomPanel, BorderLayout.SOUTH);
+        JPanel panle = new JPanel();
+        panle.setLayout(new BorderLayout());
+        panle.add(resumenPanel,BorderLayout.NORTH);
+        panle.add(bottomPanel,BorderLayout.CENTER);
+        this.add(panle, BorderLayout.SOUTH);
     }
 
     private void setVisibleByPermisos(JComponent c, String permiso) {
@@ -277,17 +338,17 @@ public class PedidoPanel extends JPanel{
         });
         btnNuevo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PedidoModal modal = new PedidoModal(MiFrame.getInstance());
+                MovimientoModal modal = new MovimientoModal(MiFrame.getInstance());
                 modal.setVisible(true); // bloquea el thread hasta que es cerrado
                 filtro="";
                 pagina = 1;
-                reload();
+                reload();            
             }
         });
         btnEditar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                if(pedidoSeleccionado != null){
-                    PedidoModal modal = new PedidoModal(MiFrame.getInstance(),pedidoSeleccionado);
+                if(movimientoSeleccionado != null){
+                    MovimientoModal modal = new MovimientoModal(MiFrame.getInstance(),movimientoSeleccionado);
                     modal.setVisible(true); // bloquea el thread hasta que es cerrado
                     filtro="";
                     pagina = 1;
@@ -297,9 +358,9 @@ public class PedidoPanel extends JPanel{
         });
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                if(pedidoSeleccionado != null){
-                    if(Dialogos.confirmar("¿Está seguro que desea eliminar este pedido?", "Eliminar Pedido")){
-                        pedidoControlador.eliminarPedido(pedidoSeleccionado.getId(),
+                if(movimientoSeleccionado != null){
+                    if(Dialogos.confirmar("¿Está seguro que desea eliminar este movimiento?", "Eliminar Movimiento")){
+                        movimientoControlador.eliminarMovimiento(movimientoSeleccionado.getId(),
                             new DatosListener(){
                                 @Override
                                 public void onSuccess(Object datos) {
@@ -402,7 +463,16 @@ public class PedidoPanel extends JPanel{
             }
         }, 300);
     }
-
+    // Métodos auxiliares para actualizar resumen
+    public void actualizarResumenPanel(float ingresos, float egresos, float gastosFijos) {
+        float balance = ingresos - egresos - gastosFijos;
+        float balanceNeto = ingresos - egresos ;
+        lblIngresos.setText("Ingresos: $" + ingresos);
+        lblEgresos.setText("Egresos: $" + egresos);
+        lblGastosFijos.setText("Gastos Fijos: $" + gastosFijos);
+        lblBalanceSinGastos.setText("Balance: (Sin GF) $" + balanceNeto); // solo movimientos, sin gastos fijos, de neto no tiene nada
+        lblBalance.setText("Balance: $" + balance);
+    }
     private JPanel armarPaginado() { 
         
         JPanel paginadoPanel = new JPanel(new MigLayout("insets 5, align center", "[]10[]10[]10[]10[]10[]20[]"));
@@ -436,39 +506,39 @@ public class PedidoPanel extends JPanel{
     }
 
     private void initTabla() {
-        String[] headers = new String[]{"Cód:","Nombre", "Telefono", "Fecha Solicitud", "Descripción","Estado", "Inicio Turno","Fin Turno", "Fin Estimada","Acciones"};
+        String[] headers = new String[]{"Cód:","Usuario:","Cliente:","Fecha:", "Tipo", "Detalle", "Monto"};
         //ASIGNAR TURNO A PEDIDO
         List<Object[]> rows = generarData();
         BiConsumer<PanelAccion, Integer> configurador = (panel, row) -> {
             //logger.debug("Action" + row);
-            Pedido p = (Pedido) pedidosDetallado.get(row).get("pedido");
-            //logger.trace("Pedido row: " + p.getId());
-            if("PENDIENTE".equals(p.getEstado_pedido())){
-                panel.agregarBoton("Asignar_Turno", "icon/calendar2.svg", e -> {
-                    TurnoModal modal = new TurnoModal(MiFrame.getInstance(),p);
-                    modal.setVisible(true); // bloquea el thread hasta que es cerrado
-                    filtro="";
-                    pagina = 1;
-                    reload();                
-                });
-            }
-            if("ASIGNADO".equals(p.getEstado_pedido())){
-                Cliente c = (Cliente) pedidosDetallado.get(row).get("cliente");
-                panel.agregarBoton("Presupuestar", "icon/file.svg", e -> {
-                    PresupuestoModal modal = new PresupuestoModal(MiFrame.getInstance(),p,c);
-                    modal.setVisible(true); // bloquea el thread hasta que es cerrado
-                    filtro="";
-                    pagina = 1;
-                    reload();
-                });
-            }
+//            Pedido p = (Pedido) pedidosDetallado.get(row).get("pedido");
+//            //logger.trace("Pedido row: " + p.getId());
+//            if("PENDIENTE".equals(p.getEstado_pedido())){
+//                panel.agregarBoton("Asignar_Turno", "icon/calendar2.svg", e -> {
+//                    TurnoModal modal = new TurnoModal(MiFrame.getInstance(),p);
+//                    modal.setVisible(true); // bloquea el thread hasta que es cerrado
+//                    filtro="";
+//                    pagina = 1;
+//                    reload();                
+//                });
+//            }
+//            if("ASIGNADO".equals(p.getEstado_pedido())){
+//                Cliente c = (Cliente) pedidosDetallado.get(row).get("cliente");
+//                panel.agregarBoton("Presupuestar", "icon/file.svg", e -> {
+//                    PresupuestoModal modal = new PresupuestoModal(MiFrame.getInstance(),p,c);
+//                    modal.setVisible(true); // bloquea el thread hasta que es cerrado
+//                    filtro="";
+//                    pagina = 1;
+//                    reload();
+//                });
+//            }
 //            panel.agregarBoton("cancelar", "icon/plus.svg", e -> {
 //                System.out.println("❌ Cancelar fila " + row);
 //            });
 
         };
         
-        TablaBuilder builder = new TablaBuilder(headers, rows, headers.length - 1, configurador);
+        TablaBuilder builder = new TablaBuilder(headers, rows,  - 1, null);
         scroll = builder.crearTabla();
         tabla = builder.getTable();
         // Estilos de la tabla
@@ -480,8 +550,8 @@ public class PedidoPanel extends JPanel{
                 int row = tabla.rowAtPoint(evt.getPoint());
                 logger.trace(row);
                 if ( row >= 0 ){
-                    pedidoSeleccionado = (Pedido) pedidosDetallado.get(row).get("pedido");
-                    System.out.println(pedidoSeleccionado.getId());
+                    movimientoSeleccionado = (Movimiento) movimientosDetallado.get(row).get("movimiento");
+                    System.out.println(movimientoSeleccionado.getId());
                 }
             }
         });
@@ -489,13 +559,13 @@ public class PedidoPanel extends JPanel{
 
     private List<Object[]> generarData() {
         List<Object[]> rows = new ArrayList<>();
-        for (HashMap<String, Object> map : pedidosDetallado) {
-            Pedido p = (Pedido) map.get("pedido");
-            Cliente c = (Cliente) map.get("cliente");
-            Turno t = (Turno) map.get("turno");
+        for (HashMap<String, Object> map : movimientosDetallado) {
+            Movimiento m = (Movimiento) map.get("movimiento");
             
-            rows.add(new Object[]{p.getId(),c.getNombre(),c.getTelefono(),p.getCreado(), p.getDescripcion(), p.getEstado_pedido(),t.getFechaInicio(),t.getFechaFinE(),p.getFecha_fin_estimada()});
+            rows.add(new Object[]{m.getId(),"","", m.getCreado(), m.getTipo_mov(),m.getDescripcion(),m.getTotal()});
         }
         return rows;
     }
+
+    
 }
