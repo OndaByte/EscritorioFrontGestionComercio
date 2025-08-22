@@ -224,7 +224,7 @@ public class VentaPanel extends JPanel {
 
             @Override
             public void onSuccess(HashMap<String, Object> datos, Paginado p) {
-            } // no usamos
+            } 
         });
     }
 
@@ -238,8 +238,9 @@ public class VentaPanel extends JPanel {
         if (btnEliminar == null) {
             btnEliminar = new JButton("Eliminar");
         }
-        setVisibleByPermisos(btnEliminar, "VENTA_BAJA");
 
+        setVisibleByPermisos(btnEliminar, "VENTA_BAJA");
+        
         if (btnEditar == null) {
             btnEditar = new JButton("Editar");
         }
