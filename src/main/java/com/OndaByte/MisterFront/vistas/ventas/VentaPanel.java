@@ -506,7 +506,7 @@ public class VentaPanel extends JPanel {
     }
 
     private void initTabla() {
-        String[] headers = {"Cód:", "Cliente", "Teléfono", "Fecha Emisión", "Forma de Pago", "Subtotal", "Descuento", "Total", "Observaciones"};
+        String[] headers = {"Cód:", "Cliente", "Teléfono", "Fecha Emisión", "Forma de Pago", "Subtotal", "Descuento", "Total", "Observaciones","Acciones: "};
         List<Object[]> rows = generarData();
         BiConsumer<PanelAccion, Integer> configurador = (panel, row) -> {
             Venta ven = (Venta) ventasDetallado.get(row).get("venta");
@@ -515,7 +515,7 @@ public class VentaPanel extends JPanel {
             });
         };
 
-        TablaBuilder builder = new TablaBuilder(headers, rows, - 1, configurador);
+        TablaBuilder builder = new TablaBuilder(headers, rows, headers.length - 1, configurador);
         scroll = builder.crearTabla();
         tabla = builder.getTable();
         this.repaint();
@@ -608,20 +608,20 @@ public class VentaPanel extends JPanel {
                 String htmlFinal = template
                         .replace("{{fecha}}", java.time.LocalDate.now().toString())
                         .replace("{{numero}}", ven.getId() + "")
-                        .replace("{{cliente_nombre}}", c.getNombre())
-                        .replace("{{cliente_telefono}}", c.getTelefono())
-                        .replace("{{cliente_localidad}}", c.getLocalidad() != null ? c.getLocalidad() : "No informado")
-                        .replace("{{cliente_domicilio}}", c.getDireccion() != null ? c.getDireccion() : "No informado")
-                        .replace("{{cliente_cp}}", c.getCodigo_postal() != null ? c.getCodigo_postal() : "No informado")
-                        .replace("{{cliente_provincia}}", c.getLocalidad() != null ? c.getLocalidad() : "No informado")
-                        .replace("{{descripcion}}", ven.getObservaciones() != null ? ven.getObservaciones() : "No informado")
+                        .replace("{{cliente_nombre}}", c.getNombre()!= null ? c.getLocalidad() : "-")
+                        .replace("{{cliente_telefono}}", c.getTelefono()!= null ? c.getLocalidad() : "-")
+                        .replace("{{cliente_localidad}}", c.getLocalidad() != null ? c.getLocalidad() : "-")
+                        .replace("{{cliente_domicilio}}", c.getDireccion() != null ? c.getDireccion() : "-")
+                        .replace("{{cliente_cp}}", c.getCodigo_postal() != null ? c.getCodigo_postal() : "-")
+                        .replace("{{cliente_provincia}}", c.getLocalidad() != null ? c.getLocalidad() : "-")
+                        .replace("{{observaciones}}", ven.getObservaciones() != null ? ven.getObservaciones() : "-")
                         .replace("{{total}}", ven.getTotal() + "")
                         .replace("{{tabla_items}}", tablaHTML);
                 // 4. Mostrar Vista Previa
                 VistaPreviaImpresion vista = new VistaPreviaImpresion(
                         MiFrame.getInstance(),
                         htmlFinal,
-                        "venta_" + c.getNombre().replace(" ", "_")
+                        "venta_" + ven.getId()+"_"+ven.getCreado().split(" ")[0]
                 );
                 vista.setVisible(true);
             }

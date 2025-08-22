@@ -122,15 +122,17 @@ public class VentaController {
                 v.setNro_comprobante(vJson.getInt("nro_comprobante"));
                     
                 Cliente c = new Cliente();
-                c.setId(cJson.getInt("id"));
-                c.setNombre(cJson.getString("nombre"));
-                c.setTelefono(cJson.getString("telefono"));
+                if(!cJson.isNull("id")){
+                    c.setId(cJson.getInt("id"));
+                    c.setNombre(cJson.getString("nombre"));
+                    c.setTelefono(cJson.getString("telefono"));
+                }
 
                 for (int i = 0; i < itemsRJson.length(); i++) {
                     ItemVenta iv = new ItemVenta();
                     iv.setId(itemsRJson.getJSONObject(i).getInt("id"));
-                    iv.setNombre(itemsRJson.getJSONObject(i).getString("descripcion"));
-                    iv.setCantidad(itemsRJson.getJSONObject(i).optIntegerObject("cantidad",null));
+                    iv.setNombre(itemsRJson.getJSONObject(i).getString("nombre"));
+                    iv.setCantidad(itemsRJson.getJSONObject(i).getInt("cantidad"));
                     iv.setSubtotal(itemsRJson.getJSONObject(i).getFloat("subtotal"));
                     itemsV.add(iv);
                 }
