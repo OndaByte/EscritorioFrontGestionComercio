@@ -35,7 +35,7 @@ public class MostradorCajaPanel extends JPanel {
 
     private JTabbedPane tabbedPane;
     private HashMap<String,VentaCajaPanel> ventas;
-    private int contadorVentas = 1;
+    private ArrayList<Integer> contadorVentas;
     private List<ItemVenta> carrito = new ArrayList<>();
 
     public MostradorCajaPanel() {
@@ -119,6 +119,8 @@ public class MostradorCajaPanel extends JPanel {
         centerPanel = new JPanel(new BorderLayout());
         tabbedPane = SesionController.getInstance().getSesionTabsVentas();
         ventas = SesionController.getInstance().getSesionVentasActivas();
+        contadorVentas = SesionController.getInstance().getSesionContadorVentas();
+        
         if (btnNuevaVenta == null) {
             btnNuevaVenta = new JButton("+ Nueva Venta");
         }
@@ -143,10 +145,10 @@ public class MostradorCajaPanel extends JPanel {
     }
 
     private void agregarNuevoPanelVenta() {
-        VentaCajaPanel nuevaVenta = new VentaCajaPanel(this, "Venta ", contadorVentas);
+        VentaCajaPanel nuevaVenta = new VentaCajaPanel(this, "Venta ", contadorVentas.get(0));
         ventas.put(nuevaVenta.getNombre(),nuevaVenta);
         tabbedPane.addTab(nuevaVenta.getNombre(), nuevaVenta);
-        contadorVentas++;
+        contadorVentas.add(0, contadorVentas.get(0) + 1);
     }
 
     public void quitarNuevoPanelVenta(VentaCajaPanel tab) {
@@ -178,8 +180,8 @@ public class MostradorCajaPanel extends JPanel {
         }
 
         // Obtener datos
-        String montoInicial = c.getMonto_inicial();
-        String montoActual = c.getMonto_actual();
+        Float montoInicial = c.getMonto_inicial();
+        Float montoActual = c.getMonto_actual();
 
         // Crear el modal
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Información de Caja", true);
@@ -190,10 +192,10 @@ public class MostradorCajaPanel extends JPanel {
         JPanel panel = new JPanel(new MigLayout("wrap 2", "10[right]5[grow,fill]10"));
 
         panel.add(new JLabel("Monto Inicial:"));
-        panel.add(new JLabel(montoInicial));
+        panel.add(new JLabel("" + montoInicial));
 
         panel.add(new JLabel("Monto Actual:"));
-        panel.add(new JLabel(montoActual));
+        panel.add(new JLabel("" + montoActual));
 
         //panel.add(new JLabel("Cantidad de Ventas:"));
         //panel.add(new JLabel(String.valueOf("fictisiop")));
@@ -217,7 +219,6 @@ public class MostradorCajaPanel extends JPanel {
                 this.cajaController.abrirCaja(montoInicial, new DatosListener<String>() {
                     @Override
                     public void onSuccess(String datos) {
-                        SesionController.getInstance().getSesionCaja().setMonto_inicial(input);
                         onSuccessAbrirCaja(datos);
                     }
 

@@ -473,6 +473,7 @@ public class MovimientoPanel extends JPanel {
         lblBalanceSinGastos.setText("Balance: (Sin GF) $" + balanceNeto); // solo movimientos, sin gastos fijos, de neto no tiene nada
         lblBalance.setText("Balance: $" + balance);
     }
+    
     private JPanel armarPaginado() { 
         
         JPanel paginadoPanel = new JPanel(new MigLayout("insets 5, align center", "[]10[]10[]10[]10[]10[]20[]"));

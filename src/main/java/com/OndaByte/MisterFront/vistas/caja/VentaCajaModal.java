@@ -42,7 +42,9 @@ public class VentaCajaModal extends JDialog {
     
     private List<ItemVenta> items;
     private VentaController ventaController;
-            
+    
+    private boolean ventaOk = false; 
+    
     public VentaCajaModal(JFrame parent, List<ItemVenta> items,  Float subtotal, Float total, Integer porcentaje_descuento) {
         super(parent, "Confirmar Venta", true);
         setSize(600, 540);
@@ -161,7 +163,8 @@ public class VentaCajaModal extends JDialog {
                     public void onSuccess(String datos, Paginado p) {
                         //   throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
                     }
-                });                
+                });   
+            ventaOk = true;
             this.dispose();
         } else {
             Dialogos.mostrarError(errores);
@@ -218,15 +221,8 @@ public class VentaCajaModal extends JDialog {
         }
         return "";
     }
-    
-//    Getters para recuperar datos seleccionados
-//    public Cliente getCliente() { return (Cliente) clienteCombo.getSelectedItem(); }
-//    public String getFormaPago() { return (String) formaPagoCombo.getSelectedItem(); }
-//    public String getObservaciones() { return observaciones.getText(); }
-//    public JButton getBtnConfirmar() { return btnConfirmar; }
-//    public JButton getBtnCancelar() { return btnCancelar; }
 
-//    public void setClientes(java.util.List<Cliente> clientes) {
-//        for (Cliente c : clientes) clienteCombo.addItem(c);
-//    }
+    public boolean isVentaOk() {
+        return ventaOk;
+    }
 }

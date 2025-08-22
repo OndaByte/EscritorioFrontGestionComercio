@@ -85,6 +85,26 @@ public class VentaService {
         }
     }
     
+    public static JSONObject resumen(String filtro, String desde, String hasta) {
+        try {
+            String filtroCodificado = URLEncoder.encode(filtro, StandardCharsets.UTF_8.toString());
+            String desdeCodificado = URLEncoder.encode(desde, StandardCharsets.UTF_8.toString());
+            String hastaCodificado = URLEncoder.encode(hasta, StandardCharsets.UTF_8.toString());
+
+            return enviarRequest(
+                "/p/e/venta/resumen?filtro=" + filtroCodificado
+                    + "&desde=" + desdeCodificado
+                    + "&hasta=" + hastaCodificado,
+                "GET",
+                null
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new JSONObject()
+                .put("status", 500)
+                .put("mensaje", "Error al codificar los parámetros del resumen");
+        }
+    }
 //    /**
 //     * Crea un Pedido en la API.
 //     */

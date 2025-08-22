@@ -1,6 +1,7 @@
 
 package com.OndaByte.MisterFront.vistas;
 import com.OndaByte.MisterFront.controladores.CajaController;
+import com.OndaByte.MisterFront.sesion.SesionController;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -122,21 +123,28 @@ public class MiFrame extends JFrame {
             miFrame.login = new Login();
         }
         init(false);
-        CajaController.getInstance().cerrarCaja(new DatosListener<String>() {
-            @Override
-            public void onSuccess(String resultado) {
-                Dialogos.mostrarExito(resultado);
-            }
+        
+        if(SesionController.getInstance().getSesionCaja()!= null){
+            System.out.println("si");
+            CajaController.getInstance().cerrarCaja(new DatosListener<String>() {
+                @Override
+                public void onSuccess(String resultado) {
+                    Dialogos.mostrarExito(resultado);
+                }
 
-            @Override
-            public void onError(String mensajeError) {
-                Dialogos.mostrarError(mensajeError);
-            }
+                @Override
+                public void onError(String mensajeError) {
+                    Dialogos.mostrarError(mensajeError);
+                }
 
-            @Override
-            public void onSuccess(String datos, Paginado p) {
-            }
-        });
+                @Override
+                public void onSuccess(String datos, Paginado p) {
+                }
+            });
+            SesionController.getInstance().limpiarSesion();
+        }else
+            System.out.println("no");
+
         miFrame.login.applyComponentOrientation(miFrame.getComponentOrientation());
         SwingUtilities.updateComponentTreeUI(miFrame.login);
         FlatAnimatedLafChange.hideSnapshotWithAnimation();

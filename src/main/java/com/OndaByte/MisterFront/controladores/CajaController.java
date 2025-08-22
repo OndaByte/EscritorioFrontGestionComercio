@@ -45,25 +45,26 @@ public class CajaController {
         JSONObject cajasRes = CajaService.filtrar(filtro, desde, hasta, estado, pagina, cantElementos);
         if (cajasRes.getInt("status") == 200) {
             try {
-                JSONArray movimientosArray = new JSONArray(cajasRes.getString("data"));
+                JSONArray sesionesArray = new JSONArray(cajasRes.getString("data"));
                 List<HashMap<String, Object>> cajasDTO = new ArrayList<>();
 
-                for (int i = 0; i < movimientosArray.length(); i++) {
-                    JSONObject mJson = movimientosArray.getJSONObject(i);
-                    Movimiento m = new Movimiento();
-                    m.setId(mJson.getInt("id"));
-                    m.setDescripcion(mJson.getString("descripcion"));
-                    m.setCliente_id(mJson.optIntegerObject("cliente_id", null));
-                    m.setTipo_mov(mJson.optString("tipo_mov", null));
-                    m.setTotal(mJson.getFloat("total"));
-                    m.setCreado(mJson.getString("creado"));
-                    m.setUltMod(mJson.getString("ultMod"));
+                for (int i = 0; i < sesionesArray.length(); i++) {
+                    JSONObject scJson = sesionesArray.getJSONObject(i).getJSONObject("sesion");
+                    Caja sc = new Caja();
+                    sc.setId(scJson.getInt("id"));
+                    sc.setMonto_inicial(scJson.getFloat("monto_inicial"));
+                    sc.setMonto_final(scJson.optFloatObject("monto_final",null)); 
+                    sc.setApertura(scJson.getString("apertura"));
+                    sc.setCierre(scJson.optString("cierre",null));          
+                    sc.setCajero_id(scJson.getInt("cajero_id"));
+                    //sc.setCaja_id(scJson.getInt("scaja_id"));
 
+                  
                     HashMap<String, Object> objeto = new HashMap<>();
 //                    objeto.put("orden", o);
 //                    objeto.put("cliente", c);
                     //   objeto.put("turno", t);
-                    objeto.put("movimiento", m);
+                    objeto.put("sesion", sc);
                     cajasDTO.add(objeto);
                 }
 
@@ -90,9 +91,20 @@ public class CajaController {
             try {
                 JSONObject data = new JSONObject(res.getString("data"));
                 HashMap<String, Object> resumen = new HashMap<>();
-                resumen.put("total_ingresos", data.getDouble("total_ingresos"));
-                resumen.put("total_egresos", data.getDouble("total_egresos"));
-                resumen.put("total_periodos", data.getDouble("total_periodos"));
+                resumen.put("total_sesiones", data.getInt("total_sesiones"));
+                resumen.put("sesiones_abiertas", data.getInt("sesiones_abiertas"));
+                resumen.put("sesiones_cerradas", data.getInt("sesiones_cerradas"));
+                resumen.put("monto_inicial_total", data.getFloat("monto_inicial_total"));
+                resumen.put("monto_final_total", data.getFloat("monto_final_total"));
+                resumen.put("promedio_monto_inicial", data.getFloat("promedio_monto_inicial"));
+                resumen.put("promedio_monto_final", data.getFloat("promedio_monto_final"));
+                resumen.put("primera_apertura", data.getString("primera_apertura"));
+                resumen.put("ultima_actividad", data.getString("ultima_actividad"));
+                resumen.put("diferencia_total_cerradas", data.getFloat("diferencia_total_cerradas"));
+                resumen.put("diferencia_promedio_cerradas", data.getFloat("diferencia_promedio_cerradas"));
+                resumen.put("monto_inicial_total_cerradas", data.getFloat("monto_inicial_total_cerradas"));
+                resumen.put("monto_final_total_cerradas", data.getFloat("monto_final_total_cerradas"));
+
                 listener.onSuccess(resumen);
             } catch (Exception e) {
                 listener.onError("Error al parsear resumen");
@@ -108,8 +120,8 @@ public class CajaController {
         if (res.getInt("status") == 201) {
             Caja aux = new Caja();
             aux.setId((new JSONObject(res.getString("data"))).getInt("id"));
-            aux.setMonto_inicial(String.valueOf(montoI));
-            aux.setMonto_actual(String.valueOf(montoI));
+            aux.setMonto_inicial(montoI);
+            aux.setMonto_actual(montoI);
             SesionController.getInstance().setSesionCaja(aux);
             listener.onSuccess(res.optString("mensaje"));
 

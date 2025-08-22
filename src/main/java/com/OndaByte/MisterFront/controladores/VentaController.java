@@ -5,6 +5,7 @@ import com.OndaByte.MisterFront.modelos.Cliente;
 import com.OndaByte.MisterFront.modelos.ItemVenta;
 import com.OndaByte.MisterFront.modelos.Orden;
 import com.OndaByte.MisterFront.modelos.Venta;
+import com.OndaByte.MisterFront.servicios.CajaService;
 import com.OndaByte.MisterFront.servicios.MovimientoService;
 import com.OndaByte.MisterFront.servicios.VentaService;
 import com.OndaByte.MisterFront.sesion.SesionController;
@@ -175,7 +176,26 @@ public class VentaController {
         }
     }
 
- 
+     public void resumenVenta(String filtro, String desde, String hasta, DatosListener<HashMap<String, Object>> listener) {
+        JSONObject res = VentaService.resumen(filtro, desde, hasta);
+        if (res != null && res.getInt("status") == 200) {
+            try {
+                JSONObject data = new JSONObject(res.getString("data"));
+                HashMap<String, Object> resumen = new HashMap<>();
+                resumen.put("total_efectivo", data.getFloat("total_efectivo"));
+                resumen.put("total_transferencia", data.getFloat("total_transferencia"));
+                resumen.put("total_ventas", data.getFloat("total_ventas"));
+                resumen.put("cant_efectivo", data.getInt("cant_efectivo"));
+                resumen.put("cant_transferencia", data.getInt("cant_transferencia"));
+                listener.onSuccess(resumen);
+            } catch (Exception e) {
+                listener.onError("Error al parsear resumen");
+            }
+        } else {
+            listener.onError(res != null ? res.optString("mensaje") : "Error de conexión");
+        }
+    }
+     
     public void editarVenta(Venta venta, List<ItemVenta> items, DatosListener<String> listener) {
         JSONObject res = VentaService.editarVenta(venta,items);
         if (res.getInt("status") == 201) {

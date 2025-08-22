@@ -67,12 +67,19 @@ public class CajaPanel extends JPanel {
     private JButton btnUltimo = new JButton(">|");
     private JComboBox<Integer> comboTamanioPagina = new JComboBox<>(new Integer[]{10, 20, 50, 100});
     private JLabel labelPaginas = new JLabel("Página 1 de 1");
+    
     // Resumen financiero
-    private JLabel lblIngresos;
-    private JLabel lblEgresos;
-    private JLabel lblGastosFijos;
-    private JLabel lblBalance;
-    private JLabel lblBalanceSinGastos;
+    private JLabel lblTotalSesiones;
+    private JLabel lblTotalSesionesAbiertas;
+    private JLabel lblTotalSesionesCerradas;
+    private JLabel lblMontoInicialTotal;
+    private JLabel lblMontoFinalTotal;
+    private JLabel lblPromedioMontoInicial;
+    private JLabel lblPromedioMontoFinal;
+    private JLabel lblPrimeraApertura;
+    private JLabel lblUltimaActividad;
+    private JLabel lblGananciaTotalCerradas;
+    private JLabel lblGananciaPromedioCerradas;
     //Paginado
     private String filtro;
     private String filtroDesde;
@@ -132,7 +139,7 @@ public class CajaPanel extends JPanel {
                 esta.totalElementos=p.getTotalElementos();
                 esta.totalPaginas=p.getTotalPaginas();
                 initTabla(); //tabla
-                setVisibleByPermisos(tabla,"CAJA_LISTAR");
+                //setVisibleByPermisos(tabla,"CAJA_LISTAR");
                 
                 initVista(); // Inicializa la vista segun los permisos disponibles menos la tabla
                 initEstilos(); //estilos menos los de la tabla
@@ -142,10 +149,23 @@ public class CajaPanel extends JPanel {
         cajaControlador.resumenSesionesCaja(filtro, filtroDesde, filtroHasta, new DatosListener<HashMap<String, Object>>() {
             @Override
             public void onSuccess(HashMap<String, Object> resumen) {
-                float ingresos = ((Number) resumen.get("total_ingresos")).floatValue();
-                float egresos = ((Number) resumen.get("total_egresos")).floatValue();
-                float periodos = ((Number) resumen.get("total_periodos")).floatValue();
-                actualizarResumenPanel(ingresos, egresos, periodos);
+                int totalSesiones = (int) resumen.get("total_sesiones");
+                int totalSesionesA = (int) resumen.get("sesiones_abiertas");
+                int totalSesionesC = (int) resumen.get("sesiones_cerradas");
+                float montoInicialTotal = (float) resumen.get("monto_inicial_total");
+                float montoFinalTotal = (float) resumen.get("monto_final_total");
+                float promedioMontoInicial = (float) resumen.get("promedio_monto_inicial");
+                float promedioMontoFinal = (float) resumen.get("promedio_monto_final");
+                String primerApertura = (String) resumen.get("primera_apertura");
+                String ultimaAct = (String) resumen.get("ultima_actividad");
+                float gananciaTotalCerradas = (float) resumen.get("diferencia_total_cerradas");
+                float promedioTotalCerradas = (float) resumen.get("diferencia_promedio_cerradas");
+                actualizarResumenPanel(
+                        totalSesiones, totalSesionesA, totalSesionesC,
+                        montoInicialTotal, montoFinalTotal,
+                        promedioMontoInicial, promedioMontoFinal,
+                        primerApertura, ultimaAct,
+                        gananciaTotalCerradas, promedioTotalCerradas);
                 revalidate();
                 repaint();
             }
@@ -187,7 +207,7 @@ public class CajaPanel extends JPanel {
                 esta.totalPaginas=p.getTotalPaginas();
                 remove(scroll);
                 initTabla(); //tabla
-                setVisibleByPermisos(tabla,"CAJA_LISTAR");
+                //setVisibleByPermisos(tabla,"CAJA_LISTAR");
                 add(scroll, BorderLayout.CENTER);
                 actualizarPaginado();
                 revalidate();
@@ -197,10 +217,23 @@ public class CajaPanel extends JPanel {
         cajaControlador.resumenSesionesCaja(filtro, filtroDesde, filtroHasta, new DatosListener<HashMap<String, Object>>() {
             @Override
             public void onSuccess(HashMap<String, Object> resumen) {
-                float ingresos = ((Number) resumen.get("total_ingresos")).floatValue();
-                float egresos = ((Number) resumen.get("total_egresos")).floatValue();
-                float periodos = ((Number) resumen.get("total_periodos")).floatValue();
-                actualizarResumenPanel(ingresos, egresos, periodos);
+                int totalSesiones = (int) resumen.get("total_sesiones");
+                int totalSesionesA = (int) resumen.get("sesiones_abiertas");
+                int totalSesionesC = (int) resumen.get("sesiones_cerradas");
+                float montoInicialTotal = (float) resumen.get("monto_inicial_total");
+                float montoFinalTotal = (float) resumen.get("monto_final_total");
+                float promedioMontoInicial = (float) resumen.get("promedio_monto_inicial");
+                float promedioMontoFinal = (float) resumen.get("promedio_monto_final");
+                String primerApertura = (String) resumen.get("primera_apertura");
+                String ultimaAct = (String) resumen.get("ultima_actividad");
+                float gananciaTotalCerradas = (float) resumen.get("diferencia_total_cerradas");
+                float promedioTotalCerradas = (float) resumen.get("diferencia_promedio_cerradas");
+                actualizarResumenPanel(
+                        totalSesiones, totalSesionesA, totalSesionesC,
+                        montoInicialTotal, montoFinalTotal,
+                        promedioMontoInicial, promedioMontoFinal,
+                        primerApertura, ultimaAct,
+                        gananciaTotalCerradas, promedioTotalCerradas);
                 revalidate();
                 repaint();
             }
@@ -260,29 +293,44 @@ public class CajaPanel extends JPanel {
         filtrosPanel.add(comboEstado);
         
         botonesPanel = new JPanel(new MigLayout("insets 0", "[]10[]10[]"));
-        botonesPanel.add(btnNuevo);
-        botonesPanel.add(btnEditar);
-        botonesPanel.add(btnEliminar);
+//        botonesPanel.add(btnNuevo);
+//        botonesPanel.add(btnEditar);
+//        botonesPanel.add(btnEliminar);
         
         topPanel = new JPanel(new MigLayout("insets 5, fillx", "[grow][grow][right]"));
         topPanel.add(buscarPanel, "growx");
         topPanel.add(filtrosPanel, "growx");
         topPanel.add(botonesPanel, "right");
                 
-        JPanel resumenPanel = new JPanel(new MigLayout("insets 10, fillx", "[grow][grow][grow][grow][grow]"));
+        JPanel resumenPanel = new JPanel(new MigLayout("insets 10, fillx, wrap 3", "[grow][grow][grow][grow][grow]"));
         resumenPanel.setBorder(BorderFactory.createTitledBorder("Resumen"));
-        lblIngresos = new JLabel("Ingresos: $0");
-        lblEgresos = new JLabel("Egresos: $0");
-        lblGastosFijos = new JLabel("Gastos Fijos: $0");
-        lblBalanceSinGastos = new JLabel("Balance (sin GF): $0");
-        lblBalance = new JLabel("Balance: $0");
 
-        resumenPanel.add(lblIngresos);
-        resumenPanel.add(lblEgresos);
-        resumenPanel.add(lblGastosFijos);
-        resumenPanel.add(lblBalanceSinGastos);
-        resumenPanel.add(lblBalance);
-
+        lblTotalSesiones = new JLabel("Total Sesiones: 0");
+        lblTotalSesionesAbiertas = new JLabel("Sesiones Abiertas: 0");
+        lblTotalSesionesCerradas= new JLabel("Sesiones Cerradas: 0");
+        lblMontoInicialTotal = new JLabel("Suma Montos Iniciales: $0");
+        lblMontoFinalTotal = new JLabel("Suma Montos Finales: $0");
+        lblPromedioMontoInicial = new JLabel("Promedio Monto Inicial: $0");
+        lblPromedioMontoFinal = new JLabel("Promedio Monto Final: $0");
+        lblPrimeraApertura = new JLabel("Primer apertura: -");
+        lblUltimaActividad = new JLabel("Ultima actividad: -");
+        lblGananciaTotalCerradas = new JLabel("Ganancia Total Cerradas: $0");
+        lblGananciaPromedioCerradas = new JLabel("Ganancia Total Abiertas: $0");
+        
+        
+        resumenPanel.add(lblTotalSesiones);
+        resumenPanel.add(lblTotalSesionesAbiertas);
+        resumenPanel.add(lblTotalSesionesCerradas);
+        resumenPanel.add(lblMontoInicialTotal);
+        resumenPanel.add(lblMontoFinalTotal);
+        resumenPanel.add(lblPromedioMontoInicial);
+        resumenPanel.add(lblPromedioMontoFinal);
+        resumenPanel.add(lblPrimeraApertura);
+        resumenPanel.add(lblUltimaActividad);
+        resumenPanel.add(lblGananciaTotalCerradas);
+        resumenPanel.add(lblGananciaPromedioCerradas);
+        
+        
         this.setLayout(new BorderLayout());
         this.add(topPanel, BorderLayout.NORTH);
         this.add(scroll, BorderLayout.CENTER);
@@ -471,15 +519,33 @@ public class CajaPanel extends JPanel {
         }, 300);
     }
     // Métodos auxiliares para actualizar resumen
-    public void actualizarResumenPanel(float ingresos, float egresos, float gastosFijos) {
-        float balance = ingresos - egresos - gastosFijos;
-        float balanceNeto = ingresos - egresos ;
-        lblIngresos.setText("Ingresos: $" + ingresos);
-        lblEgresos.setText("Egresos: $" + egresos);
-        lblGastosFijos.setText("Gastos Fijos: $" + gastosFijos);
-        lblBalanceSinGastos.setText("Balance: (Sin GF) $" + balanceNeto); // solo cajas, sin gastos fijos, de neto no tiene nada
-        lblBalance.setText("Balance: $" + balance);
+    public void actualizarResumenPanel(        
+        int totalSesiones,
+        int totalSesionesA,
+        int totalSesionesC,
+        float montoInicialTotal,
+        float montoFinalTotal,
+        float promedioMontoInicial,
+        float promedioMontoFinal,
+        String primerApertura,
+        String ultimaAct,
+        float gananciaTotalCerradas,
+        float promedioTotalCerradas
+) {
+        lblTotalSesiones.setText("Total Sesiones: " + totalSesiones);
+        lblTotalSesionesAbiertas.setText("Sesiones Abiertas: " + totalSesionesA);
+        lblTotalSesionesCerradas.setText("Sesiones Cerradas: " + totalSesionesC);
+        lblMontoInicialTotal.setText("Suma Montos Iniciales: $ " + montoInicialTotal);
+        lblMontoFinalTotal.setText("Suma Montos Finales: $ " + montoFinalTotal);
+        lblPromedioMontoInicial.setText("Promedio Monto Inicial: $" + promedioMontoInicial);
+        lblPromedioMontoFinal.setText("Promedio Monto Final: $" + promedioMontoFinal);
+        lblPrimeraApertura.setText("Primer apertura: " + primerApertura);
+        lblUltimaActividad.setText("Ultima actividad: " + ultimaAct);
+        lblGananciaTotalCerradas.setText("Ganancia Total Cerradas: $" + gananciaTotalCerradas);
+        lblGananciaPromedioCerradas.setText("Ganancia Total Abiertas: $" + promedioTotalCerradas);
+      
     }
+    
     private JPanel armarPaginado() { 
         
         JPanel paginadoPanel = new JPanel(new MigLayout("insets 5, align center", "[]10[]10[]10[]10[]10[]20[]"));
@@ -557,7 +623,7 @@ public class CajaPanel extends JPanel {
                 int row = tabla.rowAtPoint(evt.getPoint());
                 logger.trace(row);
                 if ( row >= 0 ){
-                    cajaSeleccionada = (Caja) cajasDetallado.get(row).get("caja");
+                    cajaSeleccionada = (Caja) cajasDetallado.get(row).get("sesion");
                     System.out.println(cajaSeleccionada.getId());
                 }
             }
@@ -567,9 +633,9 @@ public class CajaPanel extends JPanel {
     private List<Object[]> generarData() {
         List<Object[]> rows = new ArrayList<>();
         for (HashMap<String, Object> map : cajasDetallado) {
-            Caja c = (Caja) map.get("caja");
+            Caja c = (Caja) map.get("sesion");
             // Caja c = (Caja) map.get("caja");
-            String estado = c.getCierre() == null || c.getCierre().isEmpty() ? "CERRADA" : "ABIERTA";
+            String estado = c.getCierre() == null || c.getCierre().isEmpty() ? "ABIERTA" : "CERRADA";
             rows.add(new Object[]{c.getId(),c.getCajero_id(),c.getApertura(), c.getCierre(),c.getMonto_inicial(),c.getMonto_final(),estado});
         }
         return rows;

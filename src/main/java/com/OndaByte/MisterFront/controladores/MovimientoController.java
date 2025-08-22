@@ -74,7 +74,7 @@ public class MovimientoController {
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.debug(e.getMessage());
-                listener.onError("Error al procesar cajas");
+                listener.onError("Error al procesar movimientos");
             }
         } else {
             listener.onError(cajasRes.optString("mensaje"));

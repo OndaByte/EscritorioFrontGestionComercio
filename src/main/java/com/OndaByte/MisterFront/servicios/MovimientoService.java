@@ -82,7 +82,7 @@ public class MovimientoService {
             String hastaCodificado = URLEncoder.encode(hasta, StandardCharsets.UTF_8.toString());
 
             return enviarRequest(
-                "/p/e/caja/resumen?filtro=" + filtroCodificado
+                "/p/e/caja/movimientos/resumen?filtro=" + filtroCodificado
                     + "&desde=" + desdeCodificado
                     + "&hasta=" + hastaCodificado,
                 "GET",

@@ -45,7 +45,7 @@ public class CajaService {
             String desdeCodificado = URLEncoder.encode(desde, StandardCharsets.UTF_8.toString()); 
             String hastaCodificado = URLEncoder.encode(hasta, StandardCharsets.UTF_8.toString()); 
             String estadoCodificado = URLEncoder.encode(estado, StandardCharsets.UTF_8.toString()); 
-            return enviarRequest("/p/e/caja/movimientos?filtro=" + filtroCodificado + "&desde=" + desdeCodificado + "&hasta=" + hastaCodificado +  "&estado="+ estadoCodificado + "&pagina=" + pagina + "&elementos=" + cantElementos,
+            return enviarRequest("/p/e/caja/sesiones?filtro=" + filtroCodificado + "&desde=" + desdeCodificado + "&hasta=" + hastaCodificado +  "&estado="+ estadoCodificado + "&pagina=" + pagina + "&elementos=" + cantElementos,
                 "GET",
                 null
             );

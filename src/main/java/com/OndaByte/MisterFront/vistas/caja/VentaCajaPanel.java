@@ -4,6 +4,7 @@ package com.OndaByte.MisterFront.vistas.caja;
 import com.OndaByte.MisterFront.controladores.MovimientoController;
 import com.OndaByte.MisterFront.controladores.ProductoController;
 import com.OndaByte.MisterFront.estilos.MisEstilos;
+import com.OndaByte.MisterFront.modelos.Caja;
 import com.OndaByte.MisterFront.modelos.ItemVenta;
 import com.OndaByte.MisterFront.modelos.Producto;
 import com.OndaByte.MisterFront.sesion.SesionController;
@@ -433,11 +434,16 @@ public class VentaCajaPanel extends JPanel {
         }
         VentaCajaModal modal = new VentaCajaModal(MiFrame.getInstance(),items,subtotal,total,(int) spinnerDescuentoExtra.getValue());//itemsR, o.getId(), c
         modal.setVisible(true); // bloquea el thread hasta que es cerrado
+        
         filtro = "";
 //        pagina = 1;
         reload();
-        cerrar();
-        //cancelar venta.doclick();
+        if(modal.isVentaOk()){
+            Caja c = SesionController.getInstance().getSesionCaja();
+            c.setMonto_actual(c.getMonto_actual() + total);
+            cerrar();
+        }
+            
     }
 
 }
