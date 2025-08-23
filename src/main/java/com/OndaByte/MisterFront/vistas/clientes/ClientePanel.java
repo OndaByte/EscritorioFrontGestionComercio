@@ -169,10 +169,10 @@ public class ClientePanel extends JPanel{
         }
         setVisibleByPermisos(btnEliminar,"CLIENTE_BAJA");
 
-        buscarPanel = new JPanel(new MigLayout("insets 0, fillx", "[grow]"));
+        buscarPanel = new JPanel(new MigLayout("insets 5, fillx", "[grow]"));
         buscarPanel.add(txtBuscar, "growx");
 
-        botonesPanel = new JPanel(new MigLayout("insets 0", "[]10[]10[]"));
+        botonesPanel = new JPanel(new MigLayout("insets 5", "[]10[]10[]"));
         botonesPanel.add(btnNuevo);
         botonesPanel.add(btnVer);
         botonesPanel.add(btnEditar);

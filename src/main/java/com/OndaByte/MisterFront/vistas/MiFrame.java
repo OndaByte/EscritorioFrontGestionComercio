@@ -1,5 +1,7 @@
 
 package com.OndaByte.MisterFront.vistas;
+import com.OndaByte.MisterFront.controladores.CajaController;
+import com.OndaByte.MisterFront.sesion.SesionController;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -7,22 +9,30 @@ import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import com.OndaByte.MisterFront.controladores.MovimientoController;
 import com.OndaByte.MisterFront.vistas.inicializacion.Inicializacion;
 import com.OndaByte.MisterFront.vistas.login.Login;
 import com.OndaByte.MisterFront.vistas.util.Dialogos;
 import com.OndaByte.MisterFront.vistas.util.Paginado;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.extras.FlatAnimatedLafChange;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class MiFrame extends JFrame {
 
     private static MiFrame miFrame;
+    private static Logger logger = LogManager.getLogger(MiFrame.class.getName());
     
     private Login login=null;
     private Inicializacion inicializacion=null;
     private ContenedorPrincipal aplicacion=null;
 
+    static {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Init logger en Frame");
+        }
+    }
+      
     public Login getLogin() {
         return login;
     }
@@ -80,10 +90,12 @@ public class MiFrame extends JFrame {
 
     public static void login() {
         miFrame.aplicacion = new ContenedorPrincipal();
-//        MovimientoController.getInstance().abrirCaja(new DatosListener<String>() {
+//        MovimientoController.getInstance().ultimaCaja(new DatosListener<String>() {
 //            @Override
 //            public void onSuccess(String resultado) {
-//                Dialogos.mostrarExito(resultado);
+//                logger.debug("Frame - caja obtenida con exito");
+//                
+//                //Dialogos.mostrarExito(resultado);
 //            }
 //
 //            @Override
@@ -99,7 +111,6 @@ public class MiFrame extends JFrame {
         
         miFrame.setContentPane(miFrame.aplicacion);
         miFrame.aplicacion.applyComponentOrientation(miFrame.getComponentOrientation());
-       // setSelectedMenu(0, 0);
         miFrame.aplicacion.hideMenu();
         SwingUtilities.updateComponentTreeUI(miFrame.aplicacion);
         FlatAnimatedLafChange.hideSnapshotWithAnimation();
@@ -112,21 +123,28 @@ public class MiFrame extends JFrame {
             miFrame.login = new Login();
         }
         init(false);
-        MovimientoController.getInstance().cerrarCaja(new DatosListener<String>() {
-            @Override
-            public void onSuccess(String resultado) {
-                Dialogos.mostrarExito(resultado);
-            }
+        
+        if(SesionController.getInstance().getSesionCaja()!= null){
+            System.out.println("si");
+            CajaController.getInstance().cerrarCaja(new DatosListener<String>() {
+                @Override
+                public void onSuccess(String resultado) {
+                    Dialogos.mostrarExito(resultado);
+                }
 
-            @Override
-            public void onError(String mensajeError) {
-                Dialogos.mostrarError(mensajeError);
-            }
+                @Override
+                public void onError(String mensajeError) {
+                    Dialogos.mostrarError(mensajeError);
+                }
 
-            @Override
-            public void onSuccess(String datos, Paginado p) {
-            }
-        });
+                @Override
+                public void onSuccess(String datos, Paginado p) {
+                }
+            });
+            SesionController.getInstance().limpiarSesion();
+        }else
+            System.out.println("no");
+
         miFrame.login.applyComponentOrientation(miFrame.getComponentOrientation());
         SwingUtilities.updateComponentTreeUI(miFrame.login);
         FlatAnimatedLafChange.hideSnapshotWithAnimation();

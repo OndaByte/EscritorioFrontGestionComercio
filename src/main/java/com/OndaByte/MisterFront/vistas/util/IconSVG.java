@@ -13,14 +13,18 @@ public class IconSVG extends FlatSVGIcon{
     public static final String ELIMINAR = "icon/trash.svg";
     public static final String IMPRIMIR = "icon/printer.svg";
     public static final String CANCELAR = "icon/cancel.svg";
+    public static final String COBRAR = "icon/cobrar.svg";
     public static final String ACEPTAR = "icon/aceptar.svg";
     public static final String RECHAZAR = "icon/rechazar.svg";
     public static final String GUARDAR = "icon/floppy-disk.svg";
     public static final String LUPA = "icon/loop.svg";
-    //public static final String LOGO = "icon/padel1.svg";
-    public static final String LOGO = "icon/padel2.svg";
+    public static final String OJO = "icon/ojo.svg";
     public static final String CLARO = "icon/light.svg";
     public static final String OSCURO = "icon/dark.svg";
+    public static final String OPERADOR = "icon/operador.svg";
+    public static final String CAJA_ABIERTA = "icon/caja-abierta.svg";
+    public static final String CAJA_CERRADA = "icon/caja-cerrada.svg";
+    public static final String RELOJ = "icon/clock.svg";
     /*
     */
 

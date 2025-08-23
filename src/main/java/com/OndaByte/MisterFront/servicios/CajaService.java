@@ -22,32 +22,14 @@ import org.json.JSONObject;
  *
  * @author luciano
  */
-public class MovimientoService {
+public class CajaService {
 
-    private static Logger logger = LogManager.getLogger(MovimientoService.class.getName());
+    private static Logger logger = LogManager.getLogger(CajaService.class.getName());
 
     static{
         if(logger.isDebugEnabled()){
             logger.debug("Init logger en CajaService");
         }
-    }
-
-    /**
-     * Crea un Pedido en la API.
-     */
-    public static JSONObject crear(Movimiento movimiento) {
-        return enviarRequest("/p/e/caja/movimiento", "POST", new JSONObject(movimiento));
-    }
-
-   
-
-    /**
-     * Edita un Pedido en la API.
-     */
-    public static JSONObject editar(Movimiento movimiento) {
-        JSONObject jo = new JSONObject(movimiento);
-        jo.put("sesion_caja_id",1);
-        return enviarRequest("/p/e/caja/" +movimiento.getId(), "PUT", jo );
     }
 
     /**
@@ -63,7 +45,7 @@ public class MovimientoService {
             String desdeCodificado = URLEncoder.encode(desde, StandardCharsets.UTF_8.toString()); 
             String hastaCodificado = URLEncoder.encode(hasta, StandardCharsets.UTF_8.toString()); 
             String estadoCodificado = URLEncoder.encode(estado, StandardCharsets.UTF_8.toString()); 
-            return enviarRequest("/p/e/caja/movimientos?filtro=" + filtroCodificado + "&desde=" + desdeCodificado + "&hasta=" + hastaCodificado +  "&estado="+ estadoCodificado + "&pagina=" + pagina + "&elementos=" + cantElementos,
+            return enviarRequest("/p/e/caja/sesiones?filtro=" + filtroCodificado + "&desde=" + desdeCodificado + "&hasta=" + hastaCodificado +  "&estado="+ estadoCodificado + "&pagina=" + pagina + "&elementos=" + cantElementos,
                 "GET",
                 null
             );
@@ -82,7 +64,7 @@ public class MovimientoService {
             String hastaCodificado = URLEncoder.encode(hasta, StandardCharsets.UTF_8.toString());
 
             return enviarRequest(
-                "/p/e/caja/movimientos/resumen?filtro=" + filtroCodificado
+                "/p/e/caja/resumen?filtro=" + filtroCodificado
                     + "&desde=" + desdeCodificado
                     + "&hasta=" + hastaCodificado,
                 "GET",
@@ -97,4 +79,15 @@ public class MovimientoService {
     }
     
 
+    public static JSONObject abrir(Float montoI){
+        JSONObject jo = new JSONObject();
+        jo.put("monto", montoI);
+        return enviarRequest("/p/e/caja/1","POST",jo); 
+    }
+
+    public static JSONObject cerrar(){ return enviarRequest("/p/e/caja/1","PUT",null); }
+
+    public static JSONObject obtenerUltimaSesion(int cajaID){
+        return enviarRequest("/p/e/caja/"+cajaID+"/ultimaSesion","GET",null);
+    }
 }

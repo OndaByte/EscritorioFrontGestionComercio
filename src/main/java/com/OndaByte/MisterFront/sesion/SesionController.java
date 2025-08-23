@@ -4,8 +4,13 @@ package com.OndaByte.MisterFront.sesion;
 import com.OndaByte.MisterFront.controladores.LoginController;
 import com.OndaByte.MisterFront.modelos.Caja;
 import com.OndaByte.MisterFront.vistas.ContenedorPrincipalView;
+import com.OndaByte.MisterFront.vistas.caja.VentaCajaPanel;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import javax.swing.JTabbedPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,10 +42,9 @@ public class SesionController {
         vista.renderMenuLateral(sesion.getRol());
     }
 
-    /*
-     * SIN USO
-     */
+    
     public void limpiarSesion(){
+        sesion.limpiarSesion();
         sesion = null;
     }
     
@@ -76,6 +80,18 @@ public class SesionController {
     }
     public void setSesionUsuarioId(Integer id){
         sesion.setUsuario_id(id);
+    }
+    
+    public JTabbedPane getSesionTabsVentas(){
+        return sesion.getTabsVentas();
+    }
+
+    public HashMap<String, VentaCajaPanel> getSesionVentasActivas(){
+        return sesion.getVentasActivas();
+    }
+    
+    public ArrayList<Integer> getSesionContadorVentas(){
+        return sesion.getContadorVentas();
     }
     
 }

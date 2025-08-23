@@ -6,8 +6,6 @@ import javax.swing.JComponent;
 
 /**
  *
- * @author luciano 
- * 
 $Component.accentColor → Color principal del tema.
 $Component.focusColor → Color de enfoque.
 $Table.selectionBackground → Color de selección en tablas.
@@ -24,7 +22,7 @@ public class MisEstilos {
     public static final String TEXT_FIELD = "borderWidth:0; arc:10;";
 
     //Menú_Lateral
-    public static String MENU_LATERAL = "border:20,2,2,2;"
+    public static String MENU_LATERAL = "border:40,4,4,4;"
                 + "background:$Menu.lateral.background;"
                 + "arc:10";
     public static String MENU_LATERAL_HEADER = "font:$Menu.header.font;"
@@ -103,7 +101,28 @@ public class MisEstilos {
             "arc:15; borderWidth:0; focusWidth:0; innerFocusWidth:0; margin:5,20,5,20; background:$Panel.background";
 
     public static final String PLACEHOLDER_BUSQUEDA = "Buscar...";
-    
+
+
+    //Estilos caja
+    public static final String CAJA_LABEL_CAJA_ABIERTA =
+            "arc:15; "
+                    + "background:$Panel.top.caja.abierta.background"
+                    + "foreground:$Panel.top.caja.abierta.foreground"
+            //+ "borderWidth:0; "
+            //+ "focusWidth:0; "
+            //+ "innerFocusWidth:0; "
+            + "margin:5,20,5,20; ";
+
+
+    public static final String CAJA_LABEL_CAJA_CERRADA =
+            "arc:15; "
+                    + "background:$PanelCaja.caja.cerrada.background"
+                    + "foreground:$PanelCaja.caja.cerrada.foreground"
+                    //+ "borderWidth:0; "
+                    //+ "focusWidth:0; "
+                    //+ "innerFocusWidth:0; "
+                    + "margin:5,20,5,20; ";
+
     // Método para aplicar estilos a un componente
     public static void aplicarEstilo(JComponent componente, String estilo) {
         componente.putClientProperty(FlatClientProperties.STYLE, estilo);

@@ -1,17 +1,20 @@
+package com.OndaByte.MisterFront.vistas.ventas;
 
-package com.OndaByte.MisterFront.vistas.presupuestos;
-
-import com.OndaByte.MisterFront.controladores.PresupuestoController;
+import com.OndaByte.MisterFront.controladores.VentaController;
 import com.OndaByte.MisterFront.estilos.MisEstilos;
-import com.OndaByte.MisterFront.modelos.*;
+import com.OndaByte.MisterFront.modelos.Cliente;
+import com.OndaByte.MisterFront.modelos.ItemVenta;
+import com.OndaByte.MisterFront.modelos.Venta;
 import com.OndaByte.MisterFront.vistas.DatosListener;
 import com.OndaByte.MisterFront.vistas.util.Dialogos;
+import com.OndaByte.MisterFront.vistas.util.FechaUtils;
 import com.OndaByte.MisterFront.vistas.util.IconSVG;
 import com.OndaByte.MisterFront.vistas.util.Paginado;
 import com.OndaByte.MisterFront.vistas.util.tabla.PanelAccion;
 import com.OndaByte.MisterFront.vistas.util.tabla.TablaBuilder;
 import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
+
 import javax.swing.JTextField;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
@@ -30,6 +33,7 @@ import java.awt.Frame;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -37,82 +41,65 @@ import java.util.function.BiConsumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PresupuestoModal extends JDialog {
+public class VentaModal extends JDialog {
 
-    private Presupuesto presupuesto;
-    private ArrayList<ItemPresupuesto> items;
-    private Pedido pedido;
+    private Venta venta;
+    private ArrayList<ItemVenta> items;
     private Cliente cliente;
     private JTable tabla;
     private DefaultTableModel modelTabla;
     private JScrollPane scroll;
-    private JTextArea textAreaDescripcion;
     private JTextField inputPrecio;
-    private JSpinner inputCantidad;
+    private JTextArea textAreaObservaciones;
     private JButton btnAgregar, btnGuardar;
+    private JSpinner inputCantidad;
     private JComboBox<String> comboEstado;
     private JLabel lblPrecioTotal;
     private JLabel titulo;
-    private PresupuestoController presupuestoController;
+    private VentaController ventaController;
+    private JPanel panelCentro;
     private boolean editar;
     
-    
-    private static Logger logger = LogManager.getLogger(PresupuestoModal.class.getName());
+    private static Logger logger = LogManager.getLogger(VentaModal.class.getName());
 
-    public PresupuestoModal(Frame parent, Pedido p, Cliente c) {
-        super(parent, "Crear Presupuesto", true);
-        this.editar = false;
-        this.pedido = p;
+    public VentaModal(Frame parent, ArrayList<ItemVenta> items, Integer orden_id, Cliente c) {
+        super(parent, "Crear Venta", true);
+        this.venta = new Venta();
         this.cliente = c;
-        this.presupuesto = new Presupuesto();
-        items = new ArrayList<>();
-        this.presupuesto.setPedido_id(p.getId());
-        this.presupuesto.setNombre(this.cliente.getNombre());
-        this.presupuesto.setDescripcion(this.pedido.getDescripcion());
-        presupuestoController = PresupuestoController.getInstance();
-        initVista();
-        setSize(600, 640);
-        setLocationRelativeTo(null);
-    }
-
-    public PresupuestoModal(Frame parent, Cliente c, Presupuesto pre, ArrayList<ItemPresupuesto> items ) {
-        super(parent, "Editar Presupuesto", true);
-        this.editar = true;
-        this.pedido = null;
-        this.cliente = c;
-        this.presupuesto = pre;
         this.items = items;
-
-        presupuestoController = PresupuestoController.getInstance();
+//        this.venta.setOrden_id(orden_id);
+        this.editar = false;
+        
+        ventaController = VentaController.getInstance();
         initVista();
         setSize(600, 640);
         setLocationRelativeTo(null);
     }
-
-    /*
-    public PresupuestoModal(Frame parent, Presupuesto pre) {
-        super(parent, "Editar Presupuesto", true);
-        this.presupuesto = pre;
-        this.presupuesto.setPedido_id(pre.getPedido_id());
-        this.presupuesto.setNombre(pre.getNombre());
-        this.presupuesto.setDescripcion(pre.getDescripcion());
-        presupuestoController = PresupuestoController.getInstance();
+    
+    public VentaModal(Frame parent,Venta r, ArrayList<ItemVenta> items, Cliente c) {
+        super(parent, "Editar Venta", true);
+        this.venta = r;
+        this.cliente = c;
+        this.items = items;
+        this.editar = true;
+        
+        ventaController = VentaController.getInstance();
         initVista();
-        setSize(600, 600);
+        setSize(600, 640);
+        setLocationRelativeTo(null);
     }
-     */
 
     private void initVista() {
-        setLayout(new MigLayout("fillx, wrap 1", "[grow]", "[]10[]10[]5"));
+        setLayout(new MigLayout("fillx, wrap 1", "[grow]", "[]10[]5[]5"));
         // ---------- Panel Top ----------
         JPanel panelTop = renderPanelTop();
         // ---------- Panel Centro ----------
-        JPanel panelCentro = renderPanelCentro();
+        panelCentro = renderPanelCentro();
         // ---------- Panel Bottom ----------
         JPanel panelBottom = renderPanelBottom();
         // ---------- Armado Final ----------
-        add(panelTop, "growx");
-        add(panelCentro, "grow, height 180!");
+        add(panelTop, "grow, height 200!");
+        add(panelCentro, "grow, height 240!");
         add(panelBottom, "growx");
         actualizarPrecioTotal();
 
@@ -120,15 +107,10 @@ public class PresupuestoModal extends JDialog {
     }
 
     private JPanel renderPanelTop() {
-        //JPanel panelTop = new JPanel(new MigLayout("fillx, wrap 1", "[grow]", "[]15[]15[]5"));
         JPanel panelTop = new JPanel(new MigLayout("fillx, wrap 1", "[grow]", "[]20[]20[]20[]10[]"));
 
-
-        titulo = new JLabel("Presupuesto para: " + cliente.getNombre());
+        titulo = new JLabel("Venta de: " + cliente.getNombre());
         titulo.setFont(new Font("Arial", Font.BOLD, 16));
-
-        textAreaDescripcion = new JTextArea(2, 20);
-        textAreaDescripcion.setText(presupuesto.getDescripcion());
 
         // Nuevo JTextArea para el item
         JTextArea areaDescripcionItem = new JTextArea(3, 30);
@@ -153,10 +135,7 @@ public class PresupuestoModal extends JDialog {
         panelInputs.add(inputCantidad, "growx, gapleft 5");
         panelInputs.add(btnAgregar, "growx, gapleft 5");
 
-        //panelTop.add(titulo, "align left");
         panelTop.add(titulo, "align left, gaptop 10, gapbottom 10");
-        panelTop.add(new JLabel("Descripción general del presupuesto:"), "align left");
-        panelTop.add(new JScrollPane(textAreaDescripcion), "growx, height 50::70");
         panelTop.add(panelInputs, "growx");
         // ---------- Acciones ----------
         btnAgregar.addActionListener(new ActionListener() {
@@ -170,16 +149,14 @@ public class PresupuestoModal extends JDialog {
                         Float precio = Float.parseFloat(precioStr);
                         Integer cantidad = Integer.parseInt(cantidadStr);
                         //pasó el control
-                        ItemPresupuesto ip = new ItemPresupuesto();
-                        ip.setDescripcion(descripcion);
-                        ip.setPrecio(precio);
-                        ip.setCantidad(cantidad);
-
-                        items.add(ip);
-                        modelTabla.addRow(new Object[]{descripcion, precioStr, cantidadStr});
+                        ItemVenta ir = new ItemVenta();
+                        ir.setNombre(descripcion);
+                        ir.setSubtotal(precio);
+                        ir.setCantidad(cantidad);
+                        items.add(ir);
+                        modelTabla.addRow(new Object[]{descripcion, precioStr, cantidad});
                         areaDescripcionItem.setText("");
                         inputPrecio.setText("");
-                        inputCantidad.setValue(1);
                         actualizarPrecioTotal();
                     } catch (NumberFormatException exception) {
                         Dialogos.mostrarError("Debes ingresar un precio válido");
@@ -192,7 +169,6 @@ public class PresupuestoModal extends JDialog {
         return panelTop;
     }
 
-
     private JPanel renderPanelCentro() {
         JPanel panelCentro = new JPanel(new MigLayout("fill, wrap", "[grow]", "[grow]"));
 
@@ -201,15 +177,14 @@ public class PresupuestoModal extends JDialog {
 
         // Cargar datos en rows
         List<Object[]> rows = new ArrayList<>();
-        for (ItemPresupuesto ip : items) {
-            rows.add(new Object[]{ip.getDescripcion(), ip.getPrecio(), ip.getCantidad()});
+        for (ItemVenta ir : items) {
+            rows.add(new Object[]{ir.getNombre(), ir.getSubtotal(), ir.getCantidad()});
         }
 
         // Configurar columna de acciones
         BiConsumer<PanelAccion, Integer> configurador = (panelAccion, row) -> {
             panelAccion.agregarBoton("eliminar", IconSVG.RECHAZAR, e -> {
-                // Detener cualquier edición activa antes de modificar el modelo
-                if (tabla.isEditing()) {
+                 if (tabla.isEditing()) {
                     tabla.getCellEditor().stopCellEditing();
                 }
 
@@ -244,14 +219,17 @@ public class PresupuestoModal extends JDialog {
         // Agregar tabla al panel
         panelCentro.add(scroll, "grow");
 
+        // Observaciones
+        panelCentro.add(new JLabel("Observaciones:"), "grow");
+        textAreaObservaciones = new JTextArea(2, 20);
+        textAreaObservaciones.setText(this.venta.getObservaciones());
+        panelCentro.add(new JScrollPane(textAreaObservaciones), "growx, height 50::80");
+
         return panelCentro;
     }
 
-
     private JPanel renderPanelBottom() {
-        //JPanel panelBottom = new JPanel(new MigLayout("fillx, wrap 3", "[grow][pref!][pref!]", "[]5[]"));
         JPanel panelBottom = new JPanel(new MigLayout("fillx, wrap 3", "[grow][pref!][pref!]", "[]15[]"));
-
 
         lblPrecioTotal = new JLabel("Precio Total: $0.00");
         comboEstado = new JComboBox<>(new String[]{"Pendiente"});
@@ -274,45 +252,44 @@ public class PresupuestoModal extends JDialog {
     private void validarYGuardar() {
         String errores = validarFormulario();
         if (errores.isEmpty()) {
-            Presupuesto nuevoPresupuesto = this.crearPresupuesto();
+            Venta nuevoVenta = this.crearVenta();
             if(!editar){
-                presupuestoController.crearPresupuesto(nuevoPresupuesto, items,
-                        new DatosListener<String>() {
-                    @Override
-                    public void onSuccess(String datos) {
-                        Dialogos.mostrarExito(datos);
-                    }
+                ventaController.crearVenta(nuevoVenta, items,
+                    new DatosListener<String>() {
+                        @Override
+                        public void onSuccess(String datos) {
+                            Dialogos.mostrarExito(datos);
+                        }
 
-                    @Override
-                    public void onError(String mensajeError) {
-                        Dialogos.mostrarError(mensajeError);
-                    }
+                        @Override
+                        public void onError(String mensajeError) {
+                            Dialogos.mostrarError(mensajeError);
+                        }
 
-                    @Override
-                    public void onSuccess(String datos, Paginado p) {
-                        //   throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-                    }
-                });                
+                        @Override
+                        public void onSuccess(String datos, Paginado p) {
+                            //   throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                        }
+                    });
             }else{
-                nuevoPresupuesto.setId(this.presupuesto.getId());
-                presupuestoController.editarPresupuesto(nuevoPresupuesto, items,
-                        new DatosListener<String>() {
-                    @Override
-                    public void onSuccess(String datos) {
-                        Dialogos.mostrarExito(datos);
-                    }
+                nuevoVenta.setId(this.venta.getId());
+                ventaController.editarVenta(nuevoVenta, items,
+                    new DatosListener<String>() {
+                        @Override
+                        public void onSuccess(String datos) {
+                            Dialogos.mostrarExito(datos);
+                        }
 
-                    @Override
-                    public void onError(String mensajeError) {
-                        Dialogos.mostrarError(mensajeError);
-                    }
+                        @Override
+                        public void onError(String mensajeError) {
+                            Dialogos.mostrarError(mensajeError);
+                        }
 
-                    @Override
-                    public void onSuccess(String datos, Paginado p) {
-                        //   throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-                    }
-                });
-
+                        @Override
+                        public void onSuccess(String datos, Paginado p) {
+                            //   throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                        }
+                    });
             }
             this.dispose();
         } else {
@@ -320,31 +297,35 @@ public class PresupuestoModal extends JDialog {
         }
     }
 
-    private Presupuesto crearPresupuesto() {
-        Presupuesto p = new Presupuesto();
-        if(editar)
-                p.setPedido_id(presupuesto.getPedido_id());
-            else
-                p.setPedido_id(pedido.getId());
-        
-        p.setDescripcion(textAreaDescripcion.getText());
-        p.setNombre(titulo.getText());
-        p.setEstado_presupuesto("PENDIENTE");
+    private Venta crearVenta() {
+        Venta r = new Venta();
+
+//        r.setOrden_id(venta.getOrden_id());
+//        r.setFecha_emision(FechaUtils.ldToString(LocalDate.now()));
+//        r.setC_cuit_cuil(this.cliente.getCuit_cuil());
+//        r.setC_domicilio(this.cliente.getDireccion());
+//        r.setC_localidad(this.cliente.getLocalidad());
+//        r.setC_nombre(this.cliente.getNombre());
+//        r.setC_telefono(this.cliente.getTelefono());
+        r.setCliente_id(this.cliente.getId());
+        r.setPunto_venta("00006");
+        if (textAreaObservaciones != null && !textAreaObservaciones.getText().isEmpty())
+            r.setObservaciones(textAreaObservaciones.getText());
         Float total = Float.parseFloat(lblPrecioTotal.getText().split("\\$")[1].replace(",", "."));
         logger.debug(total);
-        p.setTotal(total);
-        return p;
+        r.setTotal(total);
+        return r;
     }
 
     private String validarFormulario() {
         StringBuilder errores = new StringBuilder("<html>");
 
-        if (textAreaDescripcion == null || textAreaDescripcion.getText().trim().isEmpty()) {
-            errores.append("- El campo Descripción es obligatorio.<br>");
-            if (textAreaDescripcion != null) {
-                textAreaDescripcion.setBorder(BorderFactory.createLineBorder(Color.RED));
-            }
-        }
+//        if (taObservaciones == null || taObservaciones.getText().trim().isEmpty()) {
+//            errores.append("- El campo Descripción es obligatorio.<br>");
+//            if (taObservaciones != null) {
+//                taObservaciones.setBorder(BorderFactory.createLineBorder(Color.RED));
+//            }
+//        }
 
         if (tabla.getRowCount() == 0) {
             errores.append("- Debe agregar al menos un item al presupuesto.<br>");

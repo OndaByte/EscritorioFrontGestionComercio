@@ -1,26 +1,20 @@
 package com.OndaByte.MisterFront.controladores;
 
-import com.OndaByte.MisterFront.modelos.Caja;
 import com.OndaByte.MisterFront.modelos.Movimiento;
 import com.OndaByte.MisterFront.servicios.MovimientoService;
 import com.OndaByte.MisterFront.sesion.SesionController;
 import com.OndaByte.MisterFront.vistas.DatosListener;
-import com.OndaByte.MisterFront.vistas.util.FechaUtils;
 import com.OndaByte.MisterFront.vistas.util.Paginado;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/**
- *
- * @author luciano
- */
 public class MovimientoController {
 
     private SesionController sesionController = null;
@@ -80,13 +74,14 @@ public class MovimientoController {
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.debug(e.getMessage());
-                listener.onError("Error al procesar cajas");
+                listener.onError("Error al procesar movimientos");
             }
         } else {
             listener.onError(cajasRes.optString("mensaje"));
         }
     }
 
+  
     /**
      * Crea un nuevo remito.
      */
@@ -142,27 +137,6 @@ public class MovimientoController {
             }
         } else {
             listener.onError(res != null ? res.optString("mensaje") : "Error de conexión");
-        }
-    }
-
-    public void abrirCaja(DatosListener<String> listener) {
-        Caja aux = new Caja();
-        JSONObject res = MovimientoService.abrir();
-        if (res.getInt("status") == 201) {
-            aux.setId((new JSONObject(res.getString("data"))).getInt("id"));
-            SesionController.getInstance().setSesionCaja(aux);
-        } else {
-            listener.onError(res.optString("mensaje"));
-        }
-    }
-
-    public void cerrarCaja(DatosListener<String> listener) {
-        Caja aux = new Caja();
-        JSONObject res = MovimientoService.cerrar();
-        if (res.getInt("status") == 201) {
-            SesionController.getInstance().setSesionCaja(null);
-        } else {
-            listener.onError(res.optString("mensaje"));
         }
     }
 }

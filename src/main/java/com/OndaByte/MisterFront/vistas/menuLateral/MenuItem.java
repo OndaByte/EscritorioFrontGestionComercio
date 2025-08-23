@@ -67,6 +67,9 @@ public class MenuItem extends JPanel implements EventosInterface{
             case "Dashboard":
                 numero = "icon/bulletin-notice.svg";
                 break;
+            case "Caja":
+                numero = "icon/cash-register.svg";
+                break;
             case "Ordenes":
                 numero = "icon/list.svg";
                 break;
@@ -94,6 +97,12 @@ public class MenuItem extends JPanel implements EventosInterface{
             case "Empleados":
                 numero = "icon/person-checkmark.svg";
                 break;
+            case "Productos":
+                numero = "icon/hammer-claw.svg";
+                break;
+            case "Categorias":
+                numero = "icon/hammer-claw.svg";
+                break;
             case "Insumos":
                 numero = "icon/hammer-claw.svg";
                 break;
@@ -116,14 +125,14 @@ public class MenuItem extends JPanel implements EventosInterface{
     @Override
     public void runEvento(String evento) {
         switch (evento){
-                case "Ordenes":
-                    if (menu.isMenuFull()) {
-                            MenuAnimation.animate(MenuItem.this, !menuShow);
-                        } else {
-                            popup.show(MenuItem.this, (int) MenuItem.this.getWidth() + UIScale.scale(5), UIScale.scale(menuItemHeight) / 2);
-                        }
-                    break;
-                default : MiFrame.getInstance().getAplicacion().runEvento(evento);
+            case "Finanzas":
+                if (menu.isMenuFull()) {
+                    MenuAnimation.animate(MenuItem.this, !menuShow);
+                } else {
+                    popup.show(MenuItem.this, (int) MenuItem.this.getWidth() + UIScale.scale(5), UIScale.scale(menuItemHeight) / 2);
+                }
+                break;
+            default : MiFrame.getInstance().getAplicacion().runEvento(evento);
         }
     }
 
@@ -135,6 +144,7 @@ public class MenuItem extends JPanel implements EventosInterface{
         for (int i = 0; i < menus.length; i++) {
             String menuActual = menus[i];
             JButton menuItem = createButtonItem(menuActual);
+            MisEstilos.aplicarEstilo(menuItem, MisEstilos.BOTON_MENU_ITEM_POPUP);
             menuItem.setHorizontalAlignment(menuItem.getComponentOrientation().isLeftToRight() ? JButton.LEADING : JButton.TRAILING);
             menuItem.setIcon(new IconSVG(getNumeroIcon(menuActual)));
             menuItem.addActionListener((ActionEvent e) -> {

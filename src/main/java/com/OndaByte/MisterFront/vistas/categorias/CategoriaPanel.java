@@ -1,17 +1,16 @@
-package com.OndaByte.MisterFront.vistas.insumos;
-   
-import com.OndaByte.MisterFront.controladores.InsumoController;
-import com.OndaByte.MisterFront.modelos.Insumo;
-import com.OndaByte.MisterFront.estilos.MisEstilos; 
+package com.OndaByte.MisterFront.vistas.categorias;
+
+import com.OndaByte.MisterFront.controladores.CategoriaController;
+import com.OndaByte.MisterFront.modelos.Categoria;
+import com.OndaByte.MisterFront.estilos.MisEstilos;
 import com.OndaByte.MisterFront.sesion.SesionController;
 import com.OndaByte.MisterFront.vistas.DatosListener;
-import com.OndaByte.MisterFront.vistas.MiFrame; 
+import com.OndaByte.MisterFront.vistas.MiFrame;
 import com.OndaByte.MisterFront.vistas.util.Dialogos;
 import com.OndaByte.MisterFront.vistas.util.IconSVG;
 import com.OndaByte.MisterFront.vistas.util.Paginado;
 import com.OndaByte.MisterFront.vistas.util.tabla.TablaBuilder;
 import com.formdev.flatlaf.FlatClientProperties;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -33,23 +32,22 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class InsumoPanel extends JPanel {
+public class CategoriaPanel extends JPanel {
 
     private JTable tabla;
     private JScrollPane scroll;
     private JTextField txtBuscar;
     private JButton btnNuevo, btnEditar, btnEliminar;
     private JPanel topPanel, bottomPanel, buscarPanel, botonesPanel;
-    
-    
+
     private JButton btnPrimero = new JButton("|<");
     private JButton btnAnterior = new JButton("<");
-    private JTextField txtPaginaActual = new JTextField(""); 
+    private JTextField txtPaginaActual = new JTextField("");
     private JButton btnSiguiente = new JButton(">");
     private JButton btnUltimo = new JButton(">|");
     private JComboBox<Integer> comboTamanioPagina = new JComboBox<>(new Integer[]{10, 20, 50, 100});
     private JLabel labelPaginas = new JLabel("Página 1 de 1");
-    
+
     //Paginado
     private String filtro;
     private Integer pagina;
@@ -58,32 +56,33 @@ public class InsumoPanel extends JPanel {
     private Integer totalPaginas;
     private Timer timer;
 
-    private InsumoController insumoControlador;
+    private CategoriaController categoriaControlador;
     HashSet<String> permisos = null;
-    ArrayList <Insumo> insumos = null;
-    Insumo insumoSeleccionado = null;
-    
-    private InsumoPanel esta;
-    
-    private static Logger logger = LogManager.getLogger(InsumoPanel.class.getName());
+    ArrayList<Categoria> categorias = null;
+    Categoria categoriaSeleccionado = null;
+
+    private CategoriaPanel esta;
+
+    private static Logger logger = LogManager.getLogger(CategoriaPanel.class.getName());
 
     static{
         if(logger.isDebugEnabled()){
-            logger.debug("Init logger en InsumosPanel");
+            logger.debug("Init logger en CategoriaPanel");
         }
     }
-    
-    public InsumoPanel() {
+
+    public CategoriaPanel() {
         this.esta = this;
         this.permisos = (HashSet<String>) SesionController.getInstance().getSesionPermisos();
-        insumoControlador = InsumoController.getInstance();
+        categoriaControlador = CategoriaController.getInstance();
         totalElementos=0;
         filtro="";
         pagina = 1;
         tamPagina = 20;
-        insumoControlador.filtrar(filtro, "" + pagina, "" + tamPagina,new DatosListener<List<Insumo>>(){
+        categoriaControlador.filtrar(filtro, "" + pagina, "" + tamPagina,new DatosListener<List<Categoria>>(){
+		
             @Override
-            public void onSuccess(List<Insumo> datos) {
+            public void onSuccess(List<Categoria> datos) {
             }
 
             @Override
@@ -94,29 +93,29 @@ public class InsumoPanel extends JPanel {
             }
 
             @Override
-            public void onSuccess(List<Insumo> datos, Paginado p) {
-                insumos = new ArrayList<>(datos);
+            public void onSuccess(List<Categoria> datos, Paginado p) {
+                categorias = new ArrayList<>(datos);
                 esta.pagina=p.getPagina();
                 esta.tamPagina=p.getTamPagina();
                 esta.totalElementos=p.getTotalElementos();
                 esta.totalPaginas=p.getTotalPaginas();
                 initTabla(); //tabla
-                setVisibleByPermisos(tabla,"INSUMO_LISTAR");
+                setVisibleByPermisos(tabla,"CATEGORIA_LISTAR");
                 initVista(); // Inicializa la vista segun los permisos disponibles menos la tabla
                 initEstilos(); //estilos menos los de la tabla
                 addAcciones(); // acciones de buscador, botoones abm, etc. menos la tabla
             }
         });
     }
-    
+
     /**
-     * Renderiza de nuevo los elementos de la tabla y paginado con el filtro actual. 
+     * Renderiza de nuevo los elementos de la tabla con el filtro actual.
      */
     private void reload(){
 
-        insumoControlador.filtrar(filtro,"" +pagina,"" +tamPagina,new DatosListener<List<Insumo>>(){
+        categoriaControlador.filtrar(filtro,"" +pagina,"" +tamPagina,new DatosListener<List<Categoria>>(){
             @Override
-            public void onSuccess(List<Insumo> datos) {
+            public void onSuccess(List<Categoria> datos) {
             }
 
             @Override
@@ -127,16 +126,16 @@ public class InsumoPanel extends JPanel {
             }
 
             @Override
-            public void onSuccess(List<Insumo> datos, Paginado p) {
-                insumos = new ArrayList<>(datos);
-                insumoSeleccionado = null;
+            public void onSuccess(List<Categoria> datos, Paginado p) {
+                categorias = new ArrayList<>(datos);
+                categoriaSeleccionado = null;
                 esta.pagina=p.getPagina();
                 esta.tamPagina=p.getTamPagina();
                 esta.totalElementos=p.getTotalElementos();
                 esta.totalPaginas=p.getTotalPaginas();
                 remove(scroll);
                 initTabla(); //tabla
-                setVisibleByPermisos(tabla,"INSUMO_LISTAR");
+                setVisibleByPermisos(tabla,"CATEGORIA_LISTAR");
                 add(scroll, BorderLayout.CENTER);
                 actualizarPaginado();
                 revalidate();
@@ -144,26 +143,28 @@ public class InsumoPanel extends JPanel {
             }
         });
     };
-    
+
     public void initVista() {
+
 
         if(txtBuscar==null){
             txtBuscar = new JTextField();
-
         }
-        setVisibleByPermisos(txtBuscar,"INSUMO_LISTAR");
+        setVisibleByPermisos(txtBuscar,"CATEGORIA_LISTAR");
         if(btnNuevo==null){
             btnNuevo = new JButton("Nuevo");
+
         }
-        setVisibleByPermisos(btnNuevo,"INSUMO_ALTA");
+        setVisibleByPermisos(btnNuevo,"CATEGORIA_ALTA");
         if(btnEditar==null){
             btnEditar = new JButton("Editar");
+
         }
-        setVisibleByPermisos(btnEditar,"INSUMO_MODIFICAR");
+        setVisibleByPermisos(btnEditar,"CATEGORIA_MODIFICAR");
         if(btnEliminar==null){
             btnEliminar = new JButton("Eliminar");
         }
-        setVisibleByPermisos(btnEliminar,"INSUMO_BAJA");
+        setVisibleByPermisos(btnEliminar,"CATEGORIA_BAJA");
 
         buscarPanel = new JPanel(new MigLayout("insets 0, fillx", "[grow]"));
         buscarPanel.add(txtBuscar, "growx");
@@ -183,10 +184,11 @@ public class InsumoPanel extends JPanel {
         bottomPanel = armarPaginado();
         this.add(bottomPanel, BorderLayout.SOUTH);
     }
+
     private void setVisibleByPermisos(JComponent c, String permiso){
         c.setVisible(permisos.contains(permiso));
     }
-     
+
     private void initEstilos() {
         // Estilos del Panel Principal
         this.putClientProperty(FlatClientProperties.STYLE, MisEstilos.PANEL_CENTRAL);
@@ -197,13 +199,13 @@ public class InsumoPanel extends JPanel {
 
         // Estilos de la barra de búsqueda
         txtBuscar.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, MisEstilos.PLACEHOLDER_BUSQUEDA);
-        //txtBuscar.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new FlatSVGIcon("sample/icon/search.svg"));
         MisEstilos.aplicarEstilo(txtBuscar, MisEstilos.BUSQUEDA);
         txtBuscar.setPreferredSize(new Dimension(200, 60));
         txtBuscar.setMaximumSize(new Dimension(250, 60));
         txtBuscar.setMinimumSize(new Dimension(150, 60));
 
         txtBuscar.putClientProperty(FlatClientProperties.TEXT_FIELD_LEADING_ICON, new IconSVG(IconSVG.LUPA));
+
         btnNuevo.setIcon(new IconSVG(IconSVG.NUEVO,2));
         btnEditar.setIcon(new IconSVG(IconSVG.EDITAR,2));
         btnEliminar.setIcon(new IconSVG(IconSVG.ELIMINAR,2));
@@ -212,18 +214,19 @@ public class InsumoPanel extends JPanel {
         MisEstilos.aplicarEstilo(btnEditar, MisEstilos.BOTONCITO);
         MisEstilos.aplicarEstilo(btnEliminar, MisEstilos.BOTONCITO);
     }
-    
-    private void addAcciones(){
+
+
+private void addAcciones(){
         txtBuscar.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) { filtrarInsumo();}
+            public void insertUpdate(DocumentEvent e) {filtrarCategoria();}
 
-            public void removeUpdate(DocumentEvent e) { filtrarInsumo();}
+            public void removeUpdate(DocumentEvent e) {filtrarCategoria();}
 
-            public void changedUpdate(DocumentEvent e) { filtrarInsumo(); }
+            public void changedUpdate(DocumentEvent e) {filtrarCategoria();}
 
-            private void filtrarInsumo() {
+            private void filtrarCategoria() {
                 pagina = 1;
-                filtro = txtBuscar.getText(); 
+                filtro = txtBuscar.getText();
                 if (timer != null) {
                     timer.cancel(); // Cancela el intento anterior
                 }
@@ -233,13 +236,13 @@ public class InsumoPanel extends JPanel {
                     public void run() {
                         reload();
                     }
-                }, 300); 
+                }, 300);
             }
 
         });
         btnNuevo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                InsumoModal modal = new InsumoModal(MiFrame.getInstance());
+                CategoriaModal modal = new CategoriaModal(MiFrame.getInstance());
                 modal.setVisible(true); // bloquea el thread hasta que es cerrado
                 filtro="";
                 pagina = 1;
@@ -248,9 +251,10 @@ public class InsumoPanel extends JPanel {
         });
         btnEditar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                if(insumoSeleccionado != null){
-                    InsumoModal modal = new InsumoModal(MiFrame.getInstance(),insumoSeleccionado);
+                if(categoriaSeleccionado != null){
+                    CategoriaModal modal = new CategoriaModal(MiFrame.getInstance(),categoriaSeleccionado);
                     modal.setVisible(true); // bloquea el thread hasta que es cerrado
+                    Categoria categoriaSeleccionado = null;
                     filtro="";
                     pagina = 1;
                     reload();
@@ -259,41 +263,42 @@ public class InsumoPanel extends JPanel {
         });
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                if(insumoSeleccionado != null){
-                    if(Dialogos.confirmar("¿Está seguro que desea eliminar este insumo?", "Eliminar Insumo")){
-                        insumoControlador.eliminarInsumo(insumoSeleccionado.getId(),
-                            new DatosListener(){
-                                @Override
-                                public void onSuccess(Object datos) {
-                                    Dialogos.mostrarExito("" + datos);
-                                    filtro="";
-                                    pagina = 1;
-                                    reload();
+                if(categoriaSeleccionado != null){
+                    if(Dialogos.confirmar("¿Está seguro que desea eliminar este categoria?", "Eliminar Categoria")){
+                        categoriaControlador.eliminarCategoria(categoriaSeleccionado.getId(),
+                                new DatosListener(){
+                                    @Override
+                                    public void onSuccess(Object datos) {
+                                        Dialogos.mostrarExito("" + datos);
+                                        filtro="";
+                                        pagina = 1;
+                                        reload();
+                                    }
+
+                                    @Override
+                                    public void onError(String mensajeError) {
+                                        Dialogos.mostrarError(mensajeError);
+                                        filtro="";
+                                        pagina = 1;
+                                        reload();
+                                    }
+
+                                    @Override
+                                    public void onSuccess(Object datos, Paginado p  ) {
+                                        //          throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                                    }
                                 }
-
-                                @Override
-                                public void onError(String mensajeError) {
-                                    Dialogos.mostrarError(mensajeError);
-                                    filtro="";
-                                    pagina = 1;
-                                    reload();
-                                } 
-
-                            @Override
-                            public void onSuccess(Object datos, Paginado p  ) {
-                      //          throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-                            }
-                            }
                         );
                     }
                 }
             }
         });
+
         //Panel Paginado
-         comboTamanioPagina.addActionListener(e -> {
+        comboTamanioPagina.addActionListener(e -> {
             tamPagina = (Integer) comboTamanioPagina.getSelectedItem();
             pagina = 1;
-            reload(); 
+            reload();
         });
 
         btnPrimero.addActionListener(e -> {
@@ -320,13 +325,12 @@ public class InsumoPanel extends JPanel {
             reload();
         });
     }
-    
-    
-    private JPanel armarPaginado() { 
+	
+    private JPanel armarPaginado() {
         JPanel paginadoPanel = new JPanel(new MigLayout("insets 5, align center", "[]10[]10[]10[]10[]10[]20[]"));
         txtPaginaActual.setHorizontalAlignment(JTextField.CENTER);
-        txtPaginaActual.setEditable(false);   
-        comboTamanioPagina.setSelectedItem(tamPagina); 
+        txtPaginaActual.setEditable(false);
+        comboTamanioPagina.setSelectedItem(tamPagina);
         Dimension btnDim = new Dimension(45, 30);
         btnPrimero.setPreferredSize(btnDim);
         btnAnterior.setPreferredSize(btnDim);
@@ -342,22 +346,21 @@ public class InsumoPanel extends JPanel {
         paginadoPanel.add(txtPaginaActual);
         paginadoPanel.add(btnSiguiente);
         paginadoPanel.add(btnUltimo);
-        paginadoPanel.add(comboTamanioPagina); 
+        paginadoPanel.add(comboTamanioPagina);
         paginadoPanel.add(labelPaginas);
-        
 
         return paginadoPanel;
     }
 
-    private void actualizarPaginado() { 
+    private void actualizarPaginado() {
         txtPaginaActual.setText(""+ pagina);
         labelPaginas.setText("Página " + pagina + " de " + totalPaginas);
     }
-    
-     public void initTabla() {
-        String[] headers = new String[]{"Nombre", "Precio", "Stock", "Actualizado"};
+
+    public void initTabla() {
+        String[] headers = new String[]{"Cód:", "Nombre: "};
         List<Object[]> rows = generarData();
-        TablaBuilder builder = new TablaBuilder(headers,rows,- 1,null);
+        TablaBuilder builder = new TablaBuilder(headers,rows, -1,null);
         scroll = builder.crearTabla();
         tabla = builder.getTable();
         // Estilos de la tabla
@@ -369,19 +372,21 @@ public class InsumoPanel extends JPanel {
                 int row = tabla.rowAtPoint(evt.getPoint());
                 logger.trace(row);
                 if ( row >= 0 ){
-                    insumoSeleccionado = (Insumo) insumos.get(row);
+                    categoriaSeleccionado = (Categoria) categorias.get(row);
                 }
             }
         });
     }
 
     private List<Object[]> generarData() {
-        
+
         List<Object[]> rows = new ArrayList<>();
-        for (int i = 0; i < insumos.size(); i++) {
-            Insumo p = (Insumo) insumos.get(i);
-            rows.add(new Object[]{p.getNombre(),p.getPrecio(),p.getStock(), p.getUltMod()});
+        for (int i = 0; i < categorias.size(); i++) {
+            Categoria c = (Categoria) categorias.get(i);
+            rows.add(new Object[]{c.getId(),c.getNombre()});
         }
         return rows;
     }
 }
+
+
