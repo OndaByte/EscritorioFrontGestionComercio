@@ -18,6 +18,8 @@ public class ItemVenta {
     private Integer movimiento_id;
     @JsonProperty("producto_id")
     private Integer producto_id;
+    @JsonProperty("producto_precio")
+    private Float producto_precio;
     @JsonProperty("nombre")
     private String nombre;
     @JsonProperty("cantidad") 
@@ -83,5 +85,12 @@ public class ItemVenta {
         this.subtotal = subtotal;
     }
 
-    
+    public Float getProducto_precio() {
+        return producto_precio;
+    }
+
+    public void setProducto_precio(Float producto_precio) {
+        this.producto_precio = producto_precio;
+    }
+
 }
