@@ -132,6 +132,8 @@ public class VentaController {
                     ItemVenta iv = new ItemVenta();
                     iv.setId(itemsRJson.getJSONObject(i).getInt("id"));
                     iv.setNombre(itemsRJson.getJSONObject(i).getString("nombre"));
+                    iv.setProducto_precio(itemsRJson.getJSONObject(i).getFloat("producto_precio"));
+                    iv.setPorcentaje_descuento(itemsRJson.getJSONObject(i).getInt("porcentaje_descuento"));
                     iv.setCantidad(itemsRJson.getJSONObject(i).getInt("cantidad"));
                     iv.setSubtotal(itemsRJson.getJSONObject(i).getFloat("subtotal"));
                     itemsV.add(iv);

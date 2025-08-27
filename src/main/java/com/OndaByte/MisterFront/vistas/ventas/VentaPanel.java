@@ -595,11 +595,11 @@ public class VentaPanel extends JPanel {
                 Venta ven = (Venta) resultado.get("venta");
 //                Orden o = (Orden)resultado.get("orden");
                 Cliente c = (Cliente) resultado.get("cliente");
-                ArrayList<ItemVenta> itemsRemi = (ArrayList<ItemVenta>) resultado.get("items");
+                ArrayList<ItemVenta> itemsVen = (ArrayList<ItemVenta>) resultado.get("items");
 
                 System.out.println("Imprimir OK: " + resultado);
                 // 1. Generar HTML de filas de la tabla
-                String tablaHTML = generarFilasTabla(itemsRemi);
+                String tablaHTML = generarFilasTabla(itemsVen);
 
                 // 2. Cargar plantilla base
                 String template = cargarTemplate();
@@ -643,9 +643,14 @@ public class VentaPanel extends JPanel {
         for (int i = 0; i < items.size(); i++) {
             ItemVenta iv = items.get(i);
             sb.append("<tr>");
-
             sb.append("<td>")
                     .append(iv.getNombre())
+                    .append("</td>")
+                    .append("<td>")
+                    .append(iv.getProducto_precio())
+                    .append("</td>")
+                    .append("<td>")
+                    .append(iv.getPorcentaje_descuento())
                     .append("</td>")
                     .append("<td>")
                     .append(iv.getCantidad())

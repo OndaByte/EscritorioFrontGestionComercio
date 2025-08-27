@@ -9,8 +9,8 @@ import org.apache.logging.log4j.Logger;
 public class Constantes {
 
     //Datos de la empresa
-    public static final String TITULO_PRINCIPAL = "<HTML>Mister Almacen</HTML>";
-    public static final String LOGO = "icon/marketplace.svg";
+    public static final String TITULO_PRINCIPAL = "<HTML>Box Padel</HTML>";
+    public static final String LOGO = "icon/padel2.svg";
 
     //constantes del mad viejo
     //public static final String VERSION = "ver 77.9.13.13";//{web}.{firm}.{bd}.{propio}{rc*}INCREMENTE TODOS LOS INDICES y RESET de rc

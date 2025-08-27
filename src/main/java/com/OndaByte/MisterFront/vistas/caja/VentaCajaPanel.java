@@ -430,6 +430,7 @@ public class VentaCajaPanel extends JPanel {
             iv.setPorcentaje_descuento((int) fc.spinnerDescuento.getValue());
             iv.setSubtotal(Float.valueOf(fc.lblSubtotal.getText().replace(",", ".")));
             iv.setProducto_id( fc.producto_id );
+            iv.setProducto_precio(fc.precioUnitario );
             items.add(iv);
         }
         VentaCajaModal modal = new VentaCajaModal(MiFrame.getInstance(),items,subtotal,total,(int) spinnerDescuentoExtra.getValue());//itemsR, o.getId(), c
